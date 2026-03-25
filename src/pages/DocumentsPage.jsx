@@ -107,10 +107,33 @@ export default function DocumentsPage() {
           }
 
           .documents-hero {
+            position: relative;
+            overflow: hidden;
             padding: 100px 0 60px;
+            background: #0a1628;
+          }
+
+          .documents-hero-media,
+          .documents-hero-overlay {
+            position: absolute;
+            inset: 0;
+          }
+
+          .documents-hero-media {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+          }
+
+          .documents-hero-overlay {
             background:
-              linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.34) 38%, rgba(5, 8, 22, 0.74) 100%),
-              url('/hero-documents-optimized.jpg') center center / cover no-repeat;
+              linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.34) 38%, rgba(5, 8, 22, 0.74) 100%);
+          }
+
+          .documents-hero-content {
+            position: relative;
+            z-index: 1;
           }
 
           .documents-hero-grid {
@@ -826,7 +849,17 @@ export default function DocumentsPage() {
         `}</style>
 
         <section className="documents-hero">
-          <div className="documents-container">
+          <img
+            className="documents-hero-media"
+            src="/hero-documents-optimized.jpg"
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+          />
+          <div className="documents-hero-overlay" />
+          <div className="documents-container documents-hero-content">
             <div className="documents-hero-grid">
               <div>
                 <p className="documents-section-label" style={{ color: 'rgba(255, 255, 255, 0.74)' }}>Publications &amp; Documents</p>

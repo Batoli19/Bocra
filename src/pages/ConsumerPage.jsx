@@ -173,14 +173,23 @@ export default function ConsumerPage() {
       >
         <section
           style={{
+            position: "relative",
+            overflow: "hidden",
             padding: "128px 0",
-            backgroundImage: "linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.34) 38%, rgba(5, 8, 22, 0.74) 100%), url('/hero-consumer-optimized.jpg')",
-            backgroundPosition: "center",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
+            background: "#0a1628",
           }}
         >
-          <Shell>
+          <img
+            src="/hero-consumer-optimized.jpg"
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
+          />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.34) 38%, rgba(5, 8, 22, 0.74) 100%)" }} />
+          <Shell style={{ position: "relative", zIndex: 1 }}>
             <div className="consumer-hero-grid">
               <div>
                 <div

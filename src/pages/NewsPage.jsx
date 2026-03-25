@@ -24,13 +24,22 @@ export default function NewsPage() {
       <div style={{ background: "#ffffff", minHeight: "100vh" }}>
         <div
           style={{
-            backgroundImage: "linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.36) 40%, rgba(5, 8, 22, 0.72) 100%), url('/hero-documents-optimized.jpg')",
-            backgroundPosition: "center",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
+            position: "relative",
+            overflow: "hidden",
+            background: "#0a1628",
           }}
         >
-          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "96px 24px 64px" }}>
+          <img
+            src="/hero-documents-optimized.jpg"
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
+          />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.36) 40%, rgba(5, 8, 22, 0.72) 100%)" }} />
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "96px 24px 64px", position: "relative", zIndex: 1 }}>
             <p
               style={{
                 fontSize: 11,

@@ -180,7 +180,17 @@ export default function TypeApprovalPage() {
       <div style={{ background: "#ffffff", overflow: "hidden" }}>
 
         {/* ═══ HERO ═══ */}
-        <div style={{ position: "relative", minHeight: "90vh", display: "flex", alignItems: "center", overflow: "hidden", backgroundImage: "linear-gradient(135deg, rgba(5, 8, 22, 0.62) 0%, rgba(5, 8, 22, 0.34) 42%, rgba(5, 8, 22, 0.76) 100%), url('/hero-documents-optimized.jpg')", backgroundPosition: "center", backgroundSize: "cover", backgroundRepeat: "no-repeat" }}>
+        <div style={{ position: "relative", minHeight: "90vh", display: "flex", alignItems: "center", overflow: "hidden", background: "#0a1628" }}>
+          <img
+            src="/hero-documents-optimized.jpg"
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
+          />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(5, 8, 22, 0.62) 0%, rgba(5, 8, 22, 0.34) 42%, rgba(5, 8, 22, 0.76) 100%)" }} />
           {/* Decorative background */}
           <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
             <div style={{ position: "absolute", top: "10%", right: "5%", width: 400, height: 400, borderRadius: "50%", background: "#D6E4F7", opacity: 0.3, animation: "float 8s ease-in-out infinite" }} />
