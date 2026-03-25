@@ -1,0 +1,52 @@
+[
+  {
+    "id": "1",
+    "name": "Class A Postal Operator",
+    "category": "Postal",
+    "fee": 25000,
+    "duration": "5 years",
+    "requirements": [
+      "Company registration (CIPA)",
+      "Tax clearance (BURS)",
+      "Operational capacity proof",
+      "Technical certificate"
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Internet Service Provider",
+    "category": "Internet",
+    "fee": 50000,
+    "duration": "5 years",
+    "requirements": [
+      "Company registration",
+      "Network infrastructure plan",
+      "Tax clearance"
+    ]
+  },
+  {
+    "id": "3",
+    "name": "Broadcasting Licence FM Radio",
+    "category": "Broadcasting",
+    "fee": 35000,
+    "duration": "5 years",
+    "requirements": [
+      "Content plan",
+      "Frequency plan",
+      "Company registration",
+      "Tax clearance"
+    ]
+  },
+  {
+    "id": "4",
+    "name": "Mobile Virtual Network Operator",
+    "category": "Telecoms",
+    "fee": 75000,
+    "duration": "5 years",
+    "requirements": [
+      "Host MNO agreement",
+      "Company registration",
+      "Financial capacity"
+    ]
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "title": "BOCRA Approves Reduced Data Prices for BTC",
+    "excerpt": "BOCRA has approved revised data tariffs for Botswana Telecommunications Corporation with immediate effect. New bundles offer more data at lower price points — 1.5GB for P10, 3GB for P25, and 100GB for P349.",
+    "category": "Announcements",
+    "date": "9 Feb 2026",
+    "readTime": "3 min read",
+    "featured": true,
+    "image": "https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=800&q=80"
+  },
+  {
+    "id": 2,
+    "title": "Botswana and Five SADC Nations Cut Roaming Tariffs by up to 94%",
+    "excerpt": "Under the One Network Area framework, BOCRA has collaborated with Malawi, Lesotho, Mozambique, Zambia and Zimbabwe to slash mobile roaming rates. Data roaming between Botswana and Zambia reduced by 94%.",
+    "category": "Announcements",
+    "date": "13 Mar 2026",
+    "readTime": "4 min read",
+    "featured": false,
+    "image": "https://images.unsplash.com/photo-1516912481808-3406841bd33c?w=800&q=80"
+  },
+  {
+    "id": 3,
+    "title": "Botswana Hosts Inaugural National Cyber Drill 2026",
+    "excerpt": "BOCRA hosted Botswana's first National Cyber Drill in Gaborone under the theme 'Cyber Resilience in Action', in collaboration with FIRST. Minister Tshere underlined the government's ambition to lead in safe digital adoption.",
+    "category": "Technology",
+    "date": "26 Feb 2026",
+    "readTime": "4 min read",
+    "featured": false,
+    "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&q=80"
+  },
+  {
+    "id": 4,
+    "title": "Botswana Bids for ITU Radio Regulations Board Seat 2026–2030",
+    "excerpt": "Botswana is competing for a seat on the ITU Radio Regulations Board for the 2026–2030 term. Holding the seat will give Botswana influence in global spectrum management and safeguard national interests in technology trends.",
+    "category": "Technology",
+    "date": "15 Jan 2026",
+    "readTime": "3 min read",
+    "featured": false,
+    "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&q=80"
+  },
+  {
+    "id": 5,
+    "title": "Type Approval Applications Go Fully Digital in May 2026",
+    "excerpt": "BOCRA has launched a digital type approval system reducing processing time from 30 days to 10 working days. All equipment certification applications can now be submitted online.",
+    "category": "Licensing",
+    "date": "18 Mar 2026",
+    "readTime": "3 min read",
+    "featured": false,
+    "image": "https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=800&q=80"
+  },
+  {
+    "id": 6,
+    "title": "National Broadband Strategy 2026–2030 Open for Public Comment",
+    "excerpt": "BOCRA has released the draft National Broadband Strategy for public consultation until 30 April 2026. The strategy targets 95% household connectivity by 2030.",
+    "category": "Consumer",
+    "date": "1 Mar 2026",
+    "readTime": "5 min read",
+    "featured": false,
+    "image": "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800&q=80"
+  }
+]

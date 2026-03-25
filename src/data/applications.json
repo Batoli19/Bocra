@@ -1,0 +1,18 @@
+[
+  {
+    "id": "APP-2026-001",
+    "licenceType": "Class A Postal Operator",
+    "status": "under_review",
+    "submittedDate": "2026-03-05",
+    "reference": "BOCRA/APP/001/2026",
+    "fee": 25000
+  },
+  {
+    "id": "APP-2026-002",
+    "licenceType": "Internet Service Provider",
+    "status": "approved",
+    "submittedDate": "2026-02-10",
+    "reference": "BOCRA/APP/002/2026",
+    "fee": 50000
+  }
+]

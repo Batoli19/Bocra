@@ -1,0 +1,64 @@
+{
+  "summary": {
+    "avgDownloadMbps": 28.4,
+    "avgLatencyMs": 42,
+    "avgUptime": 98.2,
+    "complaintsThisMonth": 143
+  },
+  "byISP": [
+    {
+      "name": "Mascom Wireless",
+      "downloadMbps": 32.1,
+      "latencyMs": 38,
+      "uptimePct": 98.9,
+      "complaints": 48
+    },
+    {
+      "name": "Orange Botswana",
+      "downloadMbps": 29.5,
+      "latencyMs": 41,
+      "uptimePct": 98.4,
+      "complaints": 52
+    },
+    {
+      "name": "BeMobile",
+      "downloadMbps": 24.8,
+      "latencyMs": 49,
+      "uptimePct": 97.6,
+      "complaints": 31
+    },
+    {
+      "name": "BTC Fibre",
+      "downloadMbps": 95.2,
+      "latencyMs": 12,
+      "uptimePct": 99.5,
+      "complaints": 12
+    }
+  ],
+  "monthlyComplaints": [
+    {
+      "month": "Oct",
+      "count": 98
+    },
+    {
+      "month": "Nov",
+      "count": 112
+    },
+    {
+      "month": "Dec",
+      "count": 87
+    },
+    {
+      "month": "Jan",
+      "count": 134
+    },
+    {
+      "month": "Feb",
+      "count": 119
+    },
+    {
+      "month": "Mar",
+      "count": 143
+    }
+  ]
+}

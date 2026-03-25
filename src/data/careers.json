@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "title": "Senior ICT Officer",
+    "department": "Technology",
+    "type": "Full-time",
+    "location": "Gaborone",
+    "closing": "2026-04-15"
+  },
+  {
+    "id": "2",
+    "title": "Legal Counsel",
+    "department": "Legal",
+    "type": "Full-time",
+    "location": "Gaborone",
+    "closing": "2026-04-20"
+  },
+  {
+    "id": "3",
+    "title": "Research Analyst",
+    "department": "Research & Policy",
+    "type": "Full-time",
+    "location": "Gaborone",
+    "closing": "2026-04-10"
+  }
+]

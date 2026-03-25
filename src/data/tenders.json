@@ -1,0 +1,26 @@
+[
+  {
+    "id": "T001",
+    "title": "Supply and Delivery of ICT Equipment 2026",
+    "status": "open",
+    "closingDate": "2026-04-10",
+    "category": "ICT",
+    "reference": "BOCRA/T/001/2026"
+  },
+  {
+    "id": "T002",
+    "title": "Consultancy: Spectrum Management System",
+    "status": "open",
+    "closingDate": "2026-04-05",
+    "category": "Consultancy",
+    "reference": "BOCRA/T/002/2026"
+  },
+  {
+    "id": "T003",
+    "title": "Office Cleaning Services — HQ",
+    "status": "closed",
+    "closingDate": "2026-02-15",
+    "category": "Services",
+    "reference": "BOCRA/T/003/2025"
+  }
+]
