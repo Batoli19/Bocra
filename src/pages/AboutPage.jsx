@@ -111,6 +111,7 @@ function getInitials(name) {
 
 export default function AboutPage() {
   const heroRef = useRef(null);
+  const videoRef = useRef(null);
 
   useEffect(() => {
     const el = heroRef.current;
@@ -126,7 +127,25 @@ export default function AboutPage() {
       el.style.overflow = "hidden";
     };
     window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+
+    const vidObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && videoRef.current) {
+            videoRef.current.play().catch(() => {});
+          } else if (videoRef.current) {
+            videoRef.current.pause();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    if (el) vidObserver.observe(el);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      vidObserver.disconnect();
+    };
   }, []);
 
   return (
@@ -150,14 +169,19 @@ export default function AboutPage() {
               position: "relative",
             }}
           >
-            <div
+            <video
+              ref={videoRef}
+              src="/Animation_Request_And_Generation.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
               style={{
                 position: "absolute",
                 inset: 0,
-                backgroundImage: "url(/Akanya_Botswana.png)",
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center top",
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
                 zIndex: 0,
               }}
             />

@@ -76,7 +76,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
           transform: "translateX(-50%)",
           zIndex: 9999,
           width: "calc(100% - 32px)",
-          maxWidth: 1280,
+          maxWidth: 1240,
           transition: "top 0.3s ease, box-shadow 0.3s ease",
         }}
       >
