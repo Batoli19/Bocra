@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 import documents from '../data/documents.json'
 import PageWrapper from '../components/shared/PageWrapper'
-import HeroImagePanel from '../components/shared/HeroImagePanel'
+import heroImage from '../../Gemini_Generated_Image_56nonr56nonr56no.png'
 
 const categories = ['All', 'Legislation', 'Regulations', 'Policies', 'Reports']
 
@@ -109,7 +109,9 @@ export default function DocumentsPage() {
 
           .documents-hero {
             padding: 100px 0 60px;
-            background: var(--doc-white);
+            background:
+              linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.34) 38%, rgba(5, 8, 22, 0.74) 100%),
+              url('${heroImage}') center center / cover no-repeat;
           }
 
           .documents-hero-grid {
@@ -121,7 +123,7 @@ export default function DocumentsPage() {
 
           .documents-hero-title {
             margin: 0;
-            color: var(--doc-heading);
+            color: var(--doc-white);
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: clamp(36px, 5vw, 58px);
             font-weight: 800;
@@ -132,7 +134,7 @@ export default function DocumentsPage() {
           .documents-hero-copy {
             max-width: 460px;
             margin: 20px 0 0;
-            color: var(--doc-body);
+            color: rgba(255, 255, 255, 0.82);
             font-family: Inter, sans-serif;
             font-size: 17px;
             font-weight: 400;
@@ -178,8 +180,9 @@ export default function DocumentsPage() {
 
           .documents-secondary-button,
           .documents-clear-button {
-            background: var(--doc-light);
-            color: var(--doc-primary);
+            background: rgba(255, 255, 255, 0.14);
+            color: var(--doc-white);
+            border: 1px solid rgba(255, 255, 255, 0.16);
           }
 
           .documents-primary-button:hover,
@@ -205,7 +208,7 @@ export default function DocumentsPage() {
             justify-content: space-between;
             gap: 24px;
             padding: 22px 0;
-            border-bottom: 1px solid var(--doc-border);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
           }
 
           .documents-stat-row:last-child {
@@ -213,7 +216,7 @@ export default function DocumentsPage() {
           }
 
           .documents-stat-value {
-            color: var(--doc-primary);
+            color: var(--doc-white);
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 42px;
             font-weight: 800;
@@ -224,7 +227,7 @@ export default function DocumentsPage() {
           .documents-stat-label {
             max-width: 180px;
             margin: 0;
-            color: var(--doc-body);
+            color: rgba(255, 255, 255, 0.78);
             font-family: Inter, sans-serif;
             font-size: 14px;
             font-weight: 400;
@@ -827,7 +830,7 @@ export default function DocumentsPage() {
           <div className="documents-container">
             <div className="documents-hero-grid">
               <div>
-                <p className="documents-section-label">Publications &amp; Documents</p>
+                <p className="documents-section-label" style={{ color: 'rgba(255, 255, 255, 0.74)' }}>Publications &amp; Documents</p>
                 <h1 className="documents-hero-title">
                   Official Documents,
                   <br />
@@ -849,12 +852,7 @@ export default function DocumentsPage() {
               </div>
 
               <div className="documents-hero-aside">
-                <HeroImagePanel
-                  minHeight={320}
-                  pills={['Open access', 'Regulatory library']}
-                />
-
-                <div className="documents-stats" aria-label="Document library highlights">
+                <div className="documents-stats" aria-label="Document library highlights" style={{ background: 'rgba(3, 7, 18, 0.44)', border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: 28, padding: '8px 28px', backdropFilter: 'blur(12px)' }}>
                   <div className="documents-stat-row">
                     <span className="documents-stat-value">12</span>
                     <p className="documents-stat-label">Real documents from the official BOCRA website</p>

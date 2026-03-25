@@ -1,6 +1,7 @@
 import { useState } from "react"
 import PageWrapper from "../components/shared/PageWrapper"
 import newsData from "../data/news.json"
+import heroImage from "../../Gemini_Generated_Image_56nonr56nonr56no.png"
 
 export default function NewsPage() {
   const [activeTab, setActiveTab] = useState("All")
@@ -22,56 +23,65 @@ export default function NewsPage() {
   return (
     <PageWrapper>
       <div style={{ background: "#ffffff", minHeight: "100vh" }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "96px 24px 64px" }}>
-          <p
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              color: "#9ca3af",
-              fontFamily: "Inter, sans-serif",
-              marginBottom: 16,
-            }}
-          >
-            News & Updates
-          </p>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "flex-end",
-              flexWrap: "wrap",
-              gap: 24,
-            }}
-          >
-            <h1
-              style={{
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                fontSize: "clamp(40px, 5vw, 64px)",
-                fontWeight: 800,
-                color: "#111111",
-                lineHeight: 1.05,
-                letterSpacing: "-0.03em",
-                margin: 0,
-              }}
-            >
-              Staying Informed,
-              <br />
-              Staying Connected.
-            </h1>
+        <div
+          style={{
+            backgroundImage: `linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.36) 40%, rgba(5, 8, 22, 0.72) 100%), url(${heroImage})`,
+            backgroundPosition: "center",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "96px 24px 64px" }}>
             <p
               style={{
-                fontSize: 16,
-                color: "#6b7280",
-                maxWidth: 380,
-                lineHeight: 1.7,
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.74)",
                 fontFamily: "Inter, sans-serif",
-                margin: 0,
+                marginBottom: 16,
               }}
             >
-              Official updates, regulatory decisions and announcements from BOCRA.
+              News & Updates
             </p>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-end",
+                flexWrap: "wrap",
+                gap: 24,
+              }}
+            >
+              <h1
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontSize: "clamp(40px, 5vw, 64px)",
+                  fontWeight: 800,
+                  color: "#ffffff",
+                  lineHeight: 1.05,
+                  letterSpacing: "-0.03em",
+                  margin: 0,
+                }}
+              >
+                Staying Informed,
+                <br />
+                Staying Connected.
+              </h1>
+              <p
+                style={{
+                  fontSize: 16,
+                  color: "rgba(255,255,255,0.82)",
+                  maxWidth: 380,
+                  lineHeight: 1.7,
+                  fontFamily: "Inter, sans-serif",
+                  margin: 0,
+                }}
+              >
+                Official updates, regulatory decisions and announcements from BOCRA.
+              </p>
+            </div>
           </div>
         </div>
 

@@ -12,7 +12,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import PageWrapper from "../components/shared/PageWrapper";
-import HeroImagePanel from "../components/shared/HeroImagePanel";
+import heroImage from "../../ChatGPT Image Mar 24, 2026, 03_08_14 PM.png";
 
 const issueOptions = [
   {
@@ -172,18 +172,38 @@ export default function ConsumerPage() {
           fontFamily: "'DM Sans', sans-serif",
         }}
       >
-        <section style={{ padding: "128px 0" }}>
+        <section
+          style={{
+            padding: "128px 0",
+            backgroundImage: `linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.34) 38%, rgba(5, 8, 22, 0.74) 100%), url(${heroImage})`,
+            backgroundPosition: "center",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
           <Shell>
             <div className="consumer-hero-grid">
               <div>
-                <SectionLabel>Consumer Protection</SectionLabel>
+                <div
+                  style={{
+                    fontSize: 12,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,0.76)",
+                    fontWeight: 700,
+                    marginBottom: 18,
+                    textAlign: "left",
+                  }}
+                >
+                  Consumer Protection
+                </div>
                 <h1
                   style={{
                     margin: 0,
                     fontSize: "clamp(2.8rem, 6vw, 4.3rem)",
                     lineHeight: 1.02,
                     letterSpacing: "-0.05em",
-                    color: "#111827",
+                    color: "#ffffff",
                     maxWidth: 760,
                     fontWeight: 700,
                   }}
@@ -196,7 +216,7 @@ export default function ConsumerPage() {
                     maxWidth: 680,
                     fontSize: 20,
                     lineHeight: 1.7,
-                    color: "#6b7280",
+                    color: "rgba(255,255,255,0.82)",
                   }}
                 >
                   BOCRA enforces the CRA Act 2012 so every Motswana receives fair, quality
@@ -223,11 +243,6 @@ export default function ConsumerPage() {
               </div>
 
               <div className="consumer-hero-right">
-                <HeroImagePanel
-                  className="consumer-hero-artwork"
-                  minHeight={420}
-                  pills={["Consumer protection", "Fair access"]}
-                />
                 <div className="consumer-stat-chip consumer-stat-chip-one">
                   <div className="consumer-stat-value">1,423</div>
                   <div className="consumer-stat-label">Complaints Resolved</div>
@@ -598,9 +613,9 @@ export default function ConsumerPage() {
         }
 
         .consumer-ghost-button {
-          color: #1A3A6B;
-          background: transparent;
-          border: 1px solid #d7dde5;
+          color: #ffffff;
+          background: rgba(255, 255, 255, 0.12);
+          border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .consumer-primary-button:hover,
@@ -626,7 +641,7 @@ export default function ConsumerPage() {
 
         .consumer-stat-chip {
           position: absolute;
-          background: #ffffff;
+          background: rgba(255, 255, 255, 0.92);
           padding: 20px 22px;
           border-radius: 20px;
           box-shadow: 0 22px 50px rgba(26, 58, 107, 0.12);

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import PageWrapper from "../components/shared/PageWrapper"
+import heroImage from "../../Gemini_Generated_Image_56nonr56nonr56no.png"
 import {
   FileText, MapPin, Upload, Award, CheckCircle, FileDown,
   Search, ChevronDown, ChevronUp, ArrowRight, Shield, Globe,
@@ -180,7 +181,7 @@ export default function TypeApprovalPage() {
       <div style={{ background: "#ffffff", overflow: "hidden" }}>
 
         {/* ═══ HERO ═══ */}
-        <div style={{ position: "relative", minHeight: "90vh", display: "flex", alignItems: "center", overflow: "hidden" }}>
+        <div style={{ position: "relative", minHeight: "90vh", display: "flex", alignItems: "center", overflow: "hidden", backgroundImage: `linear-gradient(135deg, rgba(5, 8, 22, 0.62) 0%, rgba(5, 8, 22, 0.34) 42%, rgba(5, 8, 22, 0.76) 100%), url(${heroImage})`, backgroundPosition: "center", backgroundSize: "cover", backgroundRepeat: "no-repeat" }}>
           {/* Decorative background */}
           <div style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
             <div style={{ position: "absolute", top: "10%", right: "5%", width: 400, height: 400, borderRadius: "50%", background: "#D6E4F7", opacity: 0.3, animation: "float 8s ease-in-out infinite" }} />
@@ -197,25 +198,25 @@ export default function TypeApprovalPage() {
           <div style={{ maxWidth: 1280, margin: "0 auto", padding: "120px 24px 80px", width: "100%", position: "relative", zIndex: 1, display: "flex", gap: 64, alignItems: "center", flexWrap: "wrap" }}>
             {/* Left */}
             <div style={{ flex: "1 1 55%", minWidth: 340, opacity: heroLoaded ? 1 : 0, transform: heroLoaded ? "translateY(0)" : "translateY(30px)", transition: "all 0.8s cubic-bezier(0.4,0,0.2,1)" }}>
-              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#D6E4F7", borderRadius: 50, padding: "6px 16px", marginBottom: 24 }}>
-                <Shield size={14} color="#1A3A6B" />
-                <span style={{ fontSize: 12, fontWeight: 600, color: "#1A3A6B", fontFamily: "Inter, sans-serif", letterSpacing: "0.05em" }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "rgba(255,255,255,0.16)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 50, padding: "6px 16px", marginBottom: 24, backdropFilter: "blur(10px)" }}>
+                <Shield size={14} color="#ffffff" />
+                <span style={{ fontSize: 12, fontWeight: 600, color: "#ffffff", fontFamily: "Inter, sans-serif", letterSpacing: "0.05em" }}>
                   BOCRA TYPE APPROVAL
                 </span>
               </div>
               <h1 style={{
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
-                fontSize: "clamp(40px, 5.5vw, 64px)", fontWeight: 800, color: "#111111",
+                fontSize: "clamp(40px, 5.5vw, 64px)", fontWeight: 800, color: "#ffffff",
                 lineHeight: 1.08, maxWidth: 580, margin: "0 0 20px 0", letterSpacing: "-0.03em"
               }}>
                 Certify Your
-                <span style={{ display: "block", background: "linear-gradient(135deg, #1A3A6B, #2E5FA3)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                <span style={{ display: "block", color: "#dbeafe" }}>
                   Equipment
                 </span>
                 for Botswana
               </h1>
               <p style={{
-                fontSize: 17, fontWeight: 400, color: "#6b7280", lineHeight: 1.7,
+                fontSize: 17, fontWeight: 400, color: "rgba(255,255,255,0.82)", lineHeight: 1.7,
                 maxWidth: 480, margin: "0 0 36px 0", fontFamily: "Inter, sans-serif"
               }}>
                 Section 84 of the CRA Act requires all communications devices to be certified before sale or use in Botswana.
@@ -234,10 +235,10 @@ export default function TypeApprovalPage() {
                   Apply Now <ArrowRight size={16} />
                 </Link>
                 <a href="#approved-devices" style={{
-                  background: "#D6E4F7", color: "#1A3A6B", borderRadius: 50,
+                  background: "rgba(255,255,255,0.14)", color: "#ffffff", borderRadius: 50,
                   padding: "14px 28px", fontWeight: 600, fontSize: 14,
                   textDecoration: "none", fontFamily: "Inter, sans-serif",
-                  display: "inline-flex", alignItems: "center", gap: 8, border: "none",
+                  display: "inline-flex", alignItems: "center", gap: 8, border: "1px solid rgba(255,255,255,0.18)",
                   transition: "all 0.2s"
                 }}
                   onMouseEnter={e => { e.currentTarget.style.opacity = "0.85"; e.currentTarget.style.transform = "translateY(-2px)" }}
@@ -257,8 +258,8 @@ export default function TypeApprovalPage() {
                   { icon: Globe, value: "84", suffix: "", label: "CRA Act Section Authority", delay: 0.3 },
                 ].map((stat, i) => (
                   <div key={i} style={{
-                    background: "#ffffff", border: "1px solid #e5e7eb", borderRadius: 16,
-                    padding: "24px 28px", display: "flex", alignItems: "center", gap: 20,
+                    background: "rgba(255,255,255,0.9)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 16,
+                    padding: "24px 28px", display: "flex", alignItems: "center", gap: 20, backdropFilter: "blur(10px)",
                     animation: heroLoaded ? `slideLeft 0.6s ease ${stat.delay + 0.4}s both` : "none"
                   }} className="ta-card">
                     <div style={{
