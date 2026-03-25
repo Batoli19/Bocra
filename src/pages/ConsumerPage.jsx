@@ -12,7 +12,6 @@ import {
   ChevronRight,
 } from "lucide-react";
 import PageWrapper from "../components/shared/PageWrapper";
-import heroImage from "../../ChatGPT Image Mar 24, 2026, 03_08_14 PM.png";
 
 const issueOptions = [
   {
@@ -175,7 +174,7 @@ export default function ConsumerPage() {
         <section
           style={{
             padding: "128px 0",
-            backgroundImage: `linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.34) 38%, rgba(5, 8, 22, 0.74) 100%), url(${heroImage})`,
+            backgroundImage: "linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.34) 38%, rgba(5, 8, 22, 0.74) 100%), url('/hero-consumer-optimized.jpg')",
             backgroundPosition: "center",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",

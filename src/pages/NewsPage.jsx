@@ -1,7 +1,6 @@
 import { useState } from "react"
 import PageWrapper from "../components/shared/PageWrapper"
 import newsData from "../data/news.json"
-import heroImage from "../../Gemini_Generated_Image_56nonr56nonr56no.png"
 
 export default function NewsPage() {
   const [activeTab, setActiveTab] = useState("All")
@@ -25,7 +24,7 @@ export default function NewsPage() {
       <div style={{ background: "#ffffff", minHeight: "100vh" }}>
         <div
           style={{
-            backgroundImage: `linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.36) 40%, rgba(5, 8, 22, 0.72) 100%), url(${heroImage})`,
+            backgroundImage: "linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.36) 40%, rgba(5, 8, 22, 0.72) 100%), url('/hero-documents-optimized.jpg')",
             backgroundPosition: "center",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",

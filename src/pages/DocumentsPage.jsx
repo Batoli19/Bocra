@@ -14,7 +14,6 @@ import {
 } from 'lucide-react'
 import documents from '../data/documents.json'
 import PageWrapper from '../components/shared/PageWrapper'
-import heroImage from '../../Gemini_Generated_Image_56nonr56nonr56no.png'
 
 const categories = ['All', 'Legislation', 'Regulations', 'Policies', 'Reports']
 
@@ -111,7 +110,7 @@ export default function DocumentsPage() {
             padding: 100px 0 60px;
             background:
               linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.34) 38%, rgba(5, 8, 22, 0.74) 100%),
-              url('${heroImage}') center center / cover no-repeat;
+              url('/hero-documents-optimized.jpg') center center / cover no-repeat;
           }
 
           .documents-hero-grid {
