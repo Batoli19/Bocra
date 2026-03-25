@@ -36,7 +36,7 @@ export default function PageWrapper({
             setChatDismissed(true)
           }}
         />
-        <main style={{ flex:1, ...(fullWidth ? {} : { maxWidth:1280, margin:'0 auto', width:'100%', padding:'40px 24px' }) }}>
+        <main style={{ flex:1, ...(fullWidth ? {} : { maxWidth:1280, margin:'0 auto', width:'100%', padding:'0 24px' }) }}>
           {children}
         </main>
         <Footer />

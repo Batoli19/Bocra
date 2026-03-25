@@ -1397,20 +1397,27 @@ export default function ChatBubble({ showHint = false, expanded = false, forceOp
               <div
                 style={{
                   position: "absolute",
-                  right: "calc(100% + 14px)",
+                  left: "50%",
+                  bottom: "calc(100% + 18px)",
+                  transform: "translateX(-50%)",
                   whiteSpace: "nowrap",
                   background: "#ffffff",
                   color: "#050505",
-                  padding: "10px 16px",
-                  borderRadius: "14px",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+                  padding: "14px 22px",
+                  borderRadius: "18px",
+                  border: "2px solid rgba(5,5,5,0.08)",
+                  fontSize: "16px",
+                  fontWeight: 700,
+                  lineHeight: 1.2,
+                  boxShadow: "0 16px 40px rgba(0,0,0,0.2)",
                   animation: "hintPop 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
-                  gap: 8,
+                  justifyContent: "center",
+                  gap: 10,
+                  minHeight: 60,
+                  zIndex: 2,
                 }}
                 onClick={() => setOpen((o) => !o)}
               >
@@ -1418,13 +1425,15 @@ export default function ChatBubble({ showHint = false, expanded = false, forceOp
                 <span style={{ fontSize: 16 }}>👋</span>
                 <div style={{
                   position: "absolute",
-                  right: "-5px",
-                  top: "50%",
-                  transform: "translateY(-50%) rotate(45deg)",
-                  width: 10,
-                  height: 10,
+                  left: "50%",
+                  bottom: "-9px",
+                  transform: "translateX(-50%) rotate(45deg)",
+                  width: 14,
+                  height: 14,
                   background: "#ffffff",
                   borderRadius: "2px",
+                  borderRight: "2px solid rgba(5,5,5,0.08)",
+                  borderBottom: "2px solid rgba(5,5,5,0.08)",
                 }} />
               </div>
             )}
