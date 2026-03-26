@@ -65,8 +65,15 @@ const missingServices = [
 export default function GovTaskbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const inputRef = useRef(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -91,7 +98,7 @@ export default function GovTaskbar() {
   return (
     <>
       {/* TRIGGER BUTTON (Top Right Taskbar) */}
-      <div style={{ position: "fixed", top: 16, right: 28, zIndex: 99999 }}>
+      <div style={{ position: "fixed", top: 16, right: 28, zIndex: 99999, display: isMobile ? "none" : "block" }}>
         <button
           onClick={() => setIsOpen(true)}
           style={{

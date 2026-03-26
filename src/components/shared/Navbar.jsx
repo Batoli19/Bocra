@@ -102,13 +102,6 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
     ["Register Domain", "https://nic.net.bw/"],
   ];
 
-  const mobilePrimaryLinks = [
-    { label: "About", href: "/about" },
-    { label: "Licensing", href: "/licensing" },
-    { label: "Documents", href: "/documents" },
-    { label: "Coverage Map", href: "/map" },
-    { label: "News", href: "/news" },
-  ];
 
   return (
     <>
@@ -140,81 +133,26 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
             transition: "background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
           }}
         >
-          <div
+          <Link
+            to="/"
             style={{
               display: "flex",
               alignItems: "center",
-              gap: isMobile ? 6 : 0,
-              minWidth: 0,
-              flex: isMobile ? "1 1 auto" : "0 1 auto",
-              flexShrink: 1,
+              textDecoration: "none",
+              flexShrink: 0,
             }}
           >
-            <Link
-              to="/"
+            <img
+              src={bocraSvg}
+              alt="BOCRA Logo"
               style={{
-                display: "flex",
-                alignItems: "center",
-                textDecoration: "none",
-                flexShrink: 0,
+                height: isMobile ? 44 : 56,
+                width: "auto",
+                display: "block",
+                objectFit: "contain",
               }}
-            >
-              <img
-                src={bocraSvg}
-                alt="BOCRA Logo"
-                style={{
-                  height: isMobile ? 44 : 56,
-                  width: "auto",
-                  display: "block",
-                  objectFit: "contain",
-                }}
-              />
-            </Link>
-
-            {isMobile && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 1,
-                  minWidth: 0,
-                  flex: 1,
-                  overflow: "hidden",
-                }}
-              >
-                {mobilePrimaryLinks.map((item) => (
-                  <Link
-                    key={item.href}
-                    to={item.href}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      minWidth: 0,
-                      padding: "2px 1px",
-                      borderRadius: 8,
-                      fontSize: 8,
-                      fontWeight: 600,
-                      lineHeight: 1,
-                      textAlign: "center",
-                      color: "#1a2e44",
-                      textDecoration: "none",
-                      whiteSpace: "nowrap",
-                      letterSpacing: "-0.03em",
-                      background:
-                        location.pathname === item.href
-                          ? "rgba(0,0,0,0.05)"
-                          : "transparent",
-                      fontFamily: "'DM Sans', sans-serif",
-                    }}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
+            />
+          </Link>
 
           <div
             style={{
