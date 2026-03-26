@@ -5,20 +5,125 @@ const DOT_COLORS = ['#E63946', '#F4A261', '#2A9D8F', '#1A3A6B']
 export default function PageLoader() {
   const [visible, setVisible] = useState(true)
   const [hiding, setHiding] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [loadingText, setLoadingText] = useState('Loading...')
+  const [readyToHide, setReadyToHide] = useState(false)
+
+  useEffect(() => {
+    if (sessionStorage.getItem('bocra_loaded')) {
+      setVisible(false)
+      return
+    }
+
+    let minTimeDone = false
+    let imagesDone = false
+    const imageListeners = []
+
+    const tryHide = () => {
+      if (minTimeDone && imagesDone) {
+        setProgress(100)
+        setLoadingText('Done.')
+        setReadyToHide(true)
+      }
+    }
+
+    const markImagesDone = () => {
+      imagesDone = true
+      setProgress(100)
+      setLoadingText('Done.')
+      tryHide()
+    }
+
+    const minTimer = window.setTimeout(() => {
+      minTimeDone = true
+      tryHide()
+    }, 1800)
+
+    const checkImages = () => {
+      const images = Array.from(document.querySelectorAll('img'))
+
+      if (images.length === 0) {
+        markImagesDone()
+        return
+      }
+
+      const unloaded = images.filter((img) => !img.complete)
+
+      if (unloaded.length === 0) {
+        markImagesDone()
+        return
+      }
+
+      setProgress((prev) => Math.max(prev, 75))
+
+      let loadedCount = 0
+      const onLoad = () => {
+        loadedCount += 1
+        if (loadedCount >= unloaded.length) {
+          markImagesDone()
+        }
+      }
+
+      unloaded.forEach((img) => {
+        img.addEventListener('load', onLoad, { once: true })
+        img.addEventListener('error', onLoad, { once: true })
+        imageListeners.push(() => {
+          img.removeEventListener('load', onLoad)
+          img.removeEventListener('error', onLoad)
+        })
+      })
+    }
+
+    const imageCheckTimer = window.setTimeout(checkImages, 100)
+
+    const safetyTimer = window.setTimeout(() => {
+      imagesDone = true
+      minTimeDone = true
+      setProgress(100)
+      setLoadingText('Done.')
+      tryHide()
+    }, 6000)
+
+    return () => {
+      window.clearTimeout(minTimer)
+      window.clearTimeout(imageCheckTimer)
+      window.clearTimeout(safetyTimer)
+      imageListeners.forEach((removeListener) => removeListener())
+    }
+  }, [])
 
   useEffect(() => {
     if (!visible) return undefined
 
-    const timer = window.setTimeout(() => {
-      setHiding(true)
-    }, 3500)
+    const rampOne = window.setTimeout(() => {
+      setProgress(30)
+    }, 100)
 
-    return () => window.clearTimeout(timer)
+    const rampTwo = window.setTimeout(() => {
+      setProgress(60)
+      setLoadingText('Almost ready...')
+    }, 800)
+
+    return () => {
+      window.clearTimeout(rampOne)
+      window.clearTimeout(rampTwo)
+    }
   }, [visible])
+
+  useEffect(() => {
+    if (progress !== 100 || !readyToHide) return undefined
+
+    const hideTimer = window.setTimeout(() => {
+      setHiding(true)
+    }, 300)
+
+    return () => window.clearTimeout(hideTimer)
+  }, [progress, readyToHide])
 
   const handleTransitionEnd = (event) => {
     if (event.target !== event.currentTarget || !hiding) return
 
+    sessionStorage.setItem('bocra_loaded', '1')
     setVisible(false)
   }
 
@@ -106,16 +211,30 @@ export default function PageLoader() {
       >
         <div
           style={{
-            width: 0,
+            width: `${progress}%`,
             height: '100%',
             borderRadius: 2,
             background:
               'linear-gradient(90deg, #E63946, #F4A261, #2A9D8F, #1A3A6B)',
-            animation: 'progressFill 1s ease forwards',
-            animationDelay: '600ms',
+            transition: 'width 0.4s ease',
           }}
         />
       </div>
+
+      <p
+        style={{
+          margin: '10px 0 0',
+          fontFamily: "'Inter', sans-serif",
+          fontSize: 11,
+          fontWeight: 400,
+          color: '#9ca3af',
+          textAlign: 'center',
+          letterSpacing: '0.04em',
+          transition: 'opacity 0.3s ease',
+        }}
+      >
+        {loadingText}
+      </p>
     </div>
   )
 }
