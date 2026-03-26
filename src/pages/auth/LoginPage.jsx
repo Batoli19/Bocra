@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { ArrowRight, Eye, EyeOff, ShieldCheck, FileText, BellRing } from 'lucide-react'
 import PageWrapper from '../../components/shared/PageWrapper'
 import { useAuth } from '../../hooks/useAuth'
-import portalHeroImage from '../../../Gemini_Generated_Image_ot2t2sot2t2sot2t.png'
+const portalHeroImage = '/hero-complaints.webp'
 
 const quickPoints = [
   {

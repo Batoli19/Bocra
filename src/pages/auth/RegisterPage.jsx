@@ -4,7 +4,7 @@ import { ArrowRight, Eye, EyeOff, ShieldCheck, BellRing, UserRoundPlus } from 'l
 import PageWrapper from '../../components/shared/PageWrapper'
 import { useAuth } from '../../hooks/useAuth'
 import { useToast } from '../../hooks/useToast'
-import portalHeroImage from '../../../Gemini_Generated_Image_ot2t2sot2t2sot2t.png'
+const portalHeroImage = '/hero-complaints.webp'
 
 const quickPoints = [
   {

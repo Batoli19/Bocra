@@ -891,7 +891,7 @@ export default function LicensingPage() {
         <section
           style={{
             background:
-              "linear-gradient(rgba(10,22,40,0.26), rgba(10,22,40,0.38)), url('/Gemini_Generated_Image_ot2t2sot2t2sot2t.png') center/cover no-repeat",
+              "linear-gradient(rgba(10,22,40,0.26), rgba(10,22,40,0.38)), url('/hero-complaints.webp') center/cover no-repeat",
             padding: '80px 0 0',
           }}
         >

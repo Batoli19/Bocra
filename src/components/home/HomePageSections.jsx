@@ -13,7 +13,7 @@ import Spinner from "../shared/Spinner";
 import { mockFetch } from "../../utils/mockFetch";
 import { formatDate } from "../../utils/formatDate";
 import { useHomeChat } from "../shared/PageWrapper";
-import portalHeroImage from "../../../Gemini_Generated_Image_ot2t2sot2t2sot2t.png";
+const portalHeroImage = '/hero-complaints.webp';
 import newsImageOne from "../../../07-03-2026_government-addresses-fuel-security-concerns-_1772892887_image_main_90430.jpg";
 import newsImageTwo from "../../../24-03-2026_lobatse-council-to-maximise-existing-revenue-streams_1774335125_image_main_90697.jpeg";
 

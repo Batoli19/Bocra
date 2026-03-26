@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, BellRing, FileText, FolderKanban, UserRound } from 'lucide-react'
 import PageWrapper from '../../components/shared/PageWrapper'
 import { useAuth } from '../../hooks/useAuth'
-import portalHeroImage from '../../../Gemini_Generated_Image_ot2t2sot2t2sot2t.png'
+const portalHeroImage = '/hero-complaints.webp'
 
 const actions = [
   {
