@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ArrowRight, Building2, Check, CheckCircle, CheckCircle2, Globe, Landmark, Mail, Radio, Search, Shield, User, Wifi } from 'lucide-react'
+import { AlertCircle, ArrowRight, Building2, Check, CheckCircle, CheckCircle2, Globe, Landmark, Mail, Package, Radio, Search, Shield, Signal, Tv, User, Wifi } from 'lucide-react'
 import PageWrapper from '../components/shared/PageWrapper'
 
 const tabs = [
@@ -148,16 +148,216 @@ const defaultLicence = {
   docs: ['CIPA Certificate', 'Tax Clearance', 'Business Plan'],
 }
 
-const licenceOptions = [
-  'Class 1 Network Operator Licence',
-  'Class 2 Telecommunications Licence',
-  'Internet Service Provider Licence',
-  'Commercial Radio Broadcasting Licence',
-  'Television Broadcasting Licence',
-  'Postal/Courier Operator Licence',
-  'Type Approval Certificate',
-  'Class 3 Service Licence',
+const licenceFees = {
+  'Internet Service Provider (ISP)': {
+    application: 15000,
+    processing: 1500,
+    annual: 8000,
+  },
+  'Broadcasting - Radio': {
+    application: 25000,
+    processing: 2500,
+    annual: 12000,
+  },
+  'Broadcasting - Television': {
+    application: 45000,
+    processing: 4500,
+    annual: 20000,
+  },
+  'Postal / Courier - Class A': {
+    application: 25000,
+    processing: 2000,
+    annual: 10000,
+  },
+  'Postal / Courier - Class B': {
+    application: 12000,
+    processing: 1200,
+    annual: 5000,
+  },
+  'MVNO / Telecom Operator': {
+    application: 50000,
+    processing: 5000,
+    annual: 25000,
+  },
+  'Citizen Band Radio': {
+    application: 500,
+    processing: 100,
+    annual: 300,
+  },
+  'Amateur Radio': {
+    application: 300,
+    processing: 50,
+    annual: 200,
+  },
+}
+
+const licenceTypeTiles = [
+  { icon: Wifi, title: 'Internet Service Provider (ISP)', feeHint: 'From BWP 15,000' },
+  { icon: Radio, title: 'Broadcasting - Radio', feeHint: 'From BWP 25,000' },
+  { icon: Tv, title: 'Broadcasting - Television', feeHint: 'From BWP 45,000' },
+  { icon: Mail, title: 'Postal / Courier - Class A', feeHint: 'From BWP 25,000' },
+  { icon: Package, title: 'Postal / Courier - Class B', feeHint: 'From BWP 12,000' },
+  { icon: Globe, title: 'MVNO / Telecom Operator', feeHint: 'From BWP 50,000' },
+  { icon: Radio, title: 'Citizen Band Radio', feeHint: 'From BWP 500' },
+  { icon: Signal, title: 'Amateur Radio', feeHint: 'From BWP 300' },
 ]
+
+const fieldsConfig = {
+  'Internet Service Provider (ISP)': {
+    title: 'Technical & Coverage Details',
+    fields: [
+      { id: 'serviceArea', label: 'Proposed Service Area', type: 'text', placeholder: 'e.g. Greater Gaborone, Francistown' },
+      {
+        id: 'infrastructure',
+        label: 'Technical Infrastructure',
+        type: 'textarea',
+        placeholder: 'Describe your network infrastructure \u2014 fibre, wireless, satellite etc.',
+      },
+      { id: 'customers', label: 'Estimated Subscribers (Year 1)', type: 'number', placeholder: 'e.g. 500' },
+      { id: 'coverageType', label: 'Coverage Type', type: 'select', options: ['Local', 'Regional', 'National'] },
+      { id: 'spectrum', label: 'Will you use radio frequency spectrum?', type: 'yesno' },
+      { id: 'minSpeed', label: 'Minimum Speed Offered (Mbps)', type: 'number', placeholder: 'e.g. 10' },
+      { id: 'localOffice', label: 'Physical Office Address in Botswana', type: 'text', placeholder: 'Full street address' },
+    ],
+  },
+  'Broadcasting - Radio': {
+    title: 'Station & Technical Details',
+    fields: [
+      { id: 'stationName', label: 'Station Name', type: 'text', placeholder: 'e.g. Yarona FM' },
+      { id: 'stationType', label: 'Station Type', type: 'select', options: ['Commercial', 'Community', 'Public', 'Campus'] },
+      { id: 'transmitterLocation', label: 'Transmitter Location / Site Name', type: 'text', placeholder: 'e.g. Kgale Hill, Gaborone' },
+      { id: 'latitude', label: 'Site Latitude', type: 'text', placeholder: 'e.g. -24.6541' },
+      { id: 'longitude', label: 'Site Longitude', type: 'text', placeholder: 'e.g. 25.9087' },
+      { id: 'siteAltitude', label: 'Site Altitude (metres)', type: 'number', placeholder: 'e.g. 1010' },
+      {
+        id: 'preferredFrequency',
+        label: 'Preferred Frequency Band',
+        type: 'select',
+        options: ['FM (87.5\u2013108 MHz)', 'AM (535\u20131605 kHz)', 'SW (3\u201330 MHz)'],
+      },
+      { id: 'outputPower', label: 'Transmitter Output Power (Watts)', type: 'number', placeholder: 'e.g. 1000' },
+      { id: 'antennaHeight', label: 'Antenna Height (metres)', type: 'number', placeholder: 'e.g. 50' },
+      { id: 'coverageRadius', label: 'Intended Coverage Radius (km)', type: 'number', placeholder: 'e.g. 75' },
+      { id: 'contentLanguage', label: 'Primary Broadcast Language', type: 'select', options: ['English', 'Setswana', 'Both', 'Other'] },
+    ],
+  },
+  'Broadcasting - Television': {
+    title: 'Station & Technical Details',
+    fields: [
+      { id: 'stationName', label: 'Station / Channel Name', type: 'text', placeholder: 'e.g. Botswana TV2' },
+      { id: 'broadcastType', label: 'Broadcast Type', type: 'select', options: ['Terrestrial', 'Satellite', 'Cable', 'IPTV'] },
+      { id: 'transmitterLocation', label: 'Main Transmitter Location', type: 'text', placeholder: 'e.g. Lentswe la Oodi' },
+      { id: 'latitude', label: 'Site Latitude', type: 'text', placeholder: 'e.g. -24.4841' },
+      { id: 'longitude', label: 'Site Longitude', type: 'text', placeholder: 'e.g. 26.0187' },
+      { id: 'outputPower', label: 'Output Power (kW)', type: 'number', placeholder: 'e.g. 10' },
+      { id: 'coverageArea', label: 'Intended Coverage Districts', type: 'text', placeholder: 'e.g. South East, Kgatleng, Kweneng' },
+      {
+        id: 'contentType',
+        label: 'Primary Content Type',
+        type: 'select',
+        options: ['Entertainment', 'News', 'Educational', 'Religious', 'Mixed'],
+      },
+    ],
+  },
+  'Postal / Courier - Class A': {
+    title: 'Service & Operations Details',
+    fields: [
+      { id: 'serviceArea', label: 'Service Coverage Area', type: 'text', placeholder: 'e.g. Nationwide or specific districts' },
+      { id: 'headOffice', label: 'Head Office Physical Address', type: 'text', placeholder: 'Full street address' },
+      { id: 'fleetSize', label: 'Number of Delivery Vehicles', type: 'number', placeholder: 'e.g. 25' },
+      { id: 'branches', label: 'Number of Branch Offices / Service Points', type: 'number', placeholder: 'e.g. 5' },
+      {
+        id: 'itemTypes',
+        label: 'Types of Items to be Handled',
+        type: 'select',
+        options: ['Letters & Documents', 'Parcels', 'Freight', 'All of the above'],
+      },
+      {
+        id: 'deliveryTime',
+        label: 'Standard Delivery Time Commitment',
+        type: 'select',
+        options: ['Same Day', 'Next Day', '2\u20133 Days', '4\u20137 Days'],
+      },
+    ],
+  },
+  'Postal / Courier - Class B': {
+    title: 'Service & Operations Details',
+    fields: [
+      { id: 'serviceArea', label: 'Service Coverage Area', type: 'text', placeholder: 'e.g. Gaborone only' },
+      { id: 'headOffice', label: 'Business Physical Address', type: 'text', placeholder: 'Full street address' },
+      { id: 'fleetSize', label: 'Number of Delivery Vehicles', type: 'number', placeholder: 'e.g. 3' },
+      { id: 'itemTypes', label: 'Types of Items Handled', type: 'select', options: ['Documents only', 'Small parcels', 'Both'] },
+    ],
+  },
+  'MVNO / Telecom Operator': {
+    title: 'Technical & Network Details',
+    fields: [
+      { id: 'hostOperator', label: 'Host Network Operator (if MVNO)', type: 'text', placeholder: 'e.g. Mascom Wireless' },
+      {
+        id: 'serviceType',
+        label: 'Service Type',
+        type: 'select',
+        options: ['Full MVNO', 'Light MVNO', 'Reseller', 'Full Telecom Operator'],
+      },
+      { id: 'serviceArea', label: 'Intended Service Area', type: 'select', options: ['National', 'Regional', 'Urban Only'] },
+      { id: 'targetMarket', label: 'Target Market Segment', type: 'text', placeholder: 'e.g. Corporate clients, rural communities' },
+      { id: 'spectrum', label: 'Will you require spectrum allocation?', type: 'yesno' },
+      { id: 'roaming', label: 'Will you offer international roaming?', type: 'yesno' },
+      {
+        id: 'infrastructure',
+        label: 'Core Network Infrastructure',
+        type: 'textarea',
+        placeholder: 'Describe your technical infrastructure plans',
+      },
+    ],
+  },
+  'Citizen Band Radio': {
+    title: 'Station & Equipment Details',
+    fields: [
+      { id: 'stationName', label: 'Station / Call Name', type: 'text', placeholder: 'e.g. Kalahari Base' },
+      { id: 'stationType', label: 'Station Type', type: 'select', options: ['Fixed/Base', 'Mobile', 'Portable'] },
+      { id: 'streetAddress', label: 'Station Street Address', type: 'text', placeholder: 'Plot No. and Street' },
+      { id: 'ward', label: 'Ward / Village', type: 'text', placeholder: 'e.g. Block 7' },
+      { id: 'city', label: 'City / Town', type: 'text', placeholder: 'e.g. Gaborone' },
+      { id: 'latitude', label: 'Site Latitude', type: 'text', placeholder: 'e.g. -24.6541' },
+      { id: 'longitude', label: 'Site Longitude', type: 'text', placeholder: 'e.g. 25.9087' },
+      { id: 'altitude', label: 'Site Altitude (metres)', type: 'number', placeholder: 'e.g. 1010' },
+      { id: 'equipmentMake', label: 'Equipment Make / Manufacturer', type: 'text', placeholder: 'e.g. Kenwood, Icom' },
+      { id: 'equipmentModel', label: 'Equipment Model', type: 'text', placeholder: 'e.g. TK-7180' },
+      { id: 'serialNumber', label: 'Serial Number', type: 'text', placeholder: 'e.g. A1234567' },
+      { id: 'approvalNumber', label: 'BOCRA Type Approval Number', type: 'text', placeholder: 'e.g. BW-TA-2024-0891' },
+      { id: 'frequencyBand', label: 'Frequency Range / Band (MHz)', type: 'text', placeholder: 'e.g. 26.965\u201327.405 MHz' },
+      { id: 'outputPower', label: 'Output Power (Watts)', type: 'number', placeholder: 'e.g. 4' },
+      {
+        id: 'antennaType',
+        label: 'Antenna Type',
+        type: 'select',
+        options: ['Omnidirectional', 'Directional/Yagi', 'Whip', 'Magnetic Mount'],
+      },
+      { id: 'antennaHeight', label: 'Antenna Height (metres)', type: 'number', placeholder: 'e.g. 5' },
+      { id: 'purpose', label: 'Purpose / Intended Use', type: 'textarea', placeholder: 'What will this station be used for?' },
+    ],
+  },
+  'Amateur Radio': {
+    title: 'Amateur Radio Details',
+    fields: [
+      { id: 'callsign', label: 'Existing Callsign (if renewal)', type: 'text', placeholder: 'e.g. A25XY or leave blank if new' },
+      {
+        id: 'licenceClass',
+        label: 'Licence Class Applying For',
+        type: 'select',
+        options: ['Foundation', 'Intermediate', 'Full/Advanced'],
+      },
+      { id: 'examPassed', label: 'Have you passed the BOCRA Amateur Radio Exam?', type: 'yesno' },
+      { id: 'equipmentMake', label: 'Primary Equipment Make', type: 'text', placeholder: 'e.g. Yaesu, Kenwood, Icom' },
+      { id: 'equipmentModel', label: 'Equipment Model', type: 'text', placeholder: 'e.g. FT-991A' },
+      { id: 'frequencyBands', label: 'Frequency Bands Requested', type: 'text', placeholder: 'e.g. HF, VHF, UHF' },
+      { id: 'outputPower', label: 'Maximum Output Power (Watts)', type: 'number', placeholder: 'e.g. 100' },
+      { id: 'antennaType', label: 'Antenna Type', type: 'select', options: ['Dipole', 'Yagi', 'Vertical', 'Loop', 'Other'] },
+      { id: 'stationAddress', label: 'Station Physical Address', type: 'text', placeholder: 'Where the equipment will be operated' },
+    ],
+  },
+}
 
 const applicationSteps = [
   { number: 1, label: 'Business Details' },
@@ -359,6 +559,24 @@ function ChoiceCard({ title, description, icon: Icon, selected, onClick, fee }) 
   )
 }
 
+function LicenceTypeTile({ icon: Icon, title, feeHint, selected, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`application-licence-tile${selected ? ' is-selected' : ''}`}
+    >
+      <span className="application-licence-icon-box">
+        <Icon size={18} />
+      </span>
+      <span>
+        <span className="application-licence-title">{title}</span>
+        <span className="application-licence-fee-hint">{feeHint}</span>
+      </span>
+    </button>
+  )
+}
+
 function Stepper({ currentStep, steps = applicationSteps }) {
   return (
     <div style={{ marginBottom: 42 }}>
@@ -511,6 +729,10 @@ function resolveTypeFilter(entry, filterType) {
   return entry.type === filterType
 }
 
+function formatBwp(value) {
+  return `BWP ${Number(value || 0).toLocaleString()}`
+}
+
 export default function LicensingPage() {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('finder')
@@ -530,6 +752,8 @@ export default function LicensingPage() {
   const [appConsent, setAppConsent] = useState(false)
   const [submittedReference, setSubmittedReference] = useState('')
   const [submittedApplications, setSubmittedApplications] = useState([])
+  const [licenceType, setLicenceType] = useState('')
+  const [technicalData, setTechnicalData] = useState({})
   const [appData, setAppData] = useState({
     legalBusinessName: '',
     registrationNumber: '',
@@ -539,13 +763,6 @@ export default function LicensingPage() {
     contactPersonName: '',
     contactPhone: '',
     contactEmail: '',
-    licenceType: '',
-    serviceArea: '',
-    infrastructureDescription: '',
-    customerEstimate: '',
-    coverageType: '',
-    usesSpectrum: 'No',
-    frequencyRange: '',
   })
   const [trackQuery, setTrackQuery] = useState('')
   const [trackedApplication, setTrackedApplication] = useState(null)
@@ -578,8 +795,12 @@ export default function LicensingPage() {
     setAppData((prev) => ({
       ...prev,
       [field]: value,
-      ...(field === 'usesSpectrum' && value === 'No' ? { frequencyRange: '' } : {}),
     }))
+  }
+
+  const handleLicenceTypeChange = (value) => {
+    setLicenceType(value)
+    setTechnicalData({})
   }
 
   const handleStartApplication = () => {
@@ -615,10 +836,12 @@ export default function LicensingPage() {
     const applicationRecord = {
       ref: reference,
       company: appData.legalBusinessName || 'New Applicant',
-      type: appData.licenceType || 'Class 3 Service Licence',
+      type: licenceType || 'Class 3 Service Licence',
       date: new Date().toISOString().split('T')[0],
       status: 'Pending',
       ...appData,
+      licenceType,
+      technicalData,
     }
     const submittedApplication = {
       ...applicationRecord,
@@ -643,6 +866,24 @@ export default function LicensingPage() {
   const selectedApplicant = applicantOptions.find((option) => option.value === q1)
   const selectedService = serviceOptions.find((option) => option.value === q2)
   const finderStep = !q1 ? 1 : !result ? 2 : 3
+  const selectedTechnicalConfig = fieldsConfig[licenceType]
+  const selectedFeeDetails = licenceFees[licenceType]
+  const totalDue = selectedFeeDetails
+    ? selectedFeeDetails.application + selectedFeeDetails.processing + selectedFeeDetails.annual
+    : null
+  const technicalReviewRows = selectedTechnicalConfig
+    ? selectedTechnicalConfig.fields.map((field) => {
+        const rawValue = technicalData[field.id]
+        const value = rawValue === '' || rawValue == null ? 'Not provided' : rawValue
+
+        return {
+          id: field.id,
+          label: field.label,
+          value,
+          muted: value === 'Not provided',
+        }
+      })
+    : []
 
   return (
     <PageWrapper fullWidth wrapperStyle={{ background: '#ffffff' }}>
@@ -951,6 +1192,24 @@ export default function LicensingPage() {
                     Business Details
                   </h2>
 
+                  <div style={{ marginBottom: 24 }}>
+                    <div style={{ marginBottom: 16, color: '#111111', fontSize: 15, fontWeight: 600, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                      What type of licence are you applying for?
+                    </div>
+                    <div className="application-licence-grid">
+                      {licenceTypeTiles.map((option) => (
+                        <LicenceTypeTile
+                          key={option.title}
+                          icon={option.icon}
+                          title={option.title}
+                          feeHint={option.feeHint}
+                          selected={licenceType === option.title}
+                          onClick={() => handleLicenceTypeChange(option.title)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 18 }}>
                     <FormField label="Legal Business Name">
                       <input value={appData.legalBusinessName} onChange={(event) => updateAppField('legalBusinessName', event.target.value)} style={inputStyle} />
@@ -978,19 +1237,6 @@ export default function LicensingPage() {
                     </FormField>
                   </div>
 
-                  <div style={{ marginTop: 18 }}>
-                    <FormField label="Licence Type applying for">
-                      <select value={appData.licenceType} onChange={(event) => updateAppField('licenceType', event.target.value)} style={inputStyle}>
-                        <option value="">Select licence type</option>
-                        {licenceOptions.map((option) => (
-                          <option key={option} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                    </FormField>
-                  </div>
-
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 28 }}>
                     <button type="button" onClick={() => setAppStep(2)} style={primaryButtonStyle}>
                       {'Continue ->'}
@@ -1005,72 +1251,123 @@ export default function LicensingPage() {
                     Step 2 of 3
                   </p>
                   <h2 style={{ margin: '12px 0 28px', color: '#111111', fontSize: 30, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                    Technical &amp; Coverage
+                    {selectedTechnicalConfig?.title || 'Technical & Coverage'}
                   </h2>
 
-                  <div style={{ display: 'grid', gap: 18 }}>
-                    <FormField label="Proposed service area">
-                      <input value={appData.serviceArea} onChange={(event) => updateAppField('serviceArea', event.target.value)} style={inputStyle} />
-                    </FormField>
-
-                    <FormField label="Technical infrastructure description">
-                      <textarea
-                        rows={5}
-                        value={appData.infrastructureDescription}
-                        onChange={(event) => updateAppField('infrastructureDescription', event.target.value)}
-                        style={{ ...inputStyle, resize: 'vertical', minHeight: 140 }}
-                      />
-                    </FormField>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 18 }}>
-                      <FormField label="Estimated number of customers">
-                        <input value={appData.customerEstimate} onChange={(event) => updateAppField('customerEstimate', event.target.value)} style={inputStyle} />
-                      </FormField>
-
-                      <FormField label="Coverage type">
-                        <select value={appData.coverageType} onChange={(event) => updateAppField('coverageType', event.target.value)} style={inputStyle}>
-                          <option value="">Select coverage type</option>
-                          <option value="Local">Local</option>
-                          <option value="Regional">Regional</option>
-                          <option value="National">National</option>
-                        </select>
-                      </FormField>
-                    </div>
-
-                    <FormField label="Will you be using radio frequency spectrum?">
-                      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-                        {['Yes', 'No'].map((choice) => {
-                          const selected = appData.usesSpectrum === choice
-                          return (
-                            <button
-                              key={choice}
-                              type="button"
-                              onClick={() => updateAppField('usesSpectrum', choice)}
-                              style={{
-                                border: selected ? '1px solid #1A3A6B' : '1px solid #d1d5db',
-                                borderRadius: 999,
-                                padding: '10px 18px',
-                                background: selected ? '#1A3A6B' : '#ffffff',
-                                color: selected ? '#ffffff' : '#111827',
-                                fontSize: 14,
-                                fontWeight: 700,
-                                cursor: 'pointer',
-                                fontFamily: 'Inter, sans-serif',
-                              }}
-                            >
-                              {choice}
-                            </button>
-                          )
-                        })}
+                  {!licenceType && (
+                    <div
+                      style={{
+                        minHeight: 280,
+                        display: 'grid',
+                        placeItems: 'center',
+                        textAlign: 'center',
+                        border: '1px dashed #e5e7eb',
+                        borderRadius: 18,
+                        padding: 28,
+                      }}
+                    >
+                      <div>
+                        <AlertCircle size={32} color="#e5e7eb" style={{ marginBottom: 14 }} />
+                        <div style={{ color: '#9ca3af', fontSize: 16, fontWeight: 600, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                          Please select a licence type in Step 1 first
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setAppStep(1)}
+                          style={{
+                            marginTop: 12,
+                            border: 'none',
+                            background: 'transparent',
+                            color: '#1A3A6B',
+                            fontSize: 14,
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            fontFamily: 'Inter, sans-serif',
+                          }}
+                        >
+                          {'Go back to Step 1 \u2192'}
+                        </button>
                       </div>
-                    </FormField>
+                    </div>
+                  )}
 
-                    {appData.usesSpectrum === 'Yes' && (
-                      <FormField label="Frequency range">
-                        <input value={appData.frequencyRange} onChange={(event) => updateAppField('frequencyRange', event.target.value)} style={inputStyle} />
-                      </FormField>
-                    )}
-                  </div>
+                  {selectedTechnicalConfig && (
+                    <div className="application-technical-grid">
+                      {selectedTechnicalConfig.fields.map((field) => {
+                        const value = technicalData[field.id] ?? ''
+                        const isWideField = field.type === 'textarea' || field.type === 'yesno'
+
+                        return (
+                          <div key={field.id} style={isWideField ? { gridColumn: '1 / -1' } : undefined}>
+                            <label style={labelStyle}>{field.label}</label>
+
+                            {(field.type === 'text' || field.type === 'number') && (
+                              <input
+                                type={field.type}
+                                value={value}
+                                placeholder={field.placeholder}
+                                onChange={(event) => setTechnicalData((prev) => ({ ...prev, [field.id]: event.target.value }))}
+                                style={inputStyle}
+                              />
+                            )}
+
+                            {field.type === 'textarea' && (
+                              <textarea
+                                rows={4}
+                                value={value}
+                                placeholder={field.placeholder}
+                                onChange={(event) => setTechnicalData((prev) => ({ ...prev, [field.id]: event.target.value }))}
+                                style={{ ...inputStyle, resize: 'vertical', minHeight: 100 }}
+                              />
+                            )}
+
+                            {field.type === 'select' && (
+                              <select
+                                value={value}
+                                onChange={(event) => setTechnicalData((prev) => ({ ...prev, [field.id]: event.target.value }))}
+                                style={inputStyle}
+                              >
+                                <option value="">Select an option</option>
+                                {field.options.map((option) => (
+                                  <option key={option} value={option}>
+                                    {option}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
+
+                            {field.type === 'yesno' && (
+                              <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                                {['Yes', 'No'].map((choice) => {
+                                  const selected = value === choice
+                                  return (
+                                    <button
+                                      key={choice}
+                                      type="button"
+                                      onClick={() => setTechnicalData((prev) => ({ ...prev, [field.id]: choice }))}
+                                      style={{
+                                        border: selected ? '1px solid #1A3A6B' : '1px solid #e5e7eb',
+                                        borderRadius: 999,
+                                        padding: '10px 18px',
+                                        background: selected ? '#1A3A6B' : '#ffffff',
+                                        color: selected ? '#ffffff' : '#6b7280',
+                                        fontSize: 14,
+                                        fontWeight: 700,
+                                        cursor: 'pointer',
+                                        fontFamily: 'Inter, sans-serif',
+                                      }}
+                                    >
+                                      {choice}
+                                    </button>
+                                  )
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
 
                   <div style={{ display: 'flex', gap: 12, justifyContent: 'space-between', flexWrap: 'wrap', marginTop: 28 }}>
                     <button type="button" onClick={() => setAppStep(1)} style={secondaryButtonStyle}>
@@ -1096,54 +1393,120 @@ export default function LicensingPage() {
                   </p>
 
                   <div style={{ border: '1px solid #e5e7eb', borderRadius: 18, padding: 24 }}>
-                    {[
-                      ['Legal Business Name', appData.legalBusinessName || 'Not provided'],
-                      ['Registration Number (CIPA)', appData.registrationNumber || 'Not provided'],
-                      ['PPRA Number', appData.ppraNumber || 'Not provided'],
-                      ['Tax Clearance Number', appData.taxClearanceNumber || 'Not provided'],
-                      ['Physical Address', appData.physicalAddress || 'Not provided'],
-                      ['Contact Person Name', appData.contactPersonName || 'Not provided'],
-                      ['Contact Phone', appData.contactPhone || 'Not provided'],
-                      ['Contact Email', appData.contactEmail || 'Not provided'],
-                      ['Licence Type', appData.licenceType || 'Not selected'],
-                      ['Proposed service area', appData.serviceArea || 'Not provided'],
-                      ['Technical infrastructure description', appData.infrastructureDescription || 'Not provided'],
-                      ['Estimated number of customers', appData.customerEstimate || 'Not provided'],
-                      ['Coverage type', appData.coverageType || 'Not selected'],
-                      ['Using radio frequency spectrum', appData.usesSpectrum],
-                      ['Frequency range', appData.usesSpectrum === 'Yes' ? appData.frequencyRange || 'Not provided' : 'Not applicable'],
-                    ].map(([label, value], index, items) => (
-                      <div key={label}>
+                    <div style={{ color: '#111111', fontSize: 18, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                      Business Details
+                    </div>
+                    <div style={{ marginTop: 18 }}>
+                      {[
+                        ['Legal Business Name', appData.legalBusinessName || 'Not provided'],
+                        ['Registration Number (CIPA)', appData.registrationNumber || 'Not provided'],
+                        ['PPRA Number', appData.ppraNumber || 'Not provided'],
+                        ['Tax Clearance Number', appData.taxClearanceNumber || 'Not provided'],
+                        ['Physical Address', appData.physicalAddress || 'Not provided'],
+                        ['Contact Person Name', appData.contactPersonName || 'Not provided'],
+                        ['Contact Phone', appData.contactPhone || 'Not provided'],
+                        ['Contact Email', appData.contactEmail || 'Not provided'],
+                      ].map(([label, value], index, items) => (
+                        <div key={label}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, alignItems: 'flex-start' }}>
+                            <span style={{ color: '#6b7280', fontSize: 14, fontFamily: 'Inter, sans-serif' }}>{label}</span>
+                            <span
+                              style={{
+                                color: value === 'Not provided' ? '#9ca3af' : '#111111',
+                                fontSize: 14,
+                                fontWeight: 700,
+                                textAlign: 'right',
+                                whiteSpace: 'pre-wrap',
+                                fontFamily: 'Inter, sans-serif',
+                              }}
+                            >
+                              {value}
+                            </span>
+                          </div>
+                          {index < items.length - 1 && <div style={{ height: 1, background: '#e5e7eb', margin: '14px 0' }} />}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div style={{ height: 1, background: '#e5e7eb', margin: '20px 0' }} />
+
+                    <div style={{ color: '#111111', fontSize: 18, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                      Licence Details
+                    </div>
+                    <div style={{ marginTop: 18 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, alignItems: 'center', flexWrap: 'wrap' }}>
+                        <span style={{ color: '#6b7280', fontSize: 14, fontFamily: 'Inter, sans-serif' }}>Licence Type</span>
+                        <span
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            borderRadius: 999,
+                            padding: '8px 14px',
+                            background: licenceType ? '#f8fbff' : '#f8fafc',
+                            border: `1px solid ${licenceType ? '#bfdbfe' : '#e5e7eb'}`,
+                            color: licenceType ? '#1A3A6B' : '#9ca3af',
+                            fontSize: 13,
+                            fontWeight: 700,
+                            fontFamily: 'Inter, sans-serif',
+                          }}
+                        >
+                          {licenceType || 'Not selected'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {technicalReviewRows.length > 0 && <div style={{ height: 1, background: '#e5e7eb', margin: '14px 0' }} />}
+
+                    {technicalReviewRows.map(({ id, label, value, muted }, index) => (
+                      <div key={id}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 20, alignItems: 'flex-start' }}>
                           <span style={{ color: '#6b7280', fontSize: 14, fontFamily: 'Inter, sans-serif' }}>{label}</span>
-                          <span style={{ color: '#111111', fontSize: 14, fontWeight: 700, textAlign: 'right', whiteSpace: 'pre-wrap', fontFamily: 'Inter, sans-serif' }}>
+                          <span
+                            style={{
+                              color: muted ? '#9ca3af' : '#111111',
+                              fontSize: 14,
+                              fontWeight: 700,
+                              textAlign: 'right',
+                              whiteSpace: 'pre-wrap',
+                              fontFamily: 'Inter, sans-serif',
+                            }}
+                          >
                             {value}
                           </span>
                         </div>
-                        {index < items.length - 1 && <div style={{ height: 1, background: '#e5e7eb', margin: '14px 0' }} />}
+                        {index < technicalReviewRows.length - 1 && <div style={{ height: 1, background: '#e5e7eb', margin: '14px 0' }} />}
                       </div>
                     ))}
                   </div>
 
                   <div style={{ background: '#f0f7ff', border: '1px solid #bfdbfe', borderRadius: 16, padding: 24, marginTop: 24 }}>
+                    <div style={{ marginBottom: 18, color: '#111111', fontSize: 18, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                      Fees
+                    </div>
                     <div style={{ display: 'grid', gap: 10, color: '#1f2937', fontSize: 15, fontFamily: 'Inter, sans-serif' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 18 }}>
                         <span>Application Fee:</span>
-                        <strong>BWP 50,000</strong>
+                        <strong>{selectedFeeDetails ? formatBwp(selectedFeeDetails.application) : '\u2014'}</strong>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 18 }}>
                         <span>Processing Fee:</span>
-                        <strong>BWP 2,500</strong>
+                        <strong>{selectedFeeDetails ? formatBwp(selectedFeeDetails.processing) : '\u2014'}</strong>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', gap: 18 }}>
                         <span>Annual Licence Fee:</span>
-                        <strong>BWP 15,000</strong>
+                        <strong>{selectedFeeDetails ? formatBwp(selectedFeeDetails.annual) : '\u2014'}</strong>
                       </div>
                     </div>
                     <div style={{ height: 1, background: '#93c5fd', margin: '18px 0' }} />
                     <div style={{ display: 'flex', justifyContent: 'space-between', gap: 18, color: '#1A3A6B', fontSize: 20, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                       <span>Total Due:</span>
-                      <span>BWP 67,500</span>
+                      {selectedFeeDetails ? (
+                        <span>{formatBwp(totalDue)}</span>
+                      ) : (
+                        <span style={{ color: '#9ca3af', fontSize: 14, fontStyle: 'italic', fontWeight: 400, fontFamily: 'Inter, sans-serif' }}>
+                          Select a licence type to see fees
+                        </span>
+                      )}
                     </div>
                     <p style={{ margin: '14px 0 0', color: '#1e3a8a', fontSize: 14, lineHeight: 1.6, fontFamily: 'Inter, sans-serif' }}>
                       Payment will be collected upon approval. You will receive an invoice via email.
@@ -1647,6 +2010,66 @@ export default function LicensingPage() {
             color: #1A3A6B;
           }
 
+          .application-licence-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+          }
+
+          .application-licence-tile {
+            width: 100%;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.15s ease;
+            background: #ffffff;
+            text-align: left;
+          }
+
+          .application-licence-tile.is-selected {
+            border: 2px solid #1A3A6B;
+            background: #f8fbff;
+          }
+
+          .application-licence-icon-box {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1A3A6B;
+          }
+
+          .application-licence-title {
+            display: block;
+            color: #111111;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+          }
+
+          .application-licence-fee-hint {
+            display: block;
+            margin-top: 2px;
+            color: #9ca3af;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+          }
+
+          .application-technical-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+          }
+
           @media (max-width: 900px) {
             .licensing-overview-row {
               align-items: flex-start;
@@ -1654,6 +2077,10 @@ export default function LicensingPage() {
           }
 
           @media (max-width: 720px) {
+            .application-licence-grid {
+              grid-template-columns: 1fr;
+            }
+
             .licensing-overview-row {
               gap: 14px;
             }
