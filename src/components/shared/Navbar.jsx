@@ -237,10 +237,6 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                 <li
                   key={link.label}
                   style={{ position: "relative" }}
-                  onMouseEnter={() =>
-                    link.children && setActiveDropdown(link.label)
-                  }
-                  onMouseLeave={() => setActiveDropdown(null)}
                 >
                   <Link
                     to={link.href}
