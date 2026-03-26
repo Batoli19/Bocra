@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { CheckCircle, CheckCircle2, Search } from 'lucide-react'
+import { ArrowRight, Building2, Check, CheckCircle, CheckCircle2, Globe, Landmark, Mail, Radio, Search, Shield, User, Wifi } from 'lucide-react'
 import PageWrapper from '../components/shared/PageWrapper'
 
 const tabs = [
@@ -16,6 +16,24 @@ const applicantOptions = [
   { value: 'government', label: 'Government / Parastatal' },
 ]
 
+const applicantCardMeta = {
+  individual: {
+    icon: User,
+    description:
+      'A private citizen or sole proprietor applying for a personal or small business communications licence.',
+  },
+  company: {
+    icon: Building2,
+    description:
+      'A registered Botswana company (CIPA) applying for a commercial telecoms, broadcasting, or postal licence.',
+  },
+  government: {
+    icon: Landmark,
+    description:
+      'A government ministry, department, or state-owned enterprise requiring a communications authorisation.',
+  },
+}
+
 const serviceOptions = [
   { value: 'telecom', label: 'Mobile/Telecom Network' },
   { value: 'isp', label: 'Internet Service Provider' },
@@ -24,6 +42,45 @@ const serviceOptions = [
   { value: 'postal', label: 'Postal/Courier Service' },
   { value: 'device', label: 'Device Importing/Selling' },
 ]
+
+const serviceCardMeta = {
+  isp: {
+    icon: Wifi,
+    title: 'Internet Service Provider',
+    description: 'Provide fixed or mobile internet services to consumers or businesses in Botswana.',
+    fee: 'P 15,000',
+  },
+  radio: {
+    icon: Radio,
+    title: 'Broadcasting Licence',
+    description: 'Operate a radio station, TV channel, or community broadcasting service.',
+    fee: 'P 25,000',
+  },
+  postal: {
+    icon: Mail,
+    title: 'Postal / Courier Service',
+    description: 'Operate a Class A or Class B postal or courier delivery service.',
+    fee: 'P 12,000',
+  },
+  telecom: {
+    icon: Globe,
+    title: 'MVNO / Telecom Operator',
+    description: 'Mobile Virtual Network Operator or full telecommunications service provider.',
+    fee: 'P 50,000',
+  },
+  tv: {
+    icon: Radio,
+    title: 'Television Broadcasting',
+    description: 'Operate a television, satellite, or specialist broadcast service in Botswana.',
+    fee: 'P 25,000',
+  },
+  device: {
+    icon: Shield,
+    title: 'Type Approval Certificate',
+    description: 'Import, distribute, or sell communications equipment requiring BOCRA compliance approval.',
+    fee: 'P 2,500',
+  },
+}
 
 const coverageOptions = [
   { value: 'local', label: 'Local (one district)' },
@@ -106,6 +163,39 @@ const applicationSteps = [
   { number: 1, label: 'Business Details' },
   { number: 2, label: 'Technical & Coverage' },
   { number: 3, label: 'Review & Fee' },
+]
+
+const finderSteps = [
+  { number: 1, label: 'Who are you?' },
+  { number: 2, label: 'Licence type' },
+  { number: 3, label: 'Requirements' },
+]
+
+const licenceOverviewItems = [
+  {
+    icon: Wifi,
+    title: 'Internet & Telecoms',
+    description: 'ISP, MVNO, and telecoms operator licences',
+    to: '/licensing',
+  },
+  {
+    icon: Radio,
+    title: 'Broadcasting',
+    description: 'Radio, TV, community and satellite broadcasting',
+    to: '/licensing',
+  },
+  {
+    icon: Mail,
+    title: 'Postal Services',
+    description: 'Class A and Class B courier and postal operators',
+    to: '/licensing',
+  },
+  {
+    icon: Shield,
+    title: 'Special Authorisations',
+    description: 'Amateur radio, type approval, spectrum licences',
+    to: '/documents',
+  },
 ]
 
 const trackingSteps = [
@@ -246,11 +336,34 @@ function TileButton({ label, selected, onClick }) {
   )
 }
 
-function Stepper({ currentStep }) {
+function ChoiceCard({ title, description, icon: Icon, selected, onClick, fee }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`licensing-choice-card${selected ? ' is-selected' : ''}`}
+      style={{ minHeight: fee ? 228 : 216 }}
+    >
+      {selected && (
+        <span className="licensing-choice-badge">
+          <Check size={12} />
+        </span>
+      )}
+      <span className="licensing-choice-icon-box">
+        <Icon size={22} />
+      </span>
+      <span className="licensing-choice-title">{title}</span>
+      <span className="licensing-choice-description">{description}</span>
+      {fee && <span className="licensing-choice-fee">{fee}</span>}
+    </button>
+  )
+}
+
+function Stepper({ currentStep, steps = applicationSteps }) {
   return (
     <div style={{ marginBottom: 42 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
-        {applicationSteps.map((item, index) => {
+        {steps.map((item, index) => {
           const isActive = currentStep === item.number
           const isCompleted = typeof currentStep === 'number' && currentStep > item.number
           const fill = isCompleted ? '#0F6E56' : isActive ? '#1A3A6B' : '#d1d5db'
@@ -273,7 +386,7 @@ function Stepper({ currentStep }) {
                     fontFamily: 'Inter, sans-serif',
                   }}
                 >
-                  {item.number}
+                  {isCompleted ? <Check size={16} /> : item.number}
                 </div>
                 <span
                   style={{
@@ -527,129 +640,165 @@ export default function LicensingPage() {
   }
 
   const trackingIndex = trackedApplication ? getTrackingIndex(trackedApplication.status) : -1
+  const selectedApplicant = applicantOptions.find((option) => option.value === q1)
+  const selectedService = serviceOptions.find((option) => option.value === q2)
+  const finderStep = !q1 ? 1 : !result ? 2 : 3
 
   return (
     <PageWrapper fullWidth wrapperStyle={{ background: '#ffffff' }}>
-      <div style={{ maxWidth: 1180, margin: '0 auto', padding: '56px 24px 88px' }}>
-        <p
+      <>
+        <section
           style={{
-            margin: 0,
-            color: '#9ca3af',
-            fontSize: 11,
-            fontWeight: 700,
-            letterSpacing: '0.14em',
-            textTransform: 'uppercase',
-            fontFamily: 'Inter, sans-serif',
+            background:
+              "linear-gradient(rgba(10,22,40,0.26), rgba(10,22,40,0.38)), url('/Gemini_Generated_Image_ot2t2sot2t2sot2t.png') center/cover no-repeat",
+            padding: '80px 0 0',
           }}
         >
-          LICENSING PORTAL
-        </p>
-        <h1
-          style={{
-            margin: '12px 0 10px',
-            fontSize: 'clamp(32px, 4.8vw, 46px)',
-            fontWeight: 800,
-            color: '#111111',
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
-          }}
-        >
-          Apply, track, and verify BOCRA licences in one place.
-        </h1>
-        <p
-          style={{
-            margin: 0,
-            maxWidth: 780,
-            color: '#6b7280',
-            fontSize: 16,
-            lineHeight: 1.75,
-            fontFamily: 'Inter, sans-serif',
-          }}
-        >
-          Use the licence explorer to find the right authorisation, complete your application in guided steps, track progress, and verify active operators in Botswana&apos;s communications sector.
-        </p>
+          <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px' }}>
+            <p
+              style={{
+                margin: 0,
+                color: 'rgba(255,255,255,0.35)',
+                fontSize: 11,
+                fontWeight: 500,
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                fontFamily: 'Inter, sans-serif',
+              }}
+            >
+              LICENSING
+            </p>
+            <h1
+              style={{
+                margin: '16px 0 0',
+                maxWidth: 780,
+                fontSize: 'clamp(36px, 5vw, 64px)',
+                fontWeight: 800,
+                color: '#ffffff',
+                letterSpacing: '-0.03em',
+                lineHeight: 1.05,
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+              }}
+            >
+              Apply, track, and verify BOCRA licences in one place.
+            </h1>
+            <p
+              style={{
+                margin: '16px 0 0',
+                maxWidth: 600,
+                color: 'rgba(255,255,255,0.55)',
+                fontSize: 17,
+                lineHeight: 1.7,
+                fontFamily: 'Inter, sans-serif',
+              }}
+            >
+              Use the licence explorer to find the right authorisation, complete your application in guided steps, track progress, and verify active operators in Botswana&apos;s communications sector.
+            </p>
 
-        <div
-          style={{
-            display: 'flex',
-            gap: 12,
-            flexWrap: 'wrap',
-            padding: 8,
-            marginTop: 30,
-            border: '1px solid #e5e7eb',
-            borderRadius: 999,
-            background: '#f8fafc',
-          }}
-        >
-          {tabs.map((tab) => {
-            const isActive = activeTab === tab.id
+            <div
+              style={{
+                display: 'inline-flex',
+                flexWrap: 'wrap',
+                gap: 4,
+                padding: 6,
+                marginTop: 48,
+                marginBottom: -32,
+                background: '#ffffff',
+                borderRadius: 50,
+                boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
+                position: 'relative',
+                zIndex: 2,
+              }}
+            >
+              {tabs.map((tab) => {
+                const isActive = activeTab === tab.id
 
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setActiveTab(tab.id)}
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`licensing-hero-tab${isActive ? ' is-active' : ''}`}
+                    style={{
+                      border: 'none',
+                      borderRadius: 50,
+                      padding: '10px 22px',
+                      background: isActive ? '#1A3A6B' : 'transparent',
+                      color: isActive ? '#ffffff' : '#6b7280',
+                      fontSize: 14,
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      fontFamily: 'Inter, sans-serif',
+                    }}
+                  >
+                    {tab.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+
+        <div style={{ maxWidth: 1180, margin: '0 auto', padding: '72px 24px 88px' }}>
+
+        {activeTab === 'finder' && (
+          <section style={{ padding: '64px 0 80px' }}>
+            <div style={{ maxWidth: 860, margin: '0 auto' }}>
+              <Stepper currentStep={finderStep} steps={finderSteps} />
+
+              <h2
                 style={{
-                  border: 'none',
-                  borderRadius: 999,
-                  padding: '12px 20px',
-                  background: isActive ? '#1A3A6B' : 'transparent',
-                  color: isActive ? '#ffffff' : '#374151',
-                  fontSize: 14,
+                  margin: 0,
+                  color: '#111111',
+                  fontSize: 28,
                   fontWeight: 700,
-                  cursor: 'pointer',
+                  letterSpacing: '-0.02em',
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                }}
+              >
+                What licence do you need?
+              </h2>
+              <p
+                style={{
+                  margin: '8px 0 32px',
+                  color: '#6b7280',
+                  fontSize: 16,
+                  lineHeight: 1.7,
                   fontFamily: 'Inter, sans-serif',
                 }}
               >
-                {tab.label}
-              </button>
-            )
-          })}
-        </div>
-
-        {activeTab === 'finder' && (
-          <section style={{ marginTop: 34 }}>
-            <div style={{ background: '#f8fbff', border: '1px solid #dbeafe', borderRadius: 28, padding: '32px clamp(20px, 4vw, 40px)' }}>
-              <h2 style={{ margin: 0, color: '#111111', fontSize: 34, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                What licence do you need?
-              </h2>
-              <p style={{ margin: '10px 0 0', color: '#6b7280', fontSize: 16, lineHeight: 1.7, fontFamily: 'Inter, sans-serif' }}>
                 Answer 3 quick questions and we&apos;ll tell you exactly which BOCRA licence applies to you.
               </p>
 
-              <div style={{ marginTop: 30 }}>
-                <p style={{ margin: '0 0 14px', color: '#111827', fontSize: 18, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                  What best describes you?
-                </p>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
-                  {applicantOptions.map((option) => (
-                    <TileButton
-                      key={option.value}
-                      label={option.label}
-                      selected={q1 === option.value}
-                      onClick={() => {
-                        setQ1(option.value)
-                        setQ2('')
-                        setQ3('')
-                        setResult(null)
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {q1 && (
-                <div style={{ marginTop: 30 }}>
-                  <p style={{ margin: '0 0 14px', color: '#111827', fontSize: 18, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                    What service do you want to provide?
+              <div style={{ display: 'grid', gap: 36 }}>
+                <div>
+                  <h3
+                    style={{
+                      margin: '0 0 8px',
+                      color: '#111111',
+                      fontSize: 28,
+                      fontWeight: 700,
+                      letterSpacing: '-0.02em',
+                      fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    }}
+                  >
+                    Who are you?
+                  </h3>
+                  <p style={{ margin: '0 0 32px', color: '#6b7280', fontSize: 16, fontFamily: 'Inter, sans-serif' }}>
+                    Select the applicant type that best matches your request.
                   </p>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: 16 }}>
-                    {serviceOptions.map((option) => (
-                      <TileButton
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
+                    {applicantOptions.map((option) => (
+                      <ChoiceCard
                         key={option.value}
-                        label={option.label}
-                        selected={q2 === option.value}
+                        title={option.label}
+                        description={applicantCardMeta[option.value].description}
+                        icon={applicantCardMeta[option.value].icon}
+                        selected={q1 === option.value}
                         onClick={() => {
-                          setQ2(option.value)
+                          setQ1(option.value)
+                          setQ2('')
                           setQ3('')
                           setResult(null)
                         }}
@@ -657,76 +806,133 @@ export default function LicensingPage() {
                     ))}
                   </div>
                 </div>
-              )}
 
-              {q2 && (
-                <div style={{ marginTop: 30 }}>
-                  <p style={{ margin: '0 0 14px', color: '#111827', fontSize: 18, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                    What is your intended coverage?
-                  </p>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
-                    {coverageOptions.map((option) => (
-                      <TileButton key={option.value} label={option.label} selected={q3 === option.value} onClick={() => setQ3(option.value)} />
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {result && (
-                <div style={{ border: '1px solid #e5e7eb', borderRadius: 20, padding: 32, background: '#ffffff', marginTop: 34 }}>
-                  <p style={{ margin: 0, color: '#9ca3af', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
-                    Recommended Licence
-                  </p>
-                  <div style={{ marginTop: 12, fontSize: 30, fontWeight: 800, color: '#111111', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                    {result.name}
-                  </div>
-                  <div style={{ marginTop: 8, color: '#6b7280', fontSize: 15, fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>
-                    {result.licenceClass}
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 18, marginTop: 28 }}>
-                    <div style={{ background: '#f8fafc', borderRadius: 18, padding: 18 }}>
-                      <div style={{ color: '#9ca3af', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
-                        Application Fee
-                      </div>
-                      <div style={{ marginTop: 8, color: '#1A3A6B', fontSize: 28, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                        {result.fee}
-                      </div>
-                    </div>
-                    <div style={{ background: '#f8fafc', borderRadius: 18, padding: 18 }}>
-                      <div style={{ color: '#9ca3af', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
-                        Processing Time
-                      </div>
-                      <div style={{ marginTop: 8, color: '#111827', fontSize: 24, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                        {result.days} working days
-                      </div>
+                {q1 && (
+                  <div>
+                    <h3
+                      style={{
+                        margin: '0 0 8px',
+                        color: '#111111',
+                        fontSize: 28,
+                        fontWeight: 700,
+                        letterSpacing: '-0.02em',
+                        fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      }}
+                    >
+                      Licence type
+                    </h3>
+                    <p style={{ margin: '0 0 32px', color: '#6b7280', fontSize: 16, fontFamily: 'Inter, sans-serif' }}>
+                      Choose the service area you want to license under BOCRA.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
+                      {serviceOptions.map((option) => {
+                        const meta = serviceCardMeta[option.value]
+                        return (
+                          <ChoiceCard
+                            key={option.value}
+                            title={meta?.title || option.label}
+                            description={meta?.description || option.label}
+                            icon={meta?.icon || Globe}
+                            fee={meta?.fee}
+                            selected={q2 === option.value}
+                            onClick={() => {
+                              setQ2(option.value)
+                              setQ3('')
+                              setResult(null)
+                            }}
+                          />
+                        )
+                      })}
                     </div>
                   </div>
+                )}
 
-                  <div style={{ marginTop: 28 }}>
-                    <div style={{ color: '#111827', fontSize: 18, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
-                      Required documents
-                    </div>
-                    <div style={{ display: 'grid', gap: 12, marginTop: 14 }}>
-                      {result.docs.map((doc) => (
-                        <div key={doc} style={{ display: 'flex', gap: 12, alignItems: 'center', color: '#374151', fontSize: 15, fontFamily: 'Inter, sans-serif' }}>
-                          <CheckCircle2 size={18} color="#0F6E56" />
-                          <span>{doc}</span>
-                        </div>
+                {q2 && (
+                  <div>
+                    <h3
+                      style={{
+                        margin: '0 0 8px',
+                        color: '#111111',
+                        fontSize: 28,
+                        fontWeight: 700,
+                        letterSpacing: '-0.02em',
+                        fontFamily: "'Plus Jakarta Sans', sans-serif",
+                      }}
+                    >
+                      Intended coverage
+                    </h3>
+                    <p style={{ margin: '0 0 24px', color: '#6b7280', fontSize: 16, fontFamily: 'Inter, sans-serif' }}>
+                      Tell us how wide your planned service footprint will be.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16 }}>
+                      {coverageOptions.map((option) => (
+                        <TileButton key={option.value} label={option.label} selected={q3 === option.value} onClick={() => setQ3(option.value)} />
                       ))}
                     </div>
                   </div>
+                )}
 
-                  <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 30 }}>
-                    <button type="button" onClick={handleStartApplication} style={primaryButtonStyle}>
-                      {'Start Application ->'}
-                    </button>
-                    <Link to="/documents" style={secondaryButtonStyle}>
-                      {'Download Requirements PDF ->'}
-                    </Link>
+                {result && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 28, alignItems: 'start' }}>
+                    <div>
+                      <p style={{ margin: 0, color: '#9ca3af', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
+                        Recommended licence
+                      </p>
+                      <h3 style={{ margin: '12px 0 8px', color: '#111111', fontSize: 30, fontWeight: 800, letterSpacing: '-0.03em', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        {result.name}
+                      </h3>
+                      <p style={{ margin: 0, color: '#6b7280', fontSize: 16, lineHeight: 1.7, fontFamily: 'Inter, sans-serif' }}>
+                        {result.licenceClass}
+                      </p>
+
+                      <div style={{ marginTop: 32 }}>
+                        <div style={{ color: '#111111', fontSize: 22, fontWeight: 700, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                          What you&apos;ll need
+                        </div>
+                        <div style={{ marginTop: 18 }}>
+                          {result.docs.map((doc) => (
+                            <div key={doc} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0', borderBottom: '1px solid #e5e7eb', color: '#111111', fontSize: 15, fontFamily: 'Inter, sans-serif' }}>
+                              <CheckCircle2 size={16} color="#0F6E56" />
+                              <span>{doc}</span>
+                            </div>
+                          ))}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 0', borderBottom: '1px solid #e5e7eb', color: '#111111', fontSize: 15, fontFamily: 'Inter, sans-serif' }}>
+                            <CheckCircle2 size={16} color="#0F6E56" />
+                            <span>Application fee: {result.fee.replace('BWP', 'P')}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <aside style={{ background: '#f8f9fa', borderRadius: 16, padding: 28, border: '1px solid #e5e7eb' }}>
+                      <p style={{ margin: 0, color: '#9ca3af', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
+                        Your Selection
+                      </p>
+                      <div style={{ marginTop: 18, display: 'grid', gap: 14 }}>
+                        <div>
+                          <div style={{ color: '#6b7280', fontSize: 13, fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Entity type</div>
+                          <div style={{ marginTop: 4, color: '#111111', fontSize: 16, fontWeight: 700, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{selectedApplicant?.label}</div>
+                        </div>
+                        <div>
+                          <div style={{ color: '#6b7280', fontSize: 13, fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>Licence type</div>
+                          <div style={{ marginTop: 4, color: '#111111', fontSize: 16, fontWeight: 700, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{serviceCardMeta[q2]?.title || selectedService?.label}</div>
+                        </div>
+                      </div>
+
+                      <div style={{ marginTop: 24, color: '#1A3A6B', fontSize: 32, fontWeight: 800, letterSpacing: '-0.03em', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                        {result.fee.replace('BWP', 'P')}
+                      </div>
+
+                      <button type="button" onClick={handleStartApplication} style={{ width: '100%', marginTop: 24, border: 'none', borderRadius: 8, padding: 14, background: '#1A3A6B', color: '#ffffff', fontSize: 15, fontWeight: 600, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}>
+                        {'Proceed to Application ->'}
+                      </button>
+                      <p style={{ margin: '14px 0 0', color: '#9ca3af', fontSize: 12, lineHeight: 1.6, textAlign: 'center', fontFamily: 'Inter, sans-serif' }}>
+                        You&apos;ll need a BOCRA Connect account to submit your application.
+                      </p>
+                    </aside>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </section>
         )}
@@ -1217,7 +1423,243 @@ export default function LicensingPage() {
             </div>
           </section>
         )}
-      </div>
+        </div>
+
+        {activeTab === 'finder' && (
+          <section style={{ background: '#f8f9fa', padding: '80px 0' }}>
+            <div style={{ maxWidth: 1180, margin: '0 auto', padding: '0 24px' }}>
+              <p style={{ margin: 0, color: '#9ca3af', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
+                ALL LICENCE CATEGORIES
+              </p>
+              <h2 style={{ margin: '12px 0 0', color: '#111111', fontSize: 'clamp(32px, 4vw, 48px)', fontWeight: 800, letterSpacing: '-0.03em', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                What Does BOCRA License?
+              </h2>
+
+              <div style={{ marginTop: 40 }}>
+                {licenceOverviewItems.map(({ icon: Icon, title, description, to }) => (
+                  <Link key={title} to={to} className="licensing-overview-row">
+                    <div className="licensing-overview-icon">
+                      <Icon size={20} />
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <div className="licensing-overview-title">{title}</div>
+                      <div className="licensing-overview-description">{description}</div>
+                    </div>
+                    <ArrowRight className="licensing-overview-arrow" size={18} />
+                  </Link>
+                ))}
+              </div>
+
+              <div style={{ marginTop: 48, background: '#1A3A6B', borderRadius: 28, padding: 'clamp(28px, 5vw, 64px)', color: '#ffffff' }}>
+                <h3 style={{ margin: 0, fontSize: 'clamp(30px, 4vw, 44px)', fontWeight: 800, letterSpacing: '-0.03em', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                  Ready to Apply?
+                </h3>
+                <p style={{ margin: '14px 0 0', maxWidth: 620, color: 'rgba(255,255,255,0.76)', fontSize: 16, lineHeight: 1.75, fontFamily: 'Inter, sans-serif' }}>
+                  Start your application online or contact BOCRA&apos;s licensing team for guidance.
+                </p>
+
+                <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 28 }}>
+                  <button
+                    type="button"
+                    onClick={handleStartApplication}
+                    style={{
+                      border: 'none',
+                      borderRadius: 999,
+                      padding: '14px 24px',
+                      background: '#ffffff',
+                      color: '#111111',
+                      fontSize: 15,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      fontFamily: 'Inter, sans-serif',
+                    }}
+                  >
+                    {'Start Application ->'}
+                  </button>
+                  <Link
+                    to="/contact"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: 999,
+                      padding: '14px 24px',
+                      border: '1px solid rgba(255,255,255,0.35)',
+                      color: '#ffffff',
+                      textDecoration: 'none',
+                      fontSize: 15,
+                      fontWeight: 600,
+                      fontFamily: 'Inter, sans-serif',
+                    }}
+                  >
+                    Contact Licensing Team
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        <style>{`
+          .licensing-hero-tab:hover:not(.is-active) {
+            color: #111111 !important;
+            background: rgba(0,0,0,0.04) !important;
+          }
+
+          .licensing-choice-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 14px;
+            width: 100%;
+            padding: 28px 24px;
+            border-radius: 16px;
+            border: 1.5px solid #e5e7eb;
+            background: #ffffff;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+            text-align: left;
+          }
+
+          .licensing-choice-card:hover {
+            border-color: #1A3A6B;
+            transform: translateY(-2px);
+          }
+
+          .licensing-choice-card.is-selected {
+            border: 2px solid #1A3A6B;
+            background: #f8fbff;
+          }
+
+          .licensing-choice-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #1A3A6B;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .licensing-choice-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #D6E4F7;
+            color: #1A3A6B;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease, color 0.2s ease;
+          }
+
+          .licensing-choice-card:hover .licensing-choice-icon-box,
+          .licensing-choice-card.is-selected .licensing-choice-icon-box {
+            background: #1A3A6B;
+            color: #ffffff;
+          }
+
+          .licensing-choice-title {
+            color: #111111;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.3;
+          }
+
+          .licensing-choice-description {
+            color: #6b7280;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            line-height: 1.55;
+          }
+
+          .licensing-choice-fee {
+            margin-top: auto;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #f8f9fa;
+            color: #6b7280;
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+          }
+
+          .licensing-overview-row {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 24px 0;
+            color: inherit;
+            text-decoration: none;
+            border-bottom: 1px solid #e5e7eb;
+            transition: color 0.2s ease, transform 0.2s ease;
+          }
+
+          .licensing-overview-row:hover {
+            color: #1A3A6B;
+            transform: translateX(2px);
+          }
+
+          .licensing-overview-icon {
+            width: 46px;
+            height: 46px;
+            min-width: 46px;
+            border-radius: 12px;
+            background: #ffffff;
+            color: #1A3A6B;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .licensing-overview-title {
+            color: #111111;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+          }
+
+          .licensing-overview-description {
+            margin-top: 4px;
+            color: #6b7280;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+          }
+
+          .licensing-overview-arrow {
+            margin-left: auto;
+            color: #9ca3af;
+            transition: transform 0.2s ease, color 0.2s ease;
+          }
+
+          .licensing-overview-row:hover .licensing-overview-arrow {
+            transform: translateX(4px);
+            color: #1A3A6B;
+          }
+
+          @media (max-width: 900px) {
+            .licensing-overview-row {
+              align-items: flex-start;
+            }
+          }
+
+          @media (max-width: 720px) {
+            .licensing-overview-row {
+              gap: 14px;
+            }
+          }
+        `}</style>
+      </>
     </PageWrapper>
   )
 }
