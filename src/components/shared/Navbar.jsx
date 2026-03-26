@@ -1,19 +1,22 @@
 // Owner: Dev 1  |  Component: Navbar
 // Inspired by Cubex.com - floating pill nav + chat bubble
 
-import { useEffect, useRef, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { Search, X, Menu } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useLocation, Link } from "react-router-dom";
+import { Search, X, Menu, Globe } from "lucide-react";
 import bocraSvg from "../../assets/bocra.svg";
 import ChatBubble from "../../chatbot/ChatBubble";
+import { useLanguage } from "../../hooks/useLanguage";
 
 export default function Navbar({ showHint = false, onChatClose, hideChat = false }) {
   const [scrolled, setScrolled] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const [open, setOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
-  const navigate = useNavigate();
-  const searchInputRef = useRef(null);
+  const location = useLocation();
+  const language = useLanguage();
+  const lang = language?.lang || "en";
+  const setLang = language?.setLang;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -22,10 +25,21 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
   }, []);
 
   useEffect(() => {
-    if (searchOpen) {
-      searchInputRef.current?.focus();
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) {
+      setOpen(false);
     }
-  }, [searchOpen]);
+  }, [isMobile]);
+
+  useEffect(() => {
+    setOpen(false);
+    setActiveDropdown(null);
+  }, [location.pathname]);
 
   const navLinks = [
     { label: "About", href: "/about" },
@@ -57,14 +71,17 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
     { label: "Contact", href: "/contact" },
   ];
 
-  const handleSearchSubmit = (event) => {
-    event.preventDefault();
-    const trimmed = searchQuery.trim();
-    if (!trimmed) return;
-    navigate(`/search?q=${encodeURIComponent(trimmed)}`);
-    setSearchQuery("");
-    setSearchOpen(false);
-  };
+  const mobileMenuLinks = [
+    ["About", "/about"],
+    ["Consumer Protection", "/consumer"],
+    ["QoS Dashboard", "/qos"],
+    ["Type Approval", "/type-approval"],
+    ["Apply for Licence", "/licensing/apply"],
+    ["Check Licence Status", "/verify"],
+    ["Coverage Map", "/map"],
+    ["News", "/news"],
+    ["Contact", "/contact"],
+  ];
 
   return (
     <>
@@ -75,16 +92,17 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
           left: "50%",
           transform: "translateX(-50%)",
           zIndex: 9999,
-          width: "calc(100% - 32px)",
+          width: isMobile ? "calc(100% - 20px)" : "calc(100% - 32px)",
           maxWidth: 1240,
           transition: "top 0.3s ease, box-shadow 0.3s ease",
         }}
       >
         <nav
           style={{
+            position: "relative",
             background: "#ffffff",
-            borderRadius: 999,
-            padding: "10px 10px 10px 24px",
+            borderRadius: isMobile ? 28 : 999,
+            padding: isMobile ? "10px 12px 10px 16px" : "10px 10px 10px 24px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -107,9 +125,8 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
             <img
               src={bocraSvg}
               alt="BOCRA Logo"
-              className="navbar-logo"
               style={{
-                height: 56,
+                height: isMobile ? 44 : 56,
                 width: "auto",
                 display: "block",
                 objectFit: "contain",
@@ -117,13 +134,11 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
             />
           </Link>
 
-          {/* Desktop nav links — hidden on mobile via CSS */}
           <div
-            className="navbar-desktop-links"
             style={{
-              display: "flex",
+              display: isMobile ? "none" : "flex",
               alignItems: "center",
-              gap: 20,
+              gap: 4,
             }}
           >
             <ul
@@ -165,19 +180,19 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                       fontFamily: "'DM Sans', sans-serif",
                       whiteSpace: "nowrap",
                     }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = "rgba(0,0,0,0.05)";
-                      e.currentTarget.style.color = "#0B1F3A";
+                    onMouseEnter={(event) => {
+                      event.currentTarget.style.background = "rgba(0,0,0,0.05)";
+                      event.currentTarget.style.color = "#0B1F3A";
                     }}
-                    onMouseLeave={(e) => {
+                    onMouseLeave={(event) => {
                       if (activeDropdown !== link.label) {
-                        e.currentTarget.style.background = "transparent";
-                        e.currentTarget.style.color = "#1a2e44";
+                        event.currentTarget.style.background = "transparent";
+                        event.currentTarget.style.color = "#1a2e44";
                       }
                     }}
-                    onClick={(e) => {
+                    onClick={(event) => {
                       if (link.children) {
-                        e.preventDefault();
+                        event.preventDefault();
                         setActiveDropdown((prev) =>
                           prev === link.label ? null : link.label
                         );
@@ -245,11 +260,11 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                             transition: "background 0.15s",
                             whiteSpace: "nowrap",
                           }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.background = "rgba(0,0,0,0.04)";
+                          onMouseEnter={(event) => {
+                            event.currentTarget.style.background = "rgba(0,0,0,0.04)";
                           }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.background = "transparent";
+                          onMouseLeave={(event) => {
+                            event.currentTarget.style.background = "transparent";
                           }}
                         >
                           {child.label}
@@ -260,156 +275,65 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                 </li>
               ))}
             </ul>
+          </div>
 
-            <div
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: isMobile ? 6 : 8,
+            }}
+          >
+            {!isMobile && (
+              <button
+                type="button"
+                onClick={() => setLang?.(lang === "en" ? "tn" : "en")}
+                aria-label={`Switch language from ${lang.toUpperCase()}`}
+                style={{
+                  border: "none",
+                  background: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  fontSize: 12,
+                  color: "#1a2e44",
+                  fontWeight: 600,
+                  fontFamily: "'DM Sans', sans-serif",
+                  padding: "8px 10px",
+                  borderRadius: 999,
+                }}
+              >
+                <Globe size={14} />
+                {lang.toUpperCase()}
+              </button>
+            )}
+
+            <Link
+              to="/search"
+              aria-label="Open search"
               style={{
+                width: isMobile ? 34 : 38,
+                height: isMobile ? 34 : 38,
+                borderRadius: "50%",
+                background: "#eef2f7",
+                color: "#1A3A6B",
+                textDecoration: "none",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                flexShrink: 0,
               }}
             >
-              {searchOpen ? (
-                <form
-                  onSubmit={handleSearchSubmit}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    padding: "6px 8px 6px 12px",
-                    borderRadius: 999,
-                    background: "#f8fafc",
-                    border: "1px solid rgba(11,31,58,0.1)",
-                    boxShadow: "0 10px 25px rgba(15,23,42,0.1)",
-                    transition: "box-shadow 0.2s ease",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      minWidth: 190,
-                    }}
-                  >
-                    <Search
-                      size={15}
-                      strokeWidth={2}
-                      aria-hidden="true"
-                      style={{ color: "rgba(11,31,58,0.55)", flexShrink: 0 }}
-                    />
-                    <input
-                      ref={searchInputRef}
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search BOCRA"
-                      style={{
-                        border: "none",
-                        outline: "none",
-                        background: "transparent",
-                        fontFamily: "'DM Sans', sans-serif",
-                        fontWeight: 500,
-                        fontSize: 13,
-                        color: "#0b1f3a",
-                        minWidth: 150,
-                      }}
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSearchQuery("");
-                      setSearchOpen(false);
-                    }}
-                    aria-label="Close search"
-                    style={{
-                      border: "none",
-                      background: "transparent",
-                      width: 26,
-                      height: 26,
-                      borderRadius: "50%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      color: "rgba(11,31,58,0.55)",
-                      transition: "background 0.2s ease, color 0.2s ease",
-                    }}
-                  >
-                    <X size={15} strokeWidth={2} aria-hidden="true" />
-                  </button>
-                  <button
-                    type="submit"
-                    style={{
-                      border: "none",
-                      background: "#0B1F3A",
-                      width: 26,
-                      height: 26,
-                      borderRadius: "50%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      cursor: "pointer",
-                      boxShadow: "0 4px 14px rgba(15,23,42,0.35)",
-                    }}
-                    aria-label="Search BOCRA"
-                  >
-                    <Search size={15} strokeWidth={2} aria-hidden="true" />
-                  </button>
-                </form>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setSearchOpen(true)}
-                  aria-label="Open search"
-                  style={{
-                    border: "none",
-                    background: "rgba(5,9,12,0.35)",
-                    width: 32,
-                    height: 32,
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    boxShadow: "0 6px 20px rgba(5,9,12,0.25)",
-                    transition: "background 0.2s ease",
-                  }}
-                >
-                  <Search
-                    size={16}
-                    strokeWidth={2}
-                    aria-hidden="true"
-                    style={{ color: "#f8fafc" }}
-                  />
-                </button>
-              )}
-            </div>
-          </div>
+              <Search size={16} />
+            </Link>
 
-          {/* Right side: hamburger (mobile) + CTA */}
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <button
-              onClick={() => navigate("/search")}
-              aria-label="Open search"
-              className="navbar-mobile-menu-btn"
+            <Link
+              to="/portal/complaint/new"
               style={{
-                background: "transparent",
-                border: "none",
-                cursor: "pointer",
-                padding: "8px",
-                display: "none",
-                alignItems: "center",
-              }}
-            >
-              <Menu size={24} color="#0b1f3a" />
-            </button>
-            <a
-              href="/portal/complaint/new"
-              className="navbar-cta-btn navbar-cta-desktop"
-              style={{
-                padding: "10px 20px",
+                padding: isMobile ? "8px 14px" : "10px 20px",
                 borderRadius: 999,
-                fontSize: 13,
+                fontSize: isMobile ? 12 : 14,
                 fontWeight: 600,
                 color: "#ffffff",
                 background: "#050505",
@@ -420,18 +344,78 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                 letterSpacing: "0.01em",
                 border: "1px solid rgba(255,255,255,0.08)",
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#111827";
-                e.currentTarget.style.transform = "translateY(-1px)";
+              onMouseEnter={(event) => {
+                event.currentTarget.style.background = "#111827";
+                event.currentTarget.style.transform = "translateY(-1px)";
               }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#050505";
-                e.currentTarget.style.transform = "translateY(0)";
+              onMouseLeave={(event) => {
+                event.currentTarget.style.background = "#050505";
+                event.currentTarget.style.transform = "translateY(0)";
               }}
             >
-              File Complaint
-            </a>
+              {isMobile ? "Complaint" : "File Complaint"}
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => setOpen((prev) => !prev)}
+              aria-label={open ? "Close menu" : "Open menu"}
+              style={{
+                display: isMobile ? "flex" : "none",
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 4,
+                width: 34,
+                height: 34,
+                borderRadius: "50%",
+                color: "#0b1f3a",
+              }}
+            >
+              {open ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
+
+          {open && isMobile && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                background: "white",
+                borderRadius: "0 0 20px 20px",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+                padding: "8px 16px 16px",
+                marginTop: 8,
+                zIndex: 100,
+                animation: "mobileNavDropIn 0.22s ease",
+              }}
+            >
+              {mobileMenuLinks.map(([label, href]) => (
+                <Link
+                  key={href}
+                  to={href}
+                  onClick={() => setOpen(false)}
+                  style={{
+                    display: "block",
+                    padding: "12px 16px",
+                    color: "#111",
+                    textDecoration: "none",
+                    fontSize: 15,
+                    fontWeight: 500,
+                    borderBottom: "1px solid #f1f5f9",
+                    borderRadius: 8,
+                    fontFamily: "'DM Sans', sans-serif",
+                  }}
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
+          )}
         </nav>
       </div>
 
@@ -445,29 +429,9 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
           to   { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
 
-
-
-        /* Show the burger menu button on all screens */
-        .navbar-mobile-menu-btn {
-          display: flex !important;
-        }
-
-        @media (max-width: 960px) {
-          .navbar-desktop-links {
-            display: none !important;
-          }
-          .navbar-cta-desktop {
-            display: none !important;
-          }
-          .navbar-logo {
-            height: 44px !important;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .navbar-logo {
-            height: 36px !important;
-          }
+        @keyframes mobileNavDropIn {
+          from { opacity: 0; transform: translateY(-8px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
       `}</style>
     </>

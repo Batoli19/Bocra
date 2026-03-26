@@ -2,6 +2,14 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Mail, Radio, Tv, Wifi } from "lucide-react";
 import PageWrapper from "../components/shared/PageWrapper";
+import bathopiLuke from "../../management/Bathopi_luke.jpg";
+import bonnieMine from "../../management/Bonnie_mine.jpg";
+import joyceIsaMolwane from "../../management/Joyce-Isa-molwane.jpg";
+import maitseoRatladi from "../../management/Maitseo_ratladi.jpg";
+import martinMokgware from "../../management/Martin_mokgware.jpg";
+import murphySetshwane from "../../management/Murphy_setshwane.jpg";
+import peterTladinyane from "../../management/Peter_tladinyane.jpg";
+import tebogoMmoshe from "../../management/Tebogo_mmoshe.jpg";
 
 const regulatedSectors = [
   {
@@ -50,20 +58,69 @@ const values = [
 ];
 
 const leaders = [
-  { name: "Dr. Bokamoso Basutli", title: "Chairperson" },
-  { name: "Mr. Moabi Pusumane", title: "Board Member" },
-  { name: "Ms. Montle Phuthego", title: "Board Member" },
-  { name: "Mr. Kgomotso Tshekiso", title: "Board Member" },
-  { name: "Ms. Boitumelo Ratshipa", title: "Board Member" },
-  { name: "Mr. Tshegofatso Pule", title: "Board Member" },
-  { name: "Ms. Thato Mmereki", title: "Board Member" },
+  {
+    name: "Martin Mokgware",
+    role: "Chief Executive Officer",
+    image: martinMokgware,
+    summary:
+      "Leads BOCRA's strategic direction, organisational delivery, and execution of the regulator's public mandate.",
+  },
+  {
+    name: "Bathopi Luke",
+    role: "Board Member",
+    image: bathopiLuke,
+    summary:
+      "Supports governance oversight and board-level review of regulatory priorities, risk, and performance.",
+  },
+  {
+    name: "Bonnie Mine",
+    role: "Board Member",
+    image: bonnieMine,
+    summary:
+      "Contributes to balanced decision-making across public interest, sector development, and accountability.",
+  },
+  {
+    name: "Joyce Isa Molwane",
+    role: "Board Member",
+    image: joyceIsaMolwane,
+    summary:
+      "Provides leadership input on institutional stewardship, policy alignment, and responsible oversight.",
+  },
+  {
+    name: "Maitseo Ratladi",
+    role: "Board Member",
+    image: maitseoRatladi,
+    summary:
+      "Strengthens board deliberations through strategic guidance, governance review, and stakeholder awareness.",
+  },
+  {
+    name: "Murphy Setshwane",
+    role: "Board Member",
+    image: murphySetshwane,
+    summary:
+      "Supports board continuity through governance insight focused on service quality and regulatory impact.",
+  },
+  {
+    name: "Peter Tladinyane",
+    role: "Board Member",
+    image: peterTladinyane,
+    summary:
+      "Brings board-level scrutiny to governance matters, institutional priorities, and performance stewardship.",
+  },
+  {
+    name: "Tebogo Mmoshe",
+    role: "Board Member",
+    image: tebogoMmoshe,
+    summary:
+      "Contributes to board oversight with attention to strategy, public confidence, and sector resilience.",
+  },
 ];
 
 const stats = [
   { value: "2013", label: "Year Established" },
   { value: "4", label: "Sectors Regulated" },
   { value: "13", label: "Years of Service" },
-  { value: "7", label: "Board Members" },
+  { value: "8", label: "Leadership Members" },
 ];
 
 function SectionLabel({ children }) {
@@ -98,20 +155,10 @@ function Shell({ children, style }) {
   );
 }
 
-function getInitials(name) {
-  return name
-    .replace(/\./g, "")
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join("")
-    .toUpperCase();
-}
-
 export default function AboutPage() {
   const heroRef = useRef(null);
   const videoRef = useRef(null);
+  const [featuredLeader, ...boardLeaders] = leaders;
 
   useEffect(() => {
     const el = heroRef.current;
@@ -146,6 +193,24 @@ export default function AboutPage() {
       window.removeEventListener("scroll", onScroll);
       vidObserver.disconnect();
     };
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("revealed");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll(".reveal-on-scroll").forEach((el) => {
+      observer.observe(el);
+    });
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -274,50 +339,102 @@ export default function AboutPage() {
           </Shell>
         </section>
 
-        <section style={{ padding: "80px 0" }}>
-          <Shell>
-            <SectionLabel>Leadership</SectionLabel>
-            <div className="about-leadership-grid">
-              {leaders.map(({ name, title }) => (
-                <div key={name}>
-                  <div
-                    style={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: "50%",
-                      background: "#D6E4F7",
-                      color: "#1A3A6B",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: 700,
-                      marginBottom: 16,
-                    }}
-                  >
-                    {getInitials(name)}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 18,
-                      fontWeight: 700,
-                      color: "#111827",
-                      marginBottom: 6,
-                    }}
-                  >
-                    {name}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 14,
-                      color: "#6b7280",
-                    }}
-                  >
-                    {title}
+        <section className="team-section">
+          {/* Subtle background glow */}
+          <div style={{
+            position: "absolute",
+            top: "-20%",
+            left: "-10%",
+            width: "50%",
+            height: "50%",
+            background: "radial-gradient(circle, rgba(15,110,86,0.15) 0%, transparent 70%)",
+            pointerEvents: "none"
+          }} />
+
+          <div className="team-container">
+            <div className="team-header-sticky">
+              <div style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontWeight: 800,
+                fontSize: "clamp(40px, 5vw, 56px)",
+                color: "#fff",
+                letterSpacing: "-0.03em",
+                lineHeight: 1.1,
+                marginBottom: "24px"
+              }}>
+                Meet The Board
+              </div>
+              <p style={{
+                fontFamily: "'Inter', sans-serif",
+                fontSize: "15px",
+                color: "#9ca3af",
+                lineHeight: 1.6,
+                marginBottom: "32px",
+                maxWidth: "320px"
+              }}>
+                BOCRA is governed by a board appointed by the Minister responsible for communications in Botswana.
+              </p>
+              
+              <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                {["Leadership", "Governance", "Oversight"].map((tag, i) => (
+                  <span key={tag} className="reveal-on-scroll team-tag" style={{ animationDelay: `${i * 0.1}s` }}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="team-board-layout">
+              <div className="team-featured reveal-on-scroll">
+                <div className="team-featured-divider" />
+                <div className="team-card team-card-featured">
+                  <div className="team-card-flip-inner">
+                    <div className="team-card-face team-card-front">
+                      <div className="team-card-image-wrapper team-card-image-wrapper-featured">
+                        <img src={featuredLeader.image} alt={featuredLeader.name} className="team-card-image" />
+                        <div className="team-card-overlay" />
+                      </div>
+                      <div className="team-card-info team-card-info-featured">
+                        <h3 className="team-card-name team-card-name-featured">{featuredLeader.name}</h3>
+                        <p className="team-card-role team-card-role-featured">{featuredLeader.role}</p>
+                      </div>
+                    </div>
+
+                    <div className="team-card-face team-card-back team-card-back-featured">
+                      <div className="team-card-back-label">Leadership Summary</div>
+                      <div className="team-card-back-title">{featuredLeader.name}</div>
+                      <p className="team-card-back-text">{featuredLeader.summary}</p>
+                    </div>
                   </div>
                 </div>
-              ))}
+              </div>
+
+              <div className="team-grid">
+                {boardLeaders.map((leader, index) => (
+                  <div key={leader.name} className="team-card reveal-on-scroll" style={{ animationDelay: `${(index + 1) * 0.1}s` }}>
+                    <div className="team-card-flip-inner">
+                      <div className="team-card-face team-card-front">
+                        <div className="team-card-image-wrapper">
+                          <img src={leader.image} alt={leader.name} className="team-card-image" />
+                          <div className="team-card-overlay" />
+                        </div>
+                        <div className="team-card-info">
+                          <h3 className="team-card-name">{leader.name}</h3>
+                          <p className="team-card-role">{leader.role}</p>
+                        </div>
+                      </div>
+
+                      <div className="team-card-face team-card-back">
+                        <div className="team-card-back-label">Board Role</div>
+                        <div className="team-card-back-title">{leader.name}</div>
+                        <p className="team-card-back-text">{leader.summary}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </Shell>
+          </div>
         </section>
 
         <section style={{ padding: "64px 0", background: "#f8f9fa" }}>
@@ -481,10 +598,248 @@ export default function AboutPage() {
           padding-right: 0;
         }
 
-        .about-leadership-grid {
+        .team-section {
+          background: #000000;
+          padding: 100px 0;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .team-container {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 48px;
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 0 24px;
+        }
+
+        .team-header-sticky {
+          position: relative;
+        }
+
+        .team-tag {
+          padding: 6px 14px;
+          border-radius: 20px;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          font-size: 12px;
+          color: #d1d5db;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .team-grid {
           display: grid;
           grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 32px;
+          gap: 32px 24px;
+        }
+
+        .team-board-layout {
+          display: grid;
+          gap: 40px;
+        }
+
+        .team-featured {
+          display: grid;
+          gap: 28px;
+          justify-items: center;
+        }
+
+        .team-featured-divider {
+          width: min(100%, 780px);
+          height: 1px;
+          background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.18) 18%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.18) 82%, transparent 100%);
+        }
+
+        .team-card {
+          cursor: pointer;
+          perspective: 1400px;
+        }
+
+        .team-card-featured {
+          width: min(100%, 340px);
+        }
+
+        .team-card-flip-inner {
+          position: relative;
+          min-height: 100%;
+          transform-style: preserve-3d;
+          transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .team-card:hover .team-card-flip-inner {
+          transform: rotateY(180deg) translateY(-6px);
+        }
+
+        .team-card-face {
+          backface-visibility: hidden;
+          -webkit-backface-visibility: hidden;
+          border-radius: 16px;
+          overflow: hidden;
+          min-height: 100%;
+        }
+
+        .team-card-front {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+
+        .team-card-back {
+          position: absolute;
+          inset: 0;
+          transform: rotateY(180deg);
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding: 24px;
+          border: 1px solid rgba(255,255,255,0.08);
+          background:
+            radial-gradient(circle at top left, rgba(15,110,86,0.26), transparent 42%),
+            linear-gradient(180deg, #0b1320 0%, #060a10 100%);
+          box-shadow: 0 18px 50px rgba(0,0,0,0.24);
+        }
+
+        .team-card-image-wrapper {
+          position: relative;
+          aspect-ratio: 4 / 4.8;
+          border-radius: 12px;
+          overflow: hidden;
+          background: #111;
+          border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .team-card-image-wrapper-featured {
+          aspect-ratio: 4 / 4.9;
+        }
+
+        .team-card-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center top;
+          filter: grayscale(20%) brightness(0.9);
+          transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s ease;
+        }
+
+        .team-card:hover .team-card-image {
+          transform: scale(1.06);
+          filter: grayscale(0%) brightness(1);
+        }
+
+        .team-card-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 40%);
+          pointer-events: none;
+          opacity: 0.5;
+          transition: opacity 0.5s ease;
+        }
+
+        .team-card:hover .team-card-overlay {
+          opacity: 0;
+        }
+
+        .team-card-info {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .team-card-info-featured {
+          text-align: center;
+          align-items: center;
+        }
+
+        .team-card-name {
+          margin: 0;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 16px;
+          font-weight: 600;
+          color: #fff;
+          letter-spacing: -0.01em;
+          transition: color 0.3s ease;
+        }
+
+        .team-card:hover .team-card-name {
+          color: #0F6E56;
+        }
+
+        .team-card-name-featured {
+          font-size: clamp(26px, 3vw, 34px);
+          font-weight: 500;
+          color: #4da4ff;
+        }
+
+        .team-card-role {
+          margin: 0;
+          font-family: 'Inter', sans-serif;
+          font-size: 13px;
+          font-weight: 400;
+          color: #9ca3af;
+        }
+
+        .team-card-role-featured {
+          font-size: 16px;
+          color: #e5e7eb;
+        }
+
+        .team-card-back-label {
+          margin-bottom: 10px;
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.16em;
+          color: rgba(148,163,184,0.9);
+          font-family: 'Inter', sans-serif;
+          font-weight: 700;
+        }
+
+        .team-card-back-title {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 22px;
+          line-height: 1.1;
+          color: #ffffff;
+          font-weight: 700;
+          margin-bottom: 14px;
+        }
+
+        .team-card-back-text {
+          margin: 0;
+          color: rgba(226,232,240,0.88);
+          font-size: 14px;
+          line-height: 1.7;
+          max-width: 28ch;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .reveal-on-scroll {
+          opacity: 0;
+          transform: translateY(30px);
+          transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-on-scroll.revealed {
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        @media (min-width: 960px) {
+          .team-container {
+            grid-template-columns: 320px 1fr;
+            gap: 64px;
+            align-items: start;
+          }
+          .team-header-sticky {
+            position: sticky;
+            top: 120px;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .team-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 40px 24px;
+          }
         }
 
         .about-stats-grid {
@@ -523,11 +878,7 @@ export default function AboutPage() {
           transform: translateY(-1px);
         }
 
-        @media (min-width: 900px) {
-          .about-leadership-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-          }
-        }
+
 
         @media (max-width: 960px) {
           .about-regulate-row {
@@ -586,8 +937,20 @@ export default function AboutPage() {
 
           .about-purpose-grid,
           .about-stats-grid,
-          .about-leadership-grid {
+          .team-grid {
             grid-template-columns: 1fr;
+          }
+
+          .team-featured {
+            justify-items: stretch;
+          }
+
+          .team-card-featured {
+            width: 100%;
+          }
+
+          .team-card-back {
+            padding: 20px;
           }
 
           .about-values-grid {
