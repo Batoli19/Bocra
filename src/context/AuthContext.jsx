@@ -14,6 +14,12 @@ function readStoredUser() {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => readStoredUser())
 
+  const persistUser = (nextUser) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser))
+    setUser(nextUser)
+    return true
+  }
+
   const login = (arg1, arg2) => {
     let nextUser = null
 
@@ -38,9 +44,19 @@ export function AuthProvider({ children }) {
       return false
     }
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser))
-    setUser(nextUser)
-    return true
+    return persistUser(nextUser)
+  }
+
+  const register = ({ name, email, phone, role = 'citizen' }) => {
+    const nextUser = {
+      id: `${Date.now()}`,
+      name: name?.trim() || 'BOCRA Citizen',
+      email: email?.trim() || '',
+      phone: phone?.trim() || '',
+      role,
+    }
+
+    return persistUser(nextUser)
   }
 
   const logout = () => {
@@ -49,7 +65,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, role: user?.role || null, isLoggedIn: !!user, login, logout }}>
+    <AuthContext.Provider value={{ user, role: user?.role || null, isLoggedIn: !!user, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   )

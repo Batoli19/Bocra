@@ -23,14 +23,21 @@ const quickPoints = [
   },
 ]
 
+function resolvePortalRedirect(target) {
+  if (!target || target === '/') return '/'
+  if (target === '/portal/apply' || target === '/portal/applications') return '/portal'
+  return target
+}
+
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const redirect = searchParams.get('redirect') || '/'
+  const redirect = resolvePortalRedirect(searchParams.get('redirect') || '/')
   const forceLogin = searchParams.get('force') === '1'
+  const registerHref = `/register${redirect && redirect !== '/' ? `?redirect=${encodeURIComponent(redirect)}` : ''}`
   const { isLoggedIn, login } = useAuth()
 
   useEffect(() => {
@@ -174,7 +181,7 @@ export default function LoginPage() {
 
             <div className="login-footer">
               <span>New to BOCRA?</span>
-              <Link to="/register" className="login-footer-link">
+              <Link to={registerHref} className="login-footer-link">
                 Create an account
               </Link>
             </div>

@@ -80,6 +80,7 @@ const steps = [
     number: "01",
     title: "Create Account",
     description: "Sign in once to access complaints, applications, and support tools.",
+    to: "/register",
   },
   {
     number: "02",
@@ -242,15 +243,31 @@ export default function HomePageSections() {
           <div className="home-sections-shell">
             <SectionLabel>How It Works</SectionLabel>
             <div className="home-steps-grid">
-              {steps.map(({ number, title, description }) => (
-                <div key={number} className="home-step-item">
-                  <div className="home-step-number">{number}</div>
-                  <div className="home-step-content">
-                    <div className="home-step-title">{title}</div>
-                    <div className="home-step-description">{description}</div>
+              {steps.map(({ number, title, description, to }) => {
+                const content = (
+                  <>
+                    <div className="home-step-number">{number}</div>
+                    <div className="home-step-content">
+                      <div className="home-step-title">{title}</div>
+                      <div className="home-step-description">{description}</div>
+                    </div>
+                  </>
+                );
+
+                if (to) {
+                  return (
+                    <Link key={number} to={to} className="home-step-item home-step-item-link">
+                      {content}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <div key={number} className="home-step-item">
+                    {content}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </section>
@@ -405,6 +422,23 @@ export default function HomePageSections() {
           position: relative;
           min-height: 220px;
           padding-top: 40px;
+        }
+
+        .home-step-item-link {
+          display: block;
+          color: inherit;
+          text-decoration: none;
+          border-radius: 20px;
+          transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .home-step-item-link:hover {
+          background: rgba(15, 23, 42, 0.03);
+          transform: translateY(-2px);
+        }
+
+        .home-step-item-link:hover .home-step-title {
+          color: #1A3A6B;
         }
 
         .home-step-number {
