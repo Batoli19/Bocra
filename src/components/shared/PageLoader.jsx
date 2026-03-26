@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 
 const DOT_COLORS = ['#E63946', '#F4A261', '#2A9D8F', '#1A3A6B']
@@ -10,6 +10,7 @@ export default function PageLoader() {
   const [loadingText, setLoadingText] = useState('Loading...')
   const [readyToHide, setReadyToHide] = useState(false)
 
+  const isInitialLoad = useRef(true)
   const location = useLocation()
 
   useEffect(() => {
@@ -41,7 +42,7 @@ export default function PageLoader() {
     const minTimer = window.setTimeout(() => {
       minTimeDone = true
       tryHide()
-    }, 800)
+    }, isInitialLoad.current ? 1800 : 500)
 
     const checkImages = () => {
       const images = Array.from(document.querySelectorAll('img'))
@@ -106,7 +107,7 @@ export default function PageLoader() {
     const rampTwo = window.setTimeout(() => {
       setProgress(60)
       setLoadingText('Almost ready...')
-    }, 400)
+    }, isInitialLoad.current ? 800 : 250)
 
     return () => {
       window.clearTimeout(rampOne)
@@ -127,6 +128,7 @@ export default function PageLoader() {
   const handleTransitionEnd = (event) => {
     if (event.target !== event.currentTarget || !hiding) return
 
+    isInitialLoad.current = false
     setVisible(false)
   }
 
