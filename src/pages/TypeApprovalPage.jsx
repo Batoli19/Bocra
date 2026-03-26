@@ -231,7 +231,7 @@ export default function TypeApprovalPage() {
                 Section 84 of the CRA Act requires all communications devices to be certified before sale or use in Botswana.
               </p>
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                <Link to="/portal/apply" style={{
+                <Link to="/login?redirect=/portal/apply&force=1" style={{
                   background: "#1A3A6B", color: "#fff", borderRadius: 50,
                   padding: "14px 28px", fontWeight: 600, fontSize: 14,
                   textDecoration: "none", fontFamily: "Inter, sans-serif",
@@ -694,7 +694,7 @@ export default function TypeApprovalPage() {
               Apply through BOCRA Connect or reach us at info@bocra.org.bw · +267 395 7755
             </p>
             <div style={{ display: "flex", justifyContent: "center", gap: 12, marginTop: 36, flexWrap: "wrap" }}>
-              <Link to="/portal/apply" style={{
+              <Link to="/login?redirect=/portal/apply&force=1" style={{
                 background: "#ffffff", color: "#1A3A6B", borderRadius: 50,
                 padding: "14px 32px", fontWeight: 700, fontSize: 14,
                 textDecoration: "none", fontFamily: "Inter", border: "none",

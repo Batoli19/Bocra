@@ -7,6 +7,7 @@ import { Search, X, Menu, Globe } from "lucide-react";
 import bocraSvg from "../../assets/bocra.svg";
 import ChatBubble from "../../chatbot/ChatBubble";
 import { useLanguage } from "../../hooks/useLanguage";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Navbar({ showHint = false, onChatClose, hideChat = false }) {
   const [scrolled, setScrolled] = useState(false);
@@ -15,6 +16,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
   const [activeDropdown, setActiveDropdown] = useState(null);
   const location = useLocation();
   const language = useLanguage();
+  const { isLoggedIn } = useAuth();
   const lang = language?.lang || "en";
   const setLang = language?.setLang;
 
@@ -41,6 +43,8 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
     setActiveDropdown(null);
   }, [location.pathname]);
 
+  const applyLoginHref = "/login?redirect=/portal/apply&force=1";
+
   const navLinks = [
     { label: "About", href: "/about" },
     {
@@ -53,7 +57,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
         { label: "Cybersecurity (bwCIRT)", href: "/cirt" },
         { label: "UASF Programs", href: "/uasf" },
         { label: "Network Coverage Map", href: "/map" },
-        { label: "File a Complaint", href: "/portal/complaint/new" },
+        { label: "File a Complaint", href: isLoggedIn ? "/portal/complaint/new" : "/login?redirect=/portal/complaint/new" },
       ],
     },
     {
@@ -61,7 +65,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
       href: "/licensing",
       children: [
         { label: "Licensing Overview", href: "/licensing" },
-        { label: "Apply for Licence", href: "/licensing/apply" },
+        { label: "Apply for Licence", href: applyLoginHref },
         { label: "Check Licence Status", href: "/verify" },
         { label: "Documents Checklist", href: "/documents" },
       ],
@@ -76,7 +80,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
     ["Consumer Protection", "/consumer"],
     ["QoS Dashboard", "/qos"],
     ["Type Approval", "/type-approval"],
-    ["Apply for Licence", "/licensing/apply"],
+    ["Apply for Licence", applyLoginHref],
     ["Check Licence Status", "/verify"],
     ["Coverage Map", "/map"],
     ["News", "/news"],
@@ -329,7 +333,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
             </Link>
 
             <Link
-              to="/portal/complaint/new"
+              to={isLoggedIn ? "/portal/complaint/new" : "/login?redirect=/portal/complaint/new"}
               style={{
                 padding: isMobile ? "8px 14px" : "10px 20px",
                 borderRadius: 999,

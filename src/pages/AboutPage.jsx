@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, Mail, Radio, Tv, Wifi } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import PageWrapper from "../components/shared/PageWrapper";
 import bathopiLuke from "../../management/Bathopi_luke.jpg";
 import bonnieMine from "../../management/Bonnie_mine.jpg";
@@ -13,24 +13,32 @@ import tebogoMmoshe from "../../management/Tebogo_mmoshe.jpg";
 
 const regulatedSectors = [
   {
-    icon: Radio,
     title: "Telecommunications",
     description: "Licensing, spectrum oversight, and service quality across communications networks.",
+    accent: "#3498db",
+    hover: "rgba(52, 152, 219, 0.86)",
+    soft: "rgba(52, 152, 219, 0.12)",
   },
   {
-    icon: Tv,
     title: "Broadcasting",
     description: "Regulation of broadcasting services, content distribution, and industry standards.",
+    accent: "#2ecc71",
+    hover: "rgba(46, 204, 113, 0.82)",
+    soft: "rgba(46, 204, 113, 0.12)",
   },
   {
-    icon: Mail,
     title: "Postal Services",
     description: "Oversight of postal operators, service access, and public interest obligations.",
+    accent: "#e74c3c",
+    hover: "rgba(231, 76, 60, 0.86)",
+    soft: "rgba(231, 76, 60, 0.12)",
   },
   {
-    icon: Wifi,
     title: "Internet & ICT",
     description: "Digital infrastructure, internet services, and broader ICT ecosystem enablement.",
+    accent: "#f39c12",
+    hover: "rgba(243, 156, 18, 0.86)",
+    soft: "rgba(243, 156, 18, 0.14)",
   },
 ];
 
@@ -269,19 +277,29 @@ export default function AboutPage() {
             fontFamily: "'DM Sans', sans-serif",
           }}
         >
-          <section style={{ padding: "80px 0" }}>
+          <section className="about-regulate-section">
             <Shell>
-              <SectionLabel>What We Regulate</SectionLabel>
-              <div>
-                {regulatedSectors.map(({ icon: Icon, title, description }) => (
-                  <div key={title} className="about-regulate-row">
-                    <div className="about-regulate-icon">
-                      <Icon size={20} />
+              <div className="about-regulate-stage">
+                <SectionLabel>What We Regulate</SectionLabel>
+                <div className="about-regulate-list">
+                  {regulatedSectors.map(({ title, description, accent, hover, soft }) => (
+                    <div
+                      key={title}
+                      className="about-regulate-row"
+                      style={{
+                        "--sector-accent": accent,
+                        "--sector-hover": hover,
+                        "--sector-soft": soft,
+                      }}
+                    >
+                      <span className="about-regulate-dot" />
+                      <div className="about-regulate-copy">
+                        <div className="about-regulate-title">{title}</div>
+                        <div className="about-regulate-description">{description}</div>
+                      </div>
                     </div>
-                    <div className="about-regulate-title">{title}</div>
-                    <div className="about-regulate-description">{description}</div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </Shell>
           </section>
@@ -509,35 +527,132 @@ export default function AboutPage() {
         </div>
 
         <style>{`
-        .about-regulate-row {
-          display: grid;
-          grid-template-columns: 48px minmax(220px, 300px) minmax(0, 1fr);
-          gap: 24px;
-          align-items: center;
-          padding: 24px 0;
-          border-bottom: 1px solid #e5e7eb;
+        .about-regulate-section {
+          padding: 88px 0;
+          background: #ffffff;
         }
 
-        .about-regulate-icon {
-          width: 40px;
-          height: 40px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
-          color: #1A3A6B;
+        .about-regulate-stage {
+          position: relative;
+          padding: 0;
+        }
+
+        .about-regulate-stage::before {
+          content: "";
+          position: absolute;
+          top: 54px;
+          left: 10px;
+          bottom: 18px;
+          width: 1px;
+          background:
+            linear-gradient(180deg, rgba(148,163,184,0.22) 0%, rgba(148,163,184,0.08) 100%);
+          pointer-events: none;
+        }
+
+        .about-regulate-stage > * {
+          position: relative;
+          z-index: 1;
+        }
+
+        .about-regulate-stage > div:first-child {
+          color: #94a3b8 !important;
+          margin-bottom: 30px !important;
+        }
+
+        .about-regulate-list {
+          display: grid;
+          gap: 18px;
+        }
+
+        .about-regulate-row {
+          display: grid;
+          grid-template-columns: 34px minmax(0, 1fr);
+          gap: 18px;
+          align-items: start;
+          padding: 14px 0 14px 0;
+          border-top: 1px solid rgba(15,23,42,0.08);
+          position: relative;
+          overflow: hidden;
+          transition: transform 0.35s ease;
+        }
+
+        .about-regulate-list .about-regulate-row:first-child {
+          border-top: none;
+        }
+
+        .about-regulate-row::before {
+          content: "";
+          position: absolute;
+          inset: 8px -18px;
+          border-radius: 24px;
+          background: linear-gradient(90deg, var(--sector-soft) 0%, rgba(255,255,255,0) 82%);
+          opacity: 0;
+          transform: scaleX(0.96);
+          transform-origin: left center;
+          transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .about-regulate-row > * {
+          position: relative;
+          z-index: 1;
+        }
+
+        .about-regulate-row:hover {
+          transform: translateX(10px);
+        }
+
+        .about-regulate-row:hover::before {
+          opacity: 1;
+          transform: scaleX(1);
+        }
+
+        .about-regulate-dot {
+          width: 20px;
+          height: 20px;
+          border-radius: 999px;
+          background: var(--sector-accent);
+          box-shadow:
+            0 0 0 8px rgba(255,255,255,0.95),
+            0 10px 26px var(--sector-soft);
           flex-shrink: 0;
+          transition: transform 0.35s ease, box-shadow 0.35s ease;
+          margin-left: 0;
+          margin-top: 12px;
+        }
+
+        .about-regulate-copy {
+          display: grid;
+          gap: 8px;
         }
 
         .about-regulate-title {
-          font-size: 1.35rem;
+          font-size: clamp(1.5rem, 2.6vw, 2rem);
           font-weight: 700;
-          color: #111827;
+          color: #0f172a;
+          transition: color 0.3s ease, transform 0.3s ease;
+          letter-spacing: 0.04em;
+          text-transform: uppercase;
         }
 
         .about-regulate-description {
-          color: #6b7280;
+          color: #64748b;
           font-size: 0.98rem;
-          line-height: 1.7;
+          line-height: 1.8;
+          max-width: 760px;
+          transition: color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .about-regulate-row:hover .about-regulate-dot {
+          transform: scale(1.12);
+          box-shadow:
+            0 0 0 10px rgba(255,255,255,1),
+            0 14px 32px var(--sector-hover);
+        }
+
+        .about-regulate-row:hover .about-regulate-title,
+        .about-regulate-row:hover .about-regulate-description {
+          color: #0f172a;
+          transform: translateX(4px);
         }
 
         .about-purpose-grid {
@@ -881,14 +996,6 @@ export default function AboutPage() {
 
 
         @media (max-width: 960px) {
-          .about-regulate-row {
-            grid-template-columns: 40px 1fr;
-          }
-
-          .about-regulate-description {
-            grid-column: 2;
-          }
-
           .about-purpose-grid,
           .about-stats-grid,
           .about-banner {
@@ -926,13 +1033,34 @@ export default function AboutPage() {
         }
 
         @media (max-width: 640px) {
+          .about-regulate-section {
+            padding: 72px 0;
+          }
+
+          .about-regulate-stage {
+            padding: 0;
+          }
+
           .about-regulate-row {
+            grid-template-columns: 28px 1fr;
             gap: 14px;
-            padding: 22px 0;
+            padding: 18px 0;
+          }
+
+          .about-regulate-dot {
+            width: 16px;
+            height: 16px;
+            margin-top: 10px;
           }
 
           .about-regulate-title {
             font-size: 1.15rem;
+            letter-spacing: 0.03em;
+          }
+
+          .about-regulate-description {
+            font-size: 0.92rem;
+            line-height: 1.7;
           }
 
           .about-purpose-grid,

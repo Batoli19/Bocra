@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { CheckCircle, CheckCircle2, Search } from 'lucide-react'
 import PageWrapper from '../components/shared/PageWrapper'
 
@@ -399,7 +399,16 @@ function resolveTypeFilter(entry, filterType) {
 }
 
 export default function LicensingPage() {
+  const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState('finder')
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('bocra_user') || 'null')
+    if (activeTab === 'apply' && !user) {
+      navigate('/login?redirect=/licensing')
+    }
+  }, [activeTab, navigate])
+
   const [q1, setQ1] = useState('')
   const [q2, setQ2] = useState('')
   const [q3, setQ3] = useState('')
@@ -461,9 +470,7 @@ export default function LicensingPage() {
   }
 
   const handleStartApplication = () => {
-    setAppData((prev) => ({ ...prev, licenceType: result?.name || prev.licenceType }))
-    setActiveTab('apply')
-    setAppStep(1)
+    navigate('/login?redirect=/portal/apply&force=1')
   }
 
   const handleTrackSearch = (nextRef) => {

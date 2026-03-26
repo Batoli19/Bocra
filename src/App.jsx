@@ -56,7 +56,7 @@ export default function App() {
           <Route path="/news"          element={<NewsPage />} />
           <Route path="/news/:slug"    element={<NewsArticlePage />} />
           <Route path="/licensing"     element={<LicensingPage />} />
-          <Route path="/licensing/apply" element={<ApplyPage />} />
+          <Route path="/licensing/apply" element={<Navigate to="/login?redirect=/portal/apply&force=1" replace />} />
           <Route path="/consumer" element={<ConsumerPage />} />
           <Route path="/type-approval" element={<TypeApprovalPage />} />
           <Route path="/documents"     element={<DocumentsPage />} />

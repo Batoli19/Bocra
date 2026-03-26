@@ -14,10 +14,13 @@ import { mockFetch } from "../../utils/mockFetch";
 import { formatDate } from "../../utils/formatDate";
 import { useHomeChat } from "../shared/PageWrapper";
 
+const authHref = (dst) => JSON.parse(localStorage.getItem('bocra_user') || 'null') ? dst : `/login?redirect=${dst}`;
+const applyLoginHref = '/login?redirect=/portal/apply&force=1';
+
 const quickActions = [
-  { label: "File a Complaint", to: "/portal/complaint/new" },
-  { label: "Apply for Licence", to: "/portal/apply" },
-  { label: "Track Your Case", to: "/portal/complaints" },
+  { label: "File a Complaint", to: authHref("/portal/complaint/new") },
+  { label: "Apply for Licence", to: applyLoginHref },
+  { label: "Track Your Case", to: authHref("/portal/complaints") },
 ];
 
 const stats = [
@@ -31,14 +34,14 @@ const services = [
   {
     title: "File Complaint",
     description: "Report telecom, postal, or broadcasting service issues quickly.",
-    to: "/portal/complaint/new",
+    to: authHref("/portal/complaint/new"),
     icon: FileText,
     color: "#0f766e",
   },
   {
     title: "Apply Licence",
     description: "Start a new licence application through the citizen portal.",
-    to: "/portal/apply",
+    to: applyLoginHref,
     icon: Shield,
     color: "#1A3A6B",
   },

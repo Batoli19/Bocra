@@ -1,16 +1,53 @@
 import { createContext, useState } from 'react'
 export const AuthContext = createContext(null)
-export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null)
-  const login = (phone, otp) => {
-    if (otp === '123456') {
-      const role = phone.toLowerCase().includes('staff') ? 'staff' : 'citizen'
-      setUser({ id: '1', name: role === 'staff' ? 'BOCRA Officer' : 'Kefilwe Mosweu', phone, role })
-      return true
-    }
-    return false
+
+const STORAGE_KEY = 'bocra_user'
+
+function readStoredUser() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null')
+  } catch {
+    return null
   }
-  const logout = () => setUser(null)
+}
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(() => readStoredUser())
+
+  const login = (arg1, arg2) => {
+    let nextUser = null
+
+    if (typeof arg1 === 'object' && arg1 !== null) {
+      nextUser = {
+        id: arg1.id || '1',
+        name: arg1.name || 'Kefilwe Mosweu',
+        email: arg1.email || '',
+        phone: arg1.phone || '',
+        role: arg1.role || 'citizen',
+      }
+    } else if (typeof arg1 === 'string' && typeof arg2 === 'string') {
+      if (arg2 !== '123456') return false
+      const role = arg1.toLowerCase().includes('staff') ? 'staff' : 'citizen'
+      nextUser = {
+        id: '1',
+        name: role === 'staff' ? 'BOCRA Officer' : 'Kefilwe Mosweu',
+        phone: arg1,
+        role,
+      }
+    } else {
+      return false
+    }
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser))
+    setUser(nextUser)
+    return true
+  }
+
+  const logout = () => {
+    localStorage.removeItem(STORAGE_KEY)
+    setUser(null)
+  }
+
   return (
     <AuthContext.Provider value={{ user, role: user?.role || null, isLoggedIn: !!user, login, logout }}>
       {children}
