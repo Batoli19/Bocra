@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import ProtectedRoute from './components/shared/ProtectedRoute'
+import PageLoader from './components/shared/PageLoader'
 import ScrollToTop from './components/shared/ScrollToTop'
 import Spinner from './components/shared/Spinner'
 
@@ -48,6 +49,7 @@ function AppLoadingFallback() {
 export default function App() {
   return (
     <>
+      <PageLoader />
       <ScrollToTop />
       <Suspense fallback={<AppLoadingFallback />}>
         <Routes>

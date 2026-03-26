@@ -14,16 +14,18 @@ import { mockFetch } from "../../utils/mockFetch";
 import { formatDate } from "../../utils/formatDate";
 import { useHomeChat } from "../shared/PageWrapper";
 import portalHeroImage from "../../../Gemini_Generated_Image_ot2t2sot2t2sot2t.png";
+import newsImageOne from "../../../07-03-2026_government-addresses-fuel-security-concerns-_1772892887_image_main_90430.jpg";
+import newsImageTwo from "../../../24-03-2026_lobatse-council-to-maximise-existing-revenue-streams_1774335125_image_main_90697.jpeg";
 
 const authHref = (dst) =>
   JSON.parse(localStorage.getItem("bocra_user") || "null")
     ? dst
     : `/login?redirect=${dst}`;
-const applyLoginHref = "/login?redirect=/portal/apply&force=1";
+const applyLicenceHref = "/licensing";
 
 const quickActions = [
   { label: "File a Complaint", to: authHref("/portal/complaint/new") },
-  { label: "Apply for Licence", to: applyLoginHref },
+  { label: "Apply for Licence", to: applyLicenceHref },
   { label: "Track Your Case", to: authHref("/portal/complaints") },
 ];
 
@@ -44,7 +46,7 @@ const services = [
   {
     title: "Apply for Licence",
     description: "Start a new licence application online",
-    to: "/portal/apply",
+    to: applyLicenceHref,
     icon: Award,
   },
   {
@@ -74,6 +76,7 @@ const services = [
 ];
 
 const serviceColumns = [services.slice(0, 3), services.slice(3, 6)];
+const homepageNewsImages = [newsImageOne, newsImageTwo];
 
 const steps = [
   {
@@ -357,12 +360,19 @@ export default function HomePageSections() {
               </div>
             ) : (
               <div className="home-news-grid">
-                {newsItems.map(({ slug, category, title, date }) => (
+                {newsItems.map(({ slug, category, title, date, image }, index) => (
                   <Link key={slug} to={`/news/${slug}`} className="home-news-link">
                     <div
                       className="home-news-accent"
                       style={{ background: getNewsAccent(category) }}
                     />
+                    <div className="home-news-image-wrap">
+                      <img
+                        src={homepageNewsImages[index] || image}
+                        alt={title}
+                        className="home-news-image"
+                      />
+                    </div>
                     <div className="home-news-card-body">
                       <div className="home-news-pill">{category}</div>
                       <div className="home-news-title">{title}</div>
@@ -677,6 +687,19 @@ export default function HomePageSections() {
         .home-news-accent {
           height: 6px;
           width: 100%;
+        }
+
+        .home-news-image-wrap {
+          height: 180px;
+          overflow: hidden;
+          background: #f3f4f6;
+        }
+
+        .home-news-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
         }
 
         .home-news-card-body {
