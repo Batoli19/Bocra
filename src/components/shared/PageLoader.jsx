@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 
 const DOT_COLORS = ['#E63946', '#F4A261', '#2A9D8F', '#1A3A6B']
 
@@ -9,11 +10,14 @@ export default function PageLoader() {
   const [loadingText, setLoadingText] = useState('Loading...')
   const [readyToHide, setReadyToHide] = useState(false)
 
+  const location = useLocation()
+
   useEffect(() => {
-    if (sessionStorage.getItem('bocra_loaded')) {
-      setVisible(false)
-      return
-    }
+    setVisible(true)
+    setHiding(false)
+    setProgress(0)
+    setLoadingText('Loading...')
+    setReadyToHide(false)
 
     let minTimeDone = false
     let imagesDone = false
@@ -37,7 +41,7 @@ export default function PageLoader() {
     const minTimer = window.setTimeout(() => {
       minTimeDone = true
       tryHide()
-    }, 1800)
+    }, 800)
 
     const checkImages = () => {
       const images = Array.from(document.querySelectorAll('img'))
@@ -90,7 +94,7 @@ export default function PageLoader() {
       window.clearTimeout(safetyTimer)
       imageListeners.forEach((removeListener) => removeListener())
     }
-  }, [])
+  }, [location.pathname])
 
   useEffect(() => {
     if (!visible) return undefined
@@ -102,7 +106,7 @@ export default function PageLoader() {
     const rampTwo = window.setTimeout(() => {
       setProgress(60)
       setLoadingText('Almost ready...')
-    }, 800)
+    }, 400)
 
     return () => {
       window.clearTimeout(rampOne)
@@ -123,7 +127,6 @@ export default function PageLoader() {
   const handleTransitionEnd = (event) => {
     if (event.target !== event.currentTarget || !hiding) return
 
-    sessionStorage.setItem('bocra_loaded', '1')
     setVisible(false)
   }
 
