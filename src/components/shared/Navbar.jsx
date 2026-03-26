@@ -87,7 +87,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
     },
     { label: "Consumer", href: "/consumer" },
     { label: "News", href: "/news" },
-    { label: "Contact", href: "/contact" },
+    { label: "Register Domain", href: "https://nic.net.bw/" },
   ];
 
   const mobileMenuLinks = [
@@ -99,7 +99,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
     ["Check Licence Status", "/verify"],
     ["Coverage Map", "/map"],
     ["News", "/news"],
-    ["Contact", "/contact"],
+    ["Register Domain", "https://nic.net.bw/"],
   ];
 
   const mobilePrimaryLinks = [
@@ -238,47 +238,48 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                   key={link.label}
                   style={{ position: "relative" }}
                 >
-                  <Link
-                    to={link.href}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 4,
-                      padding: "8px 14px",
-                      borderRadius: 999,
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: "#1a2e44",
-                      textDecoration: "none",
-                      transition: "background 0.18s, color 0.18s",
-                      background:
-                        activeDropdown === link.label
-                          ? "rgba(0,0,0,0.05)"
-                          : "transparent",
-                      fontFamily: "'DM Sans', sans-serif",
-                      whiteSpace: "nowrap",
-                    }}
-                    onMouseEnter={(event) => {
-                      event.currentTarget.style.background = "rgba(0,0,0,0.05)";
-                      event.currentTarget.style.color = "#0B1F3A";
-                    }}
-                    onMouseLeave={(event) => {
-                      if (activeDropdown !== link.label) {
-                        event.currentTarget.style.background = "transparent";
-                        event.currentTarget.style.color = "#1a2e44";
+                  {(() => {
+                    const isExternal = link.href.startsWith("http");
+                    const commonProps = {
+                      onClick: (event) => {
+                        if (link.children) {
+                          event.preventDefault();
+                          setActiveDropdown((prev) =>
+                            prev === link.label ? null : link.label
+                          );
+                        }
+                      },
+                      onMouseEnter: (event) => {
+                        event.currentTarget.style.background = "rgba(0,0,0,0.05)";
+                        event.currentTarget.style.color = "#0B1F3A";
+                      },
+                      onMouseLeave: (event) => {
+                        if (activeDropdown !== link.label) {
+                          event.currentTarget.style.background = "transparent";
+                          event.currentTarget.style.color = "#1a2e44";
+                        }
+                      },
+                      style: {
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 4,
+                        padding: "8px 14px",
+                        borderRadius: 999,
+                        fontSize: 13,
+                        fontWeight: 500,
+                        color: "#1a2e44",
+                        textDecoration: "none",
+                        transition: "background 0.18s, color 0.18s",
+                        background:
+                          activeDropdown === link.label
+                            ? "rgba(0,0,0,0.05)"
+                            : "transparent",
+                        fontFamily: "'DM Sans', sans-serif",
+                        whiteSpace: "nowrap",
                       }
-                    }}
-                    onClick={(event) => {
-                      if (link.children) {
-                        event.preventDefault();
-                        setActiveDropdown((prev) =>
-                          prev === link.label ? null : link.label
-                        );
-                      }
-                    }}
-                  >
-                    {link.label}
-                    {link.children && (
+                    };
+
+                    const childrenIcon = link.children && (
                       <svg
                         width="10"
                         height="10"
@@ -301,8 +302,20 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                           strokeLinejoin="round"
                         />
                       </svg>
-                    )}
-                  </Link>
+                    );
+
+                    return isExternal ? (
+                      <a href={link.href} target="_blank" rel="noopener noreferrer" {...commonProps}>
+                        {link.label}
+                        {childrenIcon}
+                      </a>
+                    ) : (
+                      <Link to={link.href} {...commonProps}>
+                        {link.label}
+                        {childrenIcon}
+                      </Link>
+                    );
+                  })()}
 
                   {link.children && activeDropdown === link.label && (
                     <div
@@ -472,12 +485,11 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                 animation: "mobileNavDropIn 0.22s ease",
               }}
             >
-              {mobileMenuLinks.map(([label, href]) => (
-                <Link
-                  key={href}
-                  to={href}
-                  onClick={() => setOpen(false)}
-                  style={{
+              {mobileMenuLinks.map(([label, href]) => {
+                const isExternal = href.startsWith("http");
+                const commonProps = {
+                  onClick: () => setOpen(false),
+                  style: {
                     display: "block",
                     padding: "12px 16px",
                     color: "#111",
@@ -487,11 +499,19 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                     borderBottom: "1px solid #f1f5f9",
                     borderRadius: 8,
                     fontFamily: "'DM Sans', sans-serif",
-                  }}
-                >
-                  {label}
-                </Link>
-              ))}
+                  }
+                };
+
+                return isExternal ? (
+                  <a key={href} href={href} target="_blank" rel="noopener noreferrer" {...commonProps}>
+                    {label}
+                  </a>
+                ) : (
+                  <Link key={href} to={href} {...commonProps}>
+                    {label}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </nav>
