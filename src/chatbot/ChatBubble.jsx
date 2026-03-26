@@ -793,7 +793,7 @@ export default function ChatBubble({ showHint = false, expanded = false, forceOp
                   height: 28,
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
+                  justifyContent: "flex-start",
                   flexShrink: 0,
                 }}
               >
@@ -854,7 +854,7 @@ export default function ChatBubble({ showHint = false, expanded = false, forceOp
                   fontSize: 16,
                   display: expanded ? "flex" : "none",
                   alignItems: "center",
-                  justifyContent: "center",
+                  justifyContent: "flex-start",
                   transition: "background 0.2s",
                 }}
                 onMouseEnter={(e) =>
@@ -1397,10 +1397,10 @@ export default function ChatBubble({ showHint = false, expanded = false, forceOp
               <div
                 style={{
                   position: "absolute",
-                  left: "50%",
+                  right: 0,
                   bottom: "calc(100% + 18px)",
-                  transform: "translateX(-50%)",
-                  whiteSpace: "nowrap",
+                  transform: "none",
+                  whiteSpace: "normal",
                   background: "#ffffff",
                   color: "#050505",
                   padding: "14px 22px",
@@ -1417,6 +1417,9 @@ export default function ChatBubble({ showHint = false, expanded = false, forceOp
                   justifyContent: "center",
                   gap: 10,
                   minHeight: 60,
+                  width: "min(320px, calc(100vw - 32px))",
+                  boxSizing: "border-box",
+                  textAlign: "left",
                   zIndex: 2,
                 }}
                 onClick={() => setOpen((o) => !o)}
@@ -1425,9 +1428,9 @@ export default function ChatBubble({ showHint = false, expanded = false, forceOp
                 <span style={{ fontSize: 16 }}>👋</span>
                 <div style={{
                   position: "absolute",
-                  left: "50%",
+                  right: 20,
                   bottom: "-9px",
-                  transform: "translateX(-50%) rotate(45deg)",
+                  transform: "rotate(45deg)",
                   width: 14,
                   height: 14,
                   background: "#ffffff",
