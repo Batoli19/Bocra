@@ -361,7 +361,7 @@ export default function HomePageSections() {
             ) : (
               <div className="home-news-grid">
                 {newsItems.map(({ slug, category, title, date, image }, index) => (
-                  <Link key={slug} to={`/news/${slug}`} className="home-news-link">
+                  <Link key={slug} to="/news" className="home-news-link">
                     <div
                       className="home-news-accent"
                       style={{ background: getNewsAccent(category) }}

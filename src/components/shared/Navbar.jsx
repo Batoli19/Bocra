@@ -11,6 +11,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 export default function Navbar({ showHint = false, onChatClose, hideChat = false }) {
   const [scrolled, setScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [open, setOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
@@ -21,7 +22,13 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
   const setLang = language?.setLang;
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 20);
+      setScrollProgress(Math.min(y / 180, 1));
+    };
+
+    onScroll();
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
@@ -44,6 +51,14 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
   }, [location.pathname]);
 
   const applyLoginHref = "/login?redirect=/portal/apply&force=1";
+  const navBackgroundAlpha = 1 - scrollProgress * 0.78;
+  const navBorderAlpha = 0.07 - scrollProgress * 0.03;
+  const navShadowAlpha = 0.09 - scrollProgress * 0.04;
+  const navBackground = `rgba(255,255,255,${navBackgroundAlpha.toFixed(2)})`;
+  const navBorder = `1px solid rgba(0,0,0,${Math.max(navBorderAlpha, 0.03).toFixed(2)})`;
+  const navShadow = scrolled
+    ? `0 8px 32px rgba(0,0,0,${Math.max(navShadowAlpha + 0.02, 0.06).toFixed(2)}), 0 1px 4px rgba(0,0,0,0.05)`
+    : `0 4px 24px rgba(0,0,0,${Math.max(navShadowAlpha, 0.05).toFixed(2)}), 0 1px 3px rgba(0,0,0,0.05)`;
 
   const navLinks = [
     { label: "About", href: "/about" },
@@ -112,17 +127,17 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
         <nav
           style={{
             position: "relative",
-            background: "#ffffff",
+            background: navBackground,
+            backdropFilter: "blur(18px) saturate(180%)",
+            WebkitBackdropFilter: "blur(18px) saturate(180%)",
             borderRadius: isMobile ? 28 : 999,
             padding: isMobile ? "10px 12px 10px 16px" : "10px 10px 10px 24px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            boxShadow: scrolled
-              ? "0 8px 32px rgba(0,0,0,0.13), 0 1px 4px rgba(0,0,0,0.07)"
-              : "0 4px 24px rgba(0,0,0,0.09), 0 1px 3px rgba(0,0,0,0.05)",
-            border: "1px solid rgba(0,0,0,0.07)",
-            transition: "box-shadow 0.3s ease",
+            boxShadow: navShadow,
+            border: navBorder,
+            transition: "background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
           }}
         >
           <div
