@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, BellRing, FileText, FolderKanban, UserRound } from 'lucide-react'
 import PageWrapper from '../../components/shared/PageWrapper'
 import { useAuth } from '../../hooks/useAuth'
+import portalHeroImage from '../../../Gemini_Generated_Image_ot2t2sot2t2sot2t.png'
 
 const actions = [
   {
@@ -94,10 +95,13 @@ export default function DashboardPage() {
           padding: 34px;
           border-radius: 32px;
           background:
-            radial-gradient(circle at top left, rgba(214,228,247,0.92), transparent 34%),
-            linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.96) 100%);
-          border: 1px solid rgba(15,23,42,0.08);
-          box-shadow: 0 30px 72px rgba(15,23,42,0.08);
+            linear-gradient(135deg, rgba(4,12,24,0.86) 0%, rgba(13,41,86,0.72) 52%, rgba(6,14,28,0.78) 100%),
+            url(${portalHeroImage});
+          border: 1px solid rgba(255,255,255,0.12);
+          box-shadow: 0 30px 72px rgba(15,23,42,0.14);
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
         }
 
         .portal-kicker {
@@ -105,18 +109,20 @@ export default function DashboardPage() {
           align-items: center;
           padding: 8px 16px;
           border-radius: 999px;
-          background: #d6e4f7;
-          color: #1a3a6b;
+          background: rgba(255,255,255,0.14);
+          color: #ffffff;
           font-size: 12px;
           font-weight: 700;
           letter-spacing: 0.08em;
           text-transform: uppercase;
           font-family: 'Inter', sans-serif;
+          border: 1px solid rgba(255,255,255,0.2);
+          backdrop-filter: blur(10px);
         }
 
         .portal-title {
           margin: 20px 0 0;
-          color: #0f172a;
+          color: #ffffff;
           font-size: clamp(2.5rem, 5vw, 4.5rem);
           line-height: 0.98;
           letter-spacing: -0.05em;
@@ -128,7 +134,7 @@ export default function DashboardPage() {
         .portal-description {
           margin: 18px 0 0;
           max-width: 760px;
-          color: #64748b;
+          color: rgba(226,232,240,0.94);
           font-size: 18px;
           line-height: 1.8;
           font-family: 'Inter', sans-serif;
@@ -148,23 +154,24 @@ export default function DashboardPage() {
           align-items: center;
           padding: 18px 20px;
           border-radius: 22px;
-          background: rgba(255,255,255,0.82);
-          border: 1px solid rgba(15,23,42,0.07);
+          background: rgba(255,255,255,0.12);
+          border: 1px solid rgba(255,255,255,0.16);
+          backdrop-filter: blur(12px);
         }
 
         .portal-highlight-icon {
           width: 44px;
           height: 44px;
           border-radius: 14px;
-          background: #eef4fb;
-          color: #1a3a6b;
+          background: rgba(255,255,255,0.18);
+          color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
         .portal-highlight-label {
-          color: #64748b;
+          color: rgba(226,232,240,0.78);
           font-size: 12px;
           font-weight: 700;
           text-transform: uppercase;
@@ -174,7 +181,7 @@ export default function DashboardPage() {
 
         .portal-highlight-value {
           margin-top: 6px;
-          color: #0f172a;
+          color: #ffffff;
           font-size: 18px;
           font-weight: 700;
           line-height: 1.4;

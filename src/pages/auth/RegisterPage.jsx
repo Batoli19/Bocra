@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { ArrowRight, Eye, EyeOff, ShieldCheck, BellRing, UserRoundPlus } from 'lucide-react'
 import PageWrapper from '../../components/shared/PageWrapper'
-import HeroImagePanel from '../../components/shared/HeroImagePanel'
 import { useAuth } from '../../hooks/useAuth'
 import { useToast } from '../../hooks/useToast'
+import portalHeroImage from '../../../Gemini_Generated_Image_ot2t2sot2t2sot2t.png'
 
 const quickPoints = [
   {
@@ -42,15 +42,16 @@ export default function RegisterPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const redirect = resolvePortalRedirect(searchParams.get('redirect') || '/portal')
+  const forceRegister = searchParams.get('force') === '1'
   const loginHref = `/login${redirect && redirect !== '/' ? `?redirect=${encodeURIComponent(redirect)}` : ''}`
   const { isLoggedIn, register } = useAuth()
   const { toast } = useToast()
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn && !forceRegister) {
       navigate(redirect, { replace: true })
     }
-  }, [isLoggedIn, navigate, redirect])
+  }, [forceRegister, isLoggedIn, navigate, redirect])
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -121,14 +122,6 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="register-visual-wrap">
-              <HeroImagePanel
-                theme="navy"
-                minHeight={360}
-                pills={['Citizen onboarding', 'Secure profile', 'Digital Botswana']}
-                style={{ borderRadius: 30 }}
-              />
-            </div>
           </div>
 
           <div className="register-card">
@@ -292,6 +285,16 @@ export default function RegisterPage() {
           align-content: start;
           gap: 22px;
           min-width: 0;
+          padding: 34px;
+          border-radius: 32px;
+          background:
+            linear-gradient(135deg, rgba(6,16,36,0.82) 0%, rgba(12,39,86,0.64) 48%, rgba(6,16,36,0.74) 100%),
+            url(${portalHeroImage});
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          border: 1px solid rgba(255,255,255,0.12);
+          box-shadow: 0 30px 72px rgba(15,23,42,0.14);
         }
 
         .register-eyebrow {
@@ -300,29 +303,32 @@ export default function RegisterPage() {
           width: fit-content;
           padding: 8px 16px;
           border-radius: 999px;
-          background: #d6e4f7;
-          color: #1a3a6b;
+          background: rgba(31,41,55,0.5);
+          color: #ffffff;
           font-size: 12px;
           font-weight: 700;
           letter-spacing: 0.08em;
           text-transform: uppercase;
           font-family: 'Inter', sans-serif;
+          border: 1px solid rgba(255,255,255,0.16);
+          backdrop-filter: blur(10px);
         }
 
         .register-title {
           margin: 0;
-          color: #0f172a;
+          color: #ffffff;
           font-size: clamp(2.8rem, 5vw, 4.8rem);
           line-height: 0.98;
           letter-spacing: -0.05em;
           font-weight: 800;
           font-family: 'Plus Jakarta Sans', sans-serif;
           max-width: 760px;
+          text-shadow: 0 10px 30px rgba(15,23,42,0.18);
         }
 
         .register-description {
           margin: 0;
-          color: #64748b;
+          color: rgba(226,232,240,0.94);
           font-size: 18px;
           line-height: 1.8;
           font-family: 'Inter', sans-serif;
@@ -340,23 +346,24 @@ export default function RegisterPage() {
           align-items: center;
           padding: 10px 16px;
           border-radius: 999px;
-          background: rgba(255,255,255,0.8);
-          border: 1px solid rgba(15,23,42,0.08);
-          color: #475569;
+          background: rgba(255,255,255,0.14);
+          border: 1px solid rgba(255,255,255,0.18);
+          color: #ffffff;
           font-size: 13px;
           font-weight: 600;
           font-family: 'Inter', sans-serif;
-          box-shadow: 0 10px 24px rgba(15,23,42,0.04);
+          box-shadow: 0 10px 24px rgba(15,23,42,0.14);
+          backdrop-filter: blur(10px);
         }
 
         .register-feature-panel {
           padding: 26px 28px;
           border-radius: 28px;
           background:
-            radial-gradient(circle at top left, rgba(214,228,247,0.8), transparent 34%),
-            linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,250,252,0.96) 100%);
-          border: 1px solid rgba(15,23,42,0.08);
-          box-shadow: 0 24px 56px rgba(15,23,42,0.06);
+            linear-gradient(180deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.10) 100%);
+          border: 1px solid rgba(255,255,255,0.16);
+          box-shadow: 0 24px 56px rgba(15,23,42,0.16);
+          backdrop-filter: blur(12px);
         }
 
         .register-feature-list {
@@ -375,15 +382,15 @@ export default function RegisterPage() {
           width: 42px;
           height: 42px;
           border-radius: 14px;
-          background: #eef4fb;
-          color: #1a3a6b;
+          background: rgba(255,255,255,0.16);
+          color: #ffffff;
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
         .register-feature-title {
-          color: #0f172a;
+          color: #ffffff;
           font-size: 15px;
           font-weight: 700;
           font-family: 'Plus Jakarta Sans', sans-serif;
@@ -391,14 +398,10 @@ export default function RegisterPage() {
         }
 
         .register-feature-description {
-          color: #64748b;
+          color: rgba(226,232,240,0.88);
           font-size: 14px;
           line-height: 1.7;
           font-family: 'Inter', sans-serif;
-        }
-
-        .register-visual-wrap {
-          margin-top: 4px;
         }
 
         .register-card {
@@ -616,6 +619,7 @@ export default function RegisterPage() {
             font-size: clamp(2.3rem, 10vw, 3.4rem);
           }
 
+          .register-copy,
           .register-feature-panel,
           .register-card {
             padding: 24px 20px;
