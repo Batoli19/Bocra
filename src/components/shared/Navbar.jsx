@@ -273,32 +273,51 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                         animation: "dropIn 0.18s ease",
                       }}
                     >
-                      {link.children.map((child) => (
-                        <Link
-                          key={child.label}
-                          to={child.href}
-                          style={{
-                            display: "block",
-                            padding: "8px 12px",
-                            borderRadius: 9,
-                            fontSize: 12,
-                            color: "#1a2e44",
-                            textDecoration: "none",
-                            fontFamily: "'DM Sans', sans-serif",
-                            fontWeight: 400,
-                            transition: "background 0.15s",
-                            whiteSpace: "nowrap",
-                          }}
-                          onMouseEnter={(event) => {
-                            event.currentTarget.style.background = "rgba(0,0,0,0.04)";
-                          }}
-                          onMouseLeave={(event) => {
-                            event.currentTarget.style.background = "transparent";
-                          }}
-                        >
-                          {child.label}
-                        </Link>
-                      ))}
+                      {link.children.map((child) => {
+                        const isChildExternal = child.href.startsWith("http");
+                        const childStyle = {
+                          display: "block",
+                          padding: "8px 12px",
+                          borderRadius: 9,
+                          fontSize: 12,
+                          color: "#1a2e44",
+                          textDecoration: "none",
+                          fontFamily: "'DM Sans', sans-serif",
+                          fontWeight: 400,
+                          transition: "background 0.15s",
+                          whiteSpace: "nowrap",
+                        };
+                        const handleMouseEnter = (event) => {
+                          event.currentTarget.style.background = "rgba(0,0,0,0.04)";
+                        };
+                        const handleMouseLeave = (event) => {
+                          event.currentTarget.style.background = "transparent";
+                        };
+
+                        return isChildExternal ? (
+                          <a
+                            key={child.label}
+                            href={child.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={childStyle}
+                            onMouseEnter={handleMouseEnter}
+                            onMouseLeave={handleMouseLeave}
+                          >
+                            {child.label}
+                          </a>
+                        ) : (
+                          <Link
+                            key={child.label}
+                            to={child.href}
+                            style={childStyle}
+                            onMouseEnter={handleMouseEnter}
+                            onMouseLeave={handleMouseLeave}
+                          >
+                            {child.label}
+                          </Link>
+                        );
+                      })}
                     </div>
                   )}
                 </li>
