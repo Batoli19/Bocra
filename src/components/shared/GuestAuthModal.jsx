@@ -1,6 +1,7 @@
 import { useAuth } from '../../hooks/useAuth'
 import { useNavigate } from 'react-router-dom'
-import { Shield, Lock, ChevronRight, X } from 'lucide-react'
+import { ChevronRight, X, UserX } from 'lucide-react'
+import bocraSvg from '../../assets/bocra.svg'
 
 export default function GuestAuthModal() {
   const { authModalTarget, closeAuthModal } = useAuth()
@@ -77,31 +78,36 @@ export default function GuestAuthModal() {
           <X size={18} />
         </button>
 
-        <div style={{ padding: '40px 32px 32px' }}>
+        <div style={{ padding: '40px 32px 32px', textAlign: 'center' }}>
           <div 
             style={{
-              width: 56,
-              height: 56,
-              borderRadius: 16,
-              background: '#f0fdf4',
+              width: 80,
+              height: 80,
+              borderRadius: 24,
+              background: '#ffffff',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              marginBottom: 24,
-              border: '1px solid #dcfce7'
+              margin: '0 auto 24px',
+              border: '1px solid rgba(26,58,107,0.1)',
+              boxShadow: '0 12px 32px rgba(26,58,107,0.08)'
             }}
           >
-            <Shield size={28} color="#16a34a" />
+            <img 
+              src={bocraSvg} 
+              alt="BOCRA" 
+              style={{ width: 56, height: 'auto', objectFit: 'contain' }} 
+            />
           </div>
 
           <h2 
             style={{
               margin: '0 0 12px',
-              fontSize: 22,
-              fontWeight: 700,
-              color: '#0f172a',
+              fontSize: 24,
+              fontWeight: 800,
+              color: '#0b1f3a',
               fontFamily: "'Plus Jakarta Sans', sans-serif",
-              letterSpacing: '-0.02em'
+              letterSpacing: '-0.03em'
             }}
           >
             Authentication Required
@@ -109,66 +115,83 @@ export default function GuestAuthModal() {
           
           <p 
             style={{
-              margin: 0,
+              margin: '0 auto',
               fontSize: 15,
               lineHeight: 1.6,
-              color: '#475569'
+              color: '#4b5563',
+              maxWidth: '96%'
             }}
           >
-            To access the best of BOCRA and perform secure actions like filing complaints or applying for licences, you must be logged in.
+            To access BOCRA's finest and perform secure actions like filing complaints or applying for licences, you need to login first.
           </p>
 
-          <div style={{ marginTop: 36, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <div style={{ marginTop: 36, display: 'flex', flexDirection: 'column', gap: 14 }}>
             <button
               onClick={handleContinue}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 8,
+                gap: 10,
                 width: '100%',
-                padding: '14px 24px',
-                borderRadius: 14,
+                padding: '16px 24px',
+                borderRadius: 16,
                 background: '#1A3A6B',
                 color: '#ffffff',
                 border: 'none',
                 fontSize: 15,
-                fontWeight: 600,
+                fontWeight: 700,
                 cursor: 'pointer',
                 transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-                boxShadow: '0 4px 12px rgba(26,58,107,0.15)'
+                boxShadow: '0 4px 14px rgba(26,58,107,0.2)',
+                letterSpacing: '0.01em'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-2px)'
-                e.currentTarget.style.boxShadow = '0 8px 24px rgba(26,58,107,0.25)'
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(26,58,107,0.3)'
+                e.currentTarget.style.background = '#14315c'
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'none'
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(26,58,107,0.15)'
+                e.currentTarget.style.boxShadow = '0 4px 14px rgba(26,58,107,0.2)'
+                e.currentTarget.style.background = '#1A3A6B'
               }}
             >
-              Continue to Login
+              Continue to BOCRA Consumer Portal
               <ChevronRight size={18} />
             </button>
             
             <button
               onClick={closeAuthModal}
               style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
                 width: '100%',
-                padding: '14px 24px',
-                borderRadius: 14,
-                background: 'transparent',
+                padding: '16px 24px',
+                borderRadius: 16,
+                background: '#f8fafc',
                 color: '#64748b',
-                border: 'none',
-                fontSize: 14,
-                fontWeight: 600,
+                border: '1px solid #e2e8f0',
+                fontSize: 15,
+                fontWeight: 700,
                 cursor: 'pointer',
-                transition: 'color 0.2s',
+                transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
               }}
-              onMouseEnter={(e) => e.currentTarget.style.color = '#0f172a'}
-              onMouseLeave={(e) => e.currentTarget.style.color = '#64748b'}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = '#0f172a'
+                e.currentTarget.style.background = '#f1f5f9'
+                e.currentTarget.style.borderColor = '#cbd5e1'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = '#64748b'
+                e.currentTarget.style.background = '#f8fafc'
+                e.currentTarget.style.borderColor = '#e2e8f0'
+              }}
             >
-              Cancel
+              <UserX size={18} />
+              Stay in Guest Mode
             </button>
           </div>
         </div>

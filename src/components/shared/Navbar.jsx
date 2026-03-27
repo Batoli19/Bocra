@@ -61,8 +61,6 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
     if (!name) return "U";
     return name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase();
   };
-
-  const applyLoginHref = isLoggedIn ? "/licensing" : "/login?redirect=/licensing&force=1";
   const navBackgroundAlpha = 1 - scrollProgress * 0.78;
   const navBorderAlpha = 0.07 - scrollProgress * 0.03;
   const navShadowAlpha = 0.09 - scrollProgress * 0.04;
@@ -84,7 +82,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
         { label: "Cybersecurity (bwCIRT)", href: "https://www.cirt.org.bw/about" },
         { label: "UASF Programs", href: "/uasf" },
         { label: "Network Coverage Map", href: "/map" },
-        { label: "File a Complaint", href: isLoggedIn ? "/portal/complaint/new" : "/login?redirect=/portal/complaint/new" },
+        { label: "File a Complaint", href: "/portal/complaint/new", secure: true },
         { label: "Privacy Policy", href: "/privacy" },
       ],
     },
@@ -93,7 +91,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
       href: "/licensing",
       children: [
         { label: "Licensing Overview", href: "/licensing" },
-        { label: "Apply for Licence", href: applyLoginHref },
+        { label: "Apply for Licence", href: "/licensing", secure: true },
         { label: "Check Licence Status", href: "/verify" },
         { label: "Documents Checklist", href: "/documents" },
       ],
@@ -108,7 +106,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
     ["Consumer Protection", "/consumer"],
     ["QoS Dashboard", "/qos"],
     ["Type Approval", "https://typeapproval.bocra.org.bw/"],
-    ["Apply for Licence", applyLoginHref],
+    ["Apply for Licence", "/licensing", true],
     ["Check Licence Status", "/verify"],
     ["Coverage Map", "/map"],
     ["News", "/news"],
@@ -202,6 +200,8 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                           setActiveDropdown((prev) =>
                             prev === link.label ? null : link.label
                           );
+                        } else if (link.secure && !requireAuth(link.href)) {
+                          event.preventDefault();
                         }
                       },
                       onMouseEnter: (event) => {
@@ -310,6 +310,12 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                         const handleMouseLeave = (event) => {
                           event.currentTarget.style.background = "transparent";
                         };
+                        const handleClick = (event) => {
+                          setActiveDropdown(null);
+                          if (child.secure && !requireAuth(child.href)) {
+                            event.preventDefault();
+                          }
+                        };
 
                         return isChildExternal ? (
                           <a
@@ -320,6 +326,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                             style={childStyle}
                             onMouseEnter={handleMouseEnter}
                             onMouseLeave={handleMouseLeave}
+                            onClick={() => setActiveDropdown(null)}
                           >
                             {child.label}
                           </a>
@@ -328,6 +335,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                             key={child.label}
                             to={child.href}
                             style={childStyle}
+                            onClick={handleClick}
                             onMouseEnter={handleMouseEnter}
                             onMouseLeave={handleMouseLeave}
                           >
@@ -660,10 +668,15 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                 animation: "mobileNavDropIn 0.22s ease",
               }}
             >
-              {mobileMenuLinks.map(([label, href]) => {
+              {mobileMenuLinks.map(([label, href, secure]) => {
                 const isExternal = href.startsWith("http");
                 const commonProps = {
-                  onClick: () => setOpen(false),
+                  onClick: (e) => {
+                    setOpen(false);
+                    if (secure && !requireAuth(href)) {
+                      e.preventDefault();
+                    }
+                  },
                   style: {
                     display: "block",
                     padding: "12px 16px",

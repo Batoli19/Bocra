@@ -13,20 +13,15 @@ import Spinner from "../shared/Spinner";
 import { mockFetch } from "../../utils/mockFetch";
 import { formatDate } from "../../utils/formatDate";
 import { useHomeChat } from "../shared/PageWrapper";
+import { useAuth } from "../../hooks/useAuth";
 const portalHeroImage = '/hero-complaints.webp';
 import newsImageOne from "../../../07-03-2026_government-addresses-fuel-security-concerns-_1772892887_image_main_90430.jpg";
 import newsImageTwo from "../../../24-03-2026_lobatse-council-to-maximise-existing-revenue-streams_1774335125_image_main_90697.jpeg";
 
-const authHref = (dst) =>
-  JSON.parse(localStorage.getItem("bocra_user") || "null")
-    ? dst
-    : `/login?redirect=${dst}`;
-const applyLicenceHref = authHref("/licensing");
-
 const quickActions = [
-  { label: "File a Complaint", to: authHref("/portal/complaint/new") },
-  { label: "Apply for Licence", to: applyLicenceHref },
-  { label: "Track Your Case", to: authHref("/portal/complaints") },
+  { label: "File a Complaint", to: "/portal/complaint/new", secure: true },
+  { label: "Apply for Licence", to: "/licensing", secure: true },
+  { label: "Track Your Case", to: "/portal/complaints", secure: true },
 ];
 
 const stats = [
@@ -42,12 +37,14 @@ const services = [
     description: "Report telecom, postal, or broadcasting issues",
     to: "/portal/complaint/new",
     icon: FileText,
+    secure: true,
   },
   {
     title: "Apply for Licence",
     description: "Start a new licence application online",
-    to: applyLicenceHref,
+    to: "/licensing",
     icon: Award,
+    secure: true,
   },
   {
     title: "Verify a Licence",
@@ -145,6 +142,7 @@ export default function HomePageSections() {
   const [statCounts, setStatCounts] = useState({ resolved: 0, active: 0 });
   const statsRef = useRef(null);
   const homeChat = useHomeChat();
+  const { requireAuth } = useAuth();
   const setShowHint = homeChat?.setShowHint;
   const chatDismissed = homeChat?.chatDismissed;
 
@@ -259,8 +257,17 @@ export default function HomePageSections() {
           <div className="home-sections-shell">
             <SectionLabel>Quick Actions</SectionLabel>
             <div>
-              {quickActions.map(({ label, to }) => (
-                <Link key={label} to={to} className="home-quick-link">
+              {quickActions.map(({ label, to, secure }) => (
+                <Link 
+                  key={label} 
+                  to={to} 
+                  className="home-quick-link"
+                  onClick={(e) => {
+                    if (secure && !requireAuth(to)) {
+                      e.preventDefault();
+                    }
+                  }}
+                >
                   <span className="home-quick-text">{label}</span>
                   <ArrowRight className="home-quick-arrow" size={22} />
                 </Link>
@@ -300,8 +307,17 @@ export default function HomePageSections() {
             <div className="home-services-columns">
               {serviceColumns.map((column, index) => (
                 <div key={`column-${index}`} className="home-services-column">
-                  {column.map(({ title, description, to, icon: Icon }) => (
-                    <Link key={title} to={to} className="home-service-row">
+                  {column.map(({ title, description, to, icon: Icon, secure }) => (
+                    <Link 
+                      key={title} 
+                      to={to} 
+                      className="home-service-row"
+                      onClick={(e) => {
+                        if (secure && !requireAuth(to)) {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
                       <div className="home-service-icon-box">
                         <Icon size={20} />
                       </div>
