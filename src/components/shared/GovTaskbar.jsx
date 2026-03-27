@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, X, Globe, CheckCircle, Shield, Radio, DollarSign, Map, Zap, MailWarning, Menu } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import bocraSvg from '../../assets/bocra.svg';
+import { useAuth } from '../../hooks/useAuth';
 
 const missingServices = [
   {
@@ -68,6 +69,7 @@ export default function GovTaskbar() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const inputRef = useRef(null);
   const navigate = useNavigate();
+  const { requireAuth } = useAuth();
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -235,6 +237,8 @@ export default function GovTaskbar() {
                     onClick={() => {
                       if (service.to.startsWith("http")) {
                         window.open(service.to, "_blank", "noopener,noreferrer");
+                      } else if (service.to === '/licensing' || service.to === '/portal/complaint/new' || service.to.startsWith('/portal/')) {
+                        requireAuth(service.to);
                       } else {
                         navigate(service.to);
                       }

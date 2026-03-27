@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import bocraSvg from '../../assets/bocra.svg'
+import { useAuth } from '../../hooks/useAuth'
 
 const footerLinkStyle = {
   color: 'rgba(255,255,255,0.68)',
@@ -9,6 +10,7 @@ const footerLinkStyle = {
 }
 
 export default function Footer() {
+  const { requireAuth } = useAuth();
   return (
     <footer
       style={{
@@ -105,13 +107,22 @@ export default function Footer() {
             >
               Services
             </p>
-            {[['Licensing', '/licensing'], ['File a Complaint', '/portal/complaint/new'], ['Documents', '/documents'], ['Verify Licence', '/verify'], ['Coverage Map', '/map']].map(([label, href]) => (
-              <div key={href}>
-                <Link to={href} style={footerLinkStyle}>
-                  {label}
-                </Link>
-              </div>
-            ))}
+            {[['Licensing', '/licensing'], ['File a Complaint', '/portal/complaint/new'], ['Documents', '/documents'], ['Verify Licence', '/verify'], ['Coverage Map', '/map']].map(([label, href]) => {
+              const secure = href === '/licensing' || href === '/portal/complaint/new';
+              return (
+                <div key={href}>
+                  {secure ? (
+                    <a href={href} onClick={(e) => { e.preventDefault(); requireAuth(href); }} style={footerLinkStyle}>
+                      {label}
+                    </a>
+                  ) : (
+                    <Link to={href} style={footerLinkStyle}>
+                      {label}
+                    </Link>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           <div>

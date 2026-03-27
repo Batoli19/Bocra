@@ -6,6 +6,7 @@ import { matchIntent } from "./intentRouter";
 import { matchKb } from "./kbRouter";
 import { KB_ENTRIES } from "./kbData";
 import licenceTypes from "../data/licenceTypes.json";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function ChatBubble({ showHint = false, expanded = false, forceOpen = expanded, onClose }) {
   const [open, setOpen] = useState(false);
@@ -29,6 +30,15 @@ export default function ChatBubble({ showHint = false, expanded = false, forceOp
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { requireAuth } = useAuth();
+  
+  const handleInternalNavigation = (href) => {
+    if (href === '/licensing' || href === '/portal/complaint/new' || href.startsWith('/portal/')) {
+      requireAuth(href);
+    } else {
+      navigate(href);
+    }
+  };
   const [chipMode, setChipMode] = useState(null);
   const FAQ_QUESTIONS = [
     "What services do you offer?",
@@ -350,7 +360,7 @@ export default function ChatBubble({ showHint = false, expanded = false, forceOp
 
     if (context.pendingAction && (isYes(text) || isThereRequest(text))) {
       if (isInternalHref(context.pendingAction.href)) {
-        navigate(context.pendingAction.href);
+        handleInternalNavigation(context.pendingAction.href);
         pushBotRich({
           text: `Opening ${context.pendingAction.label}.`,
           sources: context.pendingAction.sources,
@@ -926,7 +936,7 @@ export default function ChatBubble({ showHint = false, expanded = false, forceOp
                     {msg.text}
                     {msg.action && isInternalHref(msg.action.href) && (
                       <button
-                        onClick={() => navigate(msg.action.href)}
+                        onClick={() => handleInternalNavigation(msg.action.href)}
                         style={{
                           display: "inline-block",
                           marginTop: 8,

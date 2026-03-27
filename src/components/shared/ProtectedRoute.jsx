@@ -1,13 +1,25 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
+import { useEffect, useState } from 'react'
 
 export default function ProtectedRoute({ role }) {
-  const { isLoggedIn, role: userRole } = useAuth()
+  const { isLoggedIn, role: userRole, requireAuth } = useAuth()
   const location = useLocation()
+  const [redirectHome, setRedirectHome] = useState(false)
+
+  useEffect(() => {
+    if (!isLoggedIn && !redirectHome) {
+      const targetUrl = location.pathname + location.search
+      requireAuth(targetUrl)
+      setRedirectHome(true)
+    }
+  }, [isLoggedIn, location, requireAuth, redirectHome])
 
   if (!isLoggedIn) {
-    const redirectUrl = encodeURIComponent(location.pathname + location.search)
-    return <Navigate to={`/login?redirect=${redirectUrl}`} replace />
+    if (redirectHome) {
+      return <Navigate to="/" replace />
+    }
+    return null
   }
   
   if (role && userRole !== role) {
