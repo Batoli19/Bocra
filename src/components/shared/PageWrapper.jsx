@@ -25,6 +25,9 @@ export default function PageWrapper({
           display:'flex',
           flexDirection:'column',
           background:'#f8fafc',
+          width: '100%',
+          overflowX: 'hidden',
+          boxSizing: 'border-box',
           ...wrapperStyle,
         }}
       >

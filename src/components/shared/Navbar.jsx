@@ -124,13 +124,17 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
             backdropFilter: "blur(18px) saturate(180%)",
             WebkitBackdropFilter: "blur(18px) saturate(180%)",
             borderRadius: isMobile ? 28 : 999,
-            padding: isMobile ? "10px 12px 10px 16px" : "10px 10px 10px 24px",
+            padding: isMobile ? "10px 16px" : "10px 24px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             boxShadow: navShadow,
             border: navBorder,
             transition: "background 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease",
+            maxWidth: '1280px',
+            margin: '0 auto',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
           <Link

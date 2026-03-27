@@ -39,7 +39,7 @@ export default function NewsPage() {
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
           />
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(5, 8, 22, 0.58) 0%, rgba(5, 8, 22, 0.36) 40%, rgba(5, 8, 22, 0.72) 100%)" }} />
-          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "96px 24px 64px", position: "relative", zIndex: 1 }}>
+          <div style={{ maxWidth: 1280, margin: "0 auto", padding: "96px 24px 64px", position: "relative", zIndex: 1, width: "100%", boxSizing: "border-box" }}>
             <p
               style={{
                 fontSize: 11,
@@ -135,6 +135,8 @@ export default function NewsPage() {
                 maxWidth: 1280,
                 margin: "0 auto",
                 padding: "72px 24px",
+                width: "100%",
+                boxSizing: "border-box",
                 display: "grid",
                 gridTemplateColumns: "1fr 1fr",
                 gap: 80,
@@ -228,7 +230,7 @@ export default function NewsPage() {
           </div>
         )}
 
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px 96px" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto", padding: "0 24px 96px", width: "100%", boxSizing: "border-box" }}>
           <p
             style={{
               fontSize: 11,

@@ -155,6 +155,8 @@ function Shell({ children, style }) {
         maxWidth: 1280,
         margin: "0 auto",
         padding: "0 24px",
+        width: "100%",
+        boxSizing: "border-box",
         ...style,
       }}
     >
@@ -230,6 +232,8 @@ export default function AboutPage() {
             display: "flex",
             alignItems: "flex-end",
             minHeight: "100vh",
+            width: "100%",
+            overflowX: "hidden"
           }}
         >
           <div
@@ -727,6 +731,8 @@ export default function AboutPage() {
           max-width: 1280px;
           margin: 0 auto;
           padding: 0 24px;
+          width: 100%;
+          box-sizing: border-box;
         }
 
         .team-header-sticky {

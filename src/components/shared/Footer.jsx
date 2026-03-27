@@ -29,7 +29,7 @@ export default function Footer() {
             'linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0))',
         }}
       />
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '72px 24px 28px' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '72px 24px 28px', width: '100%', boxSizing: 'border-box' }}>
         <div
           style={{
             display: 'grid',

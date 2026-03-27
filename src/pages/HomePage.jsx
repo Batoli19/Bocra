@@ -53,6 +53,8 @@ export default function HomePage() {
         ref={sectionRef}
         style={{
           background: "#ffffff",
+          width: "100%",
+          overflowX: "hidden"
         }}
       >
         <div

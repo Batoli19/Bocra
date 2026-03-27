@@ -25,21 +25,6 @@ ChartJS.register(
   LineElement,
   BarElement,
   ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-)
-
-const shellStyle = {
-  maxWidth: 1400,
-  margin: '0 auto',
-  padding: '0 40px',
-}
-
-const palette = {
-  ink: '#111111',
-  muted: '#6b7280',
   border: '#e5e7eb',
   navy: '#1A3A6B',
   hero: '#0a1628',
@@ -379,7 +364,7 @@ export default function QoSPage() {
   return (
     <PageWrapper fullWidth>
       <style>{`
-        .qos-page { width: 100%; background: #ffffff; }
+        .qos-page { width: 100%; background: #ffffff; overflow-x: hidden; box-sizing: border-box; }
         .qos-hero {
           position: relative;
           overflow: hidden;
