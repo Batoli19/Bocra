@@ -12,6 +12,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import PageWrapper from "../components/shared/PageWrapper";
+import { useAuth } from "../hooks/useAuth";
 
 const issueOptions = [
   {
@@ -132,6 +133,7 @@ function Shell({ children, style }) {
 
 export default function ConsumerPage() {
   const navigate = useNavigate();
+  const { requireAuth } = useAuth();
   const [step, setStep] = useState(1);
   const [issue, setIssue] = useState(null);
   const [provider, setProvider] = useState("");
@@ -233,7 +235,7 @@ export default function ConsumerPage() {
                 <div className="consumer-button-row" style={{ marginTop: 34 }}>
                   <button
                     type="button"
-                    onClick={() => navigate("/portal/complaint/new")}
+                    onClick={() => requireAuth("/portal/complaint/new")}
                     className="consumer-primary-button"
                   >
                     <span>File a Complaint</span>
@@ -413,7 +415,7 @@ export default function ConsumerPage() {
                   >
                     <button
                       type="button"
-                      onClick={() => navigate("/portal/complaint/new")}
+                      onClick={() => requireAuth("/portal/complaint/new")}
                       className="consumer-primary-button"
                     >
                       <span>File This Complaint Now</span>
@@ -560,14 +562,22 @@ export default function ConsumerPage() {
         <section style={{ padding: "64px 0", background: "#ffffff" }}>
           <Shell>
             <div className="consumer-action-strip">
-              <Link to="/portal/complaint/new" className="consumer-action-row">
+              <button 
+                onClick={() => requireAuth("/portal/complaint/new")} 
+                className="consumer-action-row"
+                style={{ background: 'none', border: 'none', width: '100%', cursor: 'pointer', textAlign: 'left', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              >
                 <span>File a Complaint</span>
                 <ChevronRight size={18} />
-              </Link>
-              <Link to="/portal/complaints" className="consumer-action-row">
+              </button>
+              <button 
+                onClick={() => requireAuth("/portal/complaints")} 
+                className="consumer-action-row"
+                style={{ background: 'none', border: 'none', width: '100%', cursor: 'pointer', textAlign: 'left', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              >
                 <span>Track My Complaint</span>
                 <ChevronRight size={18} />
-              </Link>
+              </button>
               <Link to="/contact" className="consumer-action-row">
                 <span>Contact BOCRA</span>
                 <ChevronRight size={18} />

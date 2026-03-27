@@ -18,7 +18,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
   const [profileOpen, setProfileOpen] = useState(false);
   const location = useLocation();
   const language = useLanguage();
-  const { isLoggedIn, user, logout } = useAuth();
+  const { isLoggedIn, user, logout, requireAuth } = useAuth();
   const lang = language?.lang || "en";
   const setLang = language?.setLang;
 
@@ -62,7 +62,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
     return name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase();
   };
 
-  const applyLoginHref = "/login?redirect=/portal/apply&force=1";
+  const applyLoginHref = isLoggedIn ? "/licensing" : "/login?redirect=/licensing&force=1";
   const navBackgroundAlpha = 1 - scrollProgress * 0.78;
   const navBorderAlpha = 0.07 - scrollProgress * 0.03;
   const navShadowAlpha = 0.09 - scrollProgress * 0.04;
@@ -392,8 +392,9 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
               <Search size={16} />
             </Link>
 
-            <Link
-              to={isLoggedIn ? "/portal/complaint/new" : "/login?redirect=/portal/complaint/new"}
+            <button
+              type="button"
+              onClick={() => requireAuth("/portal/complaint/new")}
               style={{
                 padding: isMobile ? "8px 14px" : "10px 20px",
                 borderRadius: 999,
@@ -401,12 +402,12 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                 fontWeight: 600,
                 color: "#ffffff",
                 background: "#050505",
-                textDecoration: "none",
+                border: "1px solid rgba(255,255,255,0.08)",
+                cursor: "pointer",
                 fontFamily: "'DM Sans', sans-serif",
                 transition: "background 0.2s, transform 0.15s",
                 whiteSpace: "nowrap",
                 letterSpacing: "0.01em",
-                border: "1px solid rgba(255,255,255,0.08)",
               }}
               onMouseEnter={(event) => {
                 event.currentTarget.style.background = "#111827";
@@ -418,9 +419,9 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
               }}
             >
               {isMobile ? "Complaint" : "File Complaint"}
-            </Link>
+            </button>
 
-            {isLoggedIn && user && (
+            {isLoggedIn && user ? (
               <div style={{ position: "relative" }}>
                 <button
                   type="button"
@@ -531,6 +532,89 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
                         <LogOut size={18} color="#dc2626" />
                         Sign Out
                       </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div style={{ position: "relative" }}>
+                <button
+                  type="button"
+                  onClick={() => setProfileOpen((prev) => !prev)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: "4px",
+                    borderRadius: 999,
+                    background: "rgba(0,0,0,0.03)",
+                    border: "1px solid rgba(0,0,0,0.05)",
+                    cursor: "pointer",
+                    transition: "background 0.2s",
+                  }}
+                  title="Guest Mode"
+                >
+                  <div
+                    style={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: "50%",
+                      background: "#f1f5f9",
+                      color: "#000000",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <User size={16} />
+                  </div>
+                </button>
+
+                {profileOpen && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "calc(100% + 12px)",
+                      right: 0,
+                      width: 260,
+                      background: "#ffffff",
+                      borderRadius: 20,
+                      boxShadow: "0 16px 48px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06)",
+                      border: "1px solid rgba(0,0,0,0.06)",
+                      padding: 16,
+                      zIndex: 100,
+                      animation: "dropIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                    }}
+                  >
+                    <div style={{ padding: "0 8px 16px", borderBottom: "1px solid #f1f5f9", marginBottom: 12 }}>
+                      <div style={{ fontSize: 13, color: "#64748b", marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>Guest Mode</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Welcome to BOCRA</div>
+                      <div style={{ fontSize: 13, color: "#64748b", marginTop: 2, fontFamily: "'Inter', sans-serif" }}>Sign in for full access</div>
+                    </div>
+                    
+                    <div style={{ display: "grid", gap: 4 }}>
+                      <Link
+                        to="/login"
+                        onClick={() => setProfileOpen(false)}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: "100%",
+                          padding: "10px 12px",
+                          borderRadius: 12,
+                          color: "#ffffff",
+                          background: "#1A3A6B",
+                          textDecoration: "none",
+                          fontSize: 14,
+                          fontWeight: 500,
+                          fontFamily: "'Inter', sans-serif",
+                          transition: "background 0.15s",
+                          textAlign: "center",
+                        }}
+                      >
+                        Sign In / Register
+                      </Link>
                     </div>
                   </div>
                 )}

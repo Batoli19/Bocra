@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AlertCircle, ArrowRight, Building2, Check, CheckCircle, CheckCircle2, Globe, Landmark, Mail, Package, Radio, Search, Shield, Signal, Tv, User, Wifi } from 'lucide-react'
 import PageWrapper from '../components/shared/PageWrapper'
+import { useAuth } from '../hooks/useAuth'
 
 const tabs = [
   { id: 'finder', label: 'Find My Licence' },
@@ -735,6 +736,7 @@ function formatBwp(value) {
 
 export default function LicensingPage() {
   const navigate = useNavigate()
+  const { requireAuth } = useAuth()
   const [activeTab, setActiveTab] = useState('finder')
 
   useEffect(() => {
@@ -817,8 +819,7 @@ export default function LicensingPage() {
   }
 
   const handleStartApplication = () => {
-    setActiveTab('apply')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    requireAuth('/portal/apply')
   }
 
   const handleStep1Continue = () => {
@@ -994,7 +995,13 @@ export default function LicensingPage() {
                   <button
                     key={tab.id}
                     type="button"
-                    onClick={() => setActiveTab(tab.id)}
+                    onClick={() => {
+                      if (tab.id === 'apply') {
+                        requireAuth('/portal/apply')
+                      } else {
+                        setActiveTab(tab.id)
+                      }
+                    }}
                     className={`licensing-hero-tab${isActive ? ' is-active' : ''}`}
                     style={{
                       border: 'none',

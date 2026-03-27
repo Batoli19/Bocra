@@ -13,6 +13,7 @@ function readStoredUser() {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => readStoredUser())
+  const [authModalTarget, setAuthModalTarget] = useState(null)
 
   const persistUser = (nextUser) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser))
@@ -64,8 +65,34 @@ export function AuthProvider({ children }) {
     setUser(null)
   }
 
+  const requireAuth = (targetUrl) => {
+    if (user) {
+      window.location.href = targetUrl;
+      return true;
+    } else {
+      setAuthModalTarget(targetUrl);
+      return false;
+    }
+  }
+
+  const closeAuthModal = () => {
+    setAuthModalTarget(null);
+  }
+
+  const contextValue = {
+    user,
+    role: user?.role || null,
+    isLoggedIn: !!user,
+    login,
+    register,
+    logout,
+    authModalTarget,
+    requireAuth,
+    closeAuthModal
+  };
+
   return (
-    <AuthContext.Provider value={{ user, role: user?.role || null, isLoggedIn: !!user, login, register, logout }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   )
