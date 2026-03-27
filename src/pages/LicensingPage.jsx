@@ -740,8 +740,10 @@ export default function LicensingPage() {
   const [activeTab, setActiveTab] = useState('finder')
 
   useEffect(() => {
-    // Authentication removed for application flow as requested
-  }, [activeTab, navigate])
+    if (activeTab === 'apply') {
+      requireAuth('/licensing')
+    }
+  }, [activeTab, requireAuth])
 
   const [q1, setQ1] = useState('')
   const [q2, setQ2] = useState('')

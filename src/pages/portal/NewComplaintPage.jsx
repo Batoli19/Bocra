@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Check, CheckCircle, Clock, DollarSign, HelpCircle, PhoneOff, Shield, ShieldX, WifiOff, Zap } from 'lucide-react'
 import PageWrapper from '../../components/shared/PageWrapper'
 import { useComplaints } from '../../context/ComplaintContext'
+import { sanitize } from '../../utils/sanitize'
 
 const steps = [
   { number: 1, label: 'Your Details' },
@@ -163,7 +164,11 @@ export default function NewComplaintPage() {
   const handleSubmit = () => {
     if (!agreed) { setError('You must confirm the accuracy of your complaint and consent to data processing before submitting'); return }
     setError('')
-    const ref = addComplaint(formData)
+    const ref = addComplaint({
+      ...formData,
+      name: sanitize(formData.name),
+      description: sanitize(formData.description),
+    })
     setSubmittedRef(ref)
     setStep('success')
   }

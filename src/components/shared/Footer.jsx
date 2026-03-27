@@ -137,6 +137,27 @@ export default function Footer() {
           </div>
         </div>
 
+        <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', marginTop: 32, paddingTop: 24 }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, justifyContent: 'center', marginBottom: 20 }}>
+            {[
+              '🔒 SSL Encrypted',
+              '🛡️ DPA 2018 Compliant',
+              '♿ WCAG 2.1 AA',
+              '🔐 ISO 27001 Aligned',
+              '✅ BOCRA Verified',
+            ].map(label => (
+              <span key={label} style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 50, padding: '5px 14px', fontSize: 11, color: 'rgba(255,255,255,0.65)', fontWeight: 500 }}>
+                {label}
+              </span>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 20, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <a href="/privacy" style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>Privacy Policy</a>
+            <a href="/security" style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>Security</a>
+            <a href="/contact" style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', textDecoration: 'none' }}>Contact</a>
+          </div>
+        </div>
+
         <div
           style={{
             paddingTop: 28,

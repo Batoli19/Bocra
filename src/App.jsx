@@ -5,6 +5,8 @@ import PageLoader from './components/shared/PageLoader'
 import GuestAuthModal from './components/shared/GuestAuthModal'
 import ScrollToTop from './components/shared/ScrollToTop'
 import Spinner from './components/shared/Spinner'
+import PolicyPage from './pages/PolicyPage'
+import SecurityPage from './pages/SecurityPage'
 
 const HomePage = lazy(() => import('./pages/HomePage'))
 const AboutPage = lazy(() => import('./pages/AboutPage'))
@@ -79,6 +81,8 @@ export default function App() {
           <Route path="/register"      element={<RegisterPage />} />
           <Route path="/complaint"     element={<Navigate to="/portal/complaint/new" replace />} />
           <Route path="/complaints"    element={<Navigate to="/portal/complaints" replace />} />
+          <Route path="/privacy"       element={<PolicyPage />} />
+          <Route path="/security"      element={<SecurityPage />} />
 
           <Route path="/portal" element={<ProtectedRoute role="citizen" />}>
             <Route index                element={<DashboardPage />} />

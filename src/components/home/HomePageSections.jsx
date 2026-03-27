@@ -21,7 +21,7 @@ const authHref = (dst) =>
   JSON.parse(localStorage.getItem("bocra_user") || "null")
     ? dst
     : `/login?redirect=${dst}`;
-const applyLicenceHref = "/licensing";
+const applyLicenceHref = authHref("/licensing");
 
 const quickActions = [
   { label: "File a Complaint", to: authHref("/portal/complaint/new") },

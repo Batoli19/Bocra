@@ -203,6 +203,11 @@ export default function LoginPage() {
                 <ArrowRight size={16} />
               </button>
 
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 16 }}>
+                <span style={{ fontSize: 12 }}>🔒</span>
+                <span style={{ fontSize: 11, color: '#9ca3af' }}>256-bit SSL encrypted · DPA 2018 compliant</span>
+              </div>
+
               <button type="button" className="login-submit" onClick={handleDemoMode}>
                 <span>Skip to Demo Mode</span>
                 <ArrowRight size={16} />

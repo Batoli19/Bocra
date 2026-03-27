@@ -85,6 +85,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
         { label: "UASF Programs", href: "/uasf" },
         { label: "Network Coverage Map", href: "/map" },
         { label: "File a Complaint", href: isLoggedIn ? "/portal/complaint/new" : "/login?redirect=/portal/complaint/new" },
+        { label: "Privacy Policy", href: "/privacy" },
       ],
     },
     {
