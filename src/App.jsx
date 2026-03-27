@@ -76,12 +76,12 @@ export default function App() {
           <Route path="/login"         element={<LoginPage />} />
           <Route path="/register"      element={<RegisterPage />} />
           <Route path="/complaint"     element={<Navigate to="/portal/complaint/new" replace />} />
-          <Route path="/complaints"    element={<Navigate to="/portal/complaint/new" replace />} />
-          <Route path="/portal/complaint/new" element={<NewComplaintPage />} />
-          <Route path="/portal/complaints" element={<ComplaintTrackerPage />} />
+          <Route path="/complaints"    element={<Navigate to="/portal/complaints" replace />} />
 
           <Route path="/portal" element={<ProtectedRoute role="citizen" />}>
             <Route index                element={<DashboardPage />} />
+            <Route path="complaint/new" element={<NewComplaintPage />} />
+            <Route path="complaints"    element={<ComplaintTrackerPage />} />
             <Route path="complaint/:id" element={<ComplaintDetailPage />} />
             <Route path="apply"         element={<ApplyPage />} />
             <Route path="applications"  element={<ApplicationsPage />} />

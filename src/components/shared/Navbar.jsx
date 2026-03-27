@@ -3,7 +3,7 @@
 
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Search, X, Menu, Globe } from "lucide-react";
+import { Search, X, Menu, Globe, LogOut, ChevronDown, User, LayoutDashboard } from "lucide-react";
 import bocraSvg from "../../assets/bocra.svg";
 import ChatBubble from "../../chatbot/ChatBubble";
 import { useLanguage } from "../../hooks/useLanguage";
@@ -15,9 +15,10 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [open, setOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [profileOpen, setProfileOpen] = useState(false);
   const location = useLocation();
   const language = useLanguage();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, user, logout } = useAuth();
   const lang = language?.lang || "en";
   const setLang = language?.setLang;
 
@@ -48,7 +49,18 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
   useEffect(() => {
     setOpen(false);
     setActiveDropdown(null);
+    setProfileOpen(false);
   }, [location.pathname]);
+
+  const handleLogout = () => {
+    logout();
+    setProfileOpen(false);
+  };
+
+  const getUserInitials = (name) => {
+    if (!name) return "U";
+    return name.split(" ").map(n => n[0]).join("").substring(0, 2).toUpperCase();
+  };
 
   const applyLoginHref = "/login?redirect=/portal/apply&force=1";
   const navBackgroundAlpha = 1 - scrollProgress * 0.78;
@@ -407,6 +419,123 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
             >
               {isMobile ? "Complaint" : "File Complaint"}
             </Link>
+
+            {isLoggedIn && user && (
+              <div style={{ position: "relative" }}>
+                <button
+                  type="button"
+                  onClick={() => setProfileOpen((prev) => !prev)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    padding: isMobile ? "4px" : "4px 10px 4px 4px",
+                    borderRadius: 999,
+                    background: "rgba(0,0,0,0.03)",
+                    border: "1px solid rgba(0,0,0,0.05)",
+                    cursor: "pointer",
+                    transition: "background 0.2s",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 30,
+                      height: 30,
+                      borderRadius: "50%",
+                      background: "#1A3A6B",
+                      color: "#ffffff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      fontFamily: "'Inter', sans-serif",
+                    }}
+                  >
+                    {getUserInitials(user.name)}
+                  </div>
+                  {!isMobile && (
+                    <ChevronDown size={14} color="#1A3A6B" style={{ transform: profileOpen ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }} />
+                  )}
+                </button>
+
+                {profileOpen && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "calc(100% + 12px)",
+                      right: 0,
+                      width: 260,
+                      background: "#ffffff",
+                      borderRadius: 20,
+                      boxShadow: "0 16px 48px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06)",
+                      border: "1px solid rgba(0,0,0,0.06)",
+                      padding: 16,
+                      zIndex: 100,
+                      animation: "dropIn 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
+                    }}
+                  >
+                    <div style={{ padding: "0 8px 16px", borderBottom: "1px solid #f1f5f9", marginBottom: 12 }}>
+                      <div style={{ fontSize: 13, color: "#64748b", marginBottom: 4, fontFamily: "'Inter', sans-serif" }}>Welcome back,</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#0f172a", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{user.name}</div>
+                      <div style={{ fontSize: 13, color: "#64748b", marginTop: 2, fontFamily: "'Inter', sans-serif" }}>{user.email || user.phone || 'Citizen Portal'}</div>
+                    </div>
+                    
+                    <div style={{ display: "grid", gap: 4 }}>
+                      <Link
+                        to="/portal"
+                        onClick={() => setProfileOpen(false)}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          padding: "10px 12px",
+                          borderRadius: 12,
+                          color: "#1e293b",
+                          textDecoration: "none",
+                          fontSize: 14,
+                          fontWeight: 500,
+                          fontFamily: "'Inter', sans-serif",
+                          transition: "background 0.15s",
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = "#f1f5f9"}
+                        onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                      >
+                        <LayoutDashboard size={18} color="#1A3A6B" />
+                        My Dashboard
+                      </Link>
+                      
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 12,
+                          padding: "10px 12px",
+                          borderRadius: 12,
+                          color: "#dc2626",
+                          background: "transparent",
+                          border: "none",
+                          fontSize: 14,
+                          fontWeight: 500,
+                          fontFamily: "'Inter', sans-serif",
+                          cursor: "pointer",
+                          transition: "background 0.15s",
+                          textAlign: "left",
+                          width: "100%",
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = "#fef2f2"}
+                        onMouseLeave={(e) => e.currentTarget.style.background = "transparent"}
+                      >
+                        <LogOut size={18} color="#dc2626" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
 
             <button
               type="button"
