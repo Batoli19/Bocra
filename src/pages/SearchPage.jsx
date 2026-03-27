@@ -27,7 +27,7 @@ const searchData = [
   {
     title: 'Type Approval',
     desc: 'Check if your device is certified',
-    route: '/type-approval',
+    route: 'https://typeapproval.bocra.org.bw/',
     icon: 'CheckSquare',
   },
   {
@@ -63,7 +63,7 @@ const searchData = [
   {
     title: 'Cybersecurity (bwCIRT)',
     desc: 'Report cyber incidents and threats',
-    route: '/cirt',
+    route: 'https://www.cirt.org.bw/about',
     icon: 'Shield',
   },
   {
@@ -82,12 +82,12 @@ const searchData = [
 
 const popularServices = [
   { label: '.bw Domain Registry', icon: 'FileText', route: '/documents' },
-  { label: 'Type Approval', icon: 'CheckSquare', route: '/type-approval' },
+  { label: 'Type Approval', icon: 'CheckSquare', route: 'https://typeapproval.bocra.org.bw/' },
   { label: 'UASF Portal', icon: 'Building2', route: '/uasf' },
   { label: 'Spectrum Management', icon: 'Radio', route: '/spectrum' },
   { label: 'File a Complaint', icon: 'AlertCircle', route: '/portal/complaint/new' },
   { label: 'Network Coverage Map', icon: 'Map', route: '/map' },
-  { label: 'Cybersecurity (bwCIRT)', icon: 'Shield', route: '/cirt' },
+  { label: 'Cybersecurity (bwCIRT)', icon: 'Shield', route: 'https://www.cirt.org.bw/about' },
   { label: 'Network Quality (QoS)', icon: 'BarChart2', route: '/qos' },
 ]
 
@@ -501,7 +501,13 @@ export default function SearchPage() {
                       key={result.route}
                       type="button"
                       className="search-overlay__result"
-                      onClick={() => navigate(result.route)}
+                      onClick={() => {
+                        if (result.route.startsWith('http')) {
+                          window.open(result.route, '_blank', 'noopener,noreferrer')
+                        } else {
+                          navigate(result.route)
+                        }
+                      }}
                     >
                       <span className="search-overlay__result-icon">
                         <Icon size={15} />
@@ -532,7 +538,13 @@ export default function SearchPage() {
                       key={service.label}
                       type="button"
                       className="search-overlay__pill"
-                      onClick={() => navigate(service.route)}
+                      onClick={() => {
+                        if (service.route.startsWith('http')) {
+                          window.open(service.route, '_blank', 'noopener,noreferrer')
+                        } else {
+                          navigate(service.route)
+                        }
+                      }}
                       style={
                         service.label === 'Type Approval' || service.label === 'Network Quality (QoS)'
                           ? {

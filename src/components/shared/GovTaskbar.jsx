@@ -15,7 +15,7 @@ const missingServices = [
     title: "Type Approval Database",
     desc: "Search for approved telecommunications and radio equipment.",
     icon: CheckCircle,
-    to: "/services/type-approval/database",
+    to: "https://typeapproval.bocra.org.bw/",
     color: "#1A3A6B"
   },
   {
@@ -43,7 +43,7 @@ const missingServices = [
     title: "Cybersecurity (BDRCS)",
     desc: "Report incidents and view national cybersecurity guidelines.",
     icon: Shield,
-    to: "/cybersecurity",
+    to: "https://www.cirt.org.bw/about",
     color: "#dc2626"
   },
   {
@@ -233,7 +233,11 @@ export default function GovTaskbar() {
                   <div
                     key={idx}
                     onClick={() => {
-                      navigate(service.to);
+                      if (service.to.startsWith("http")) {
+                        window.open(service.to, "_blank", "noopener,noreferrer");
+                      } else {
+                        navigate(service.to);
+                      }
                       setIsOpen(false);
                     }}
                     style={{
