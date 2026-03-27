@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import emailjs from '@emailjs/browser'
 import { useNavigate } from 'react-router-dom'
 import { Check, CheckCircle, Clock, DollarSign, HelpCircle, PhoneOff, Shield, ShieldX, WifiOff, Zap } from 'lucide-react'
 import PageWrapper from '../../components/shared/PageWrapper'
@@ -98,6 +99,7 @@ export default function NewComplaintPage() {
   const [step, setStep] = useState(1)
   const [focusedField, setFocusedField] = useState('')
   const [agreed, setAgreed] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [submittedRef, setSubmittedRef] = useState('')
   const [formData, setFormData] = useState({
     name: '',
@@ -147,6 +149,7 @@ export default function NewComplaintPage() {
     if (!formData.name?.trim()) { setError('Please enter your full name'); return }
     if (!formData.phone?.trim()) { setError('Please enter your phone number'); return }
     if (formData.phone?.trim().length < 7) { setError('Please enter a valid phone number'); return }
+    if (!formData.email?.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) { setError('Please enter a valid email address'); return }
     if (!formData.location?.trim()) { setError('Please enter your location'); return }
     setError('')
     setStep(2)
@@ -161,16 +164,43 @@ export default function NewComplaintPage() {
     setStep(3)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!agreed) { setError('You must confirm the accuracy of your complaint and consent to data processing before submitting'); return }
     setError('')
+    setIsSubmitting(true)
     const ref = addComplaint({
       ...formData,
       name: sanitize(formData.name),
       description: sanitize(formData.description),
     })
-    setSubmittedRef(ref)
-    setStep('success')
+
+    try {
+      if (import.meta.env.VITE_EMAILJS_PUBLIC_KEY) {
+        await emailjs.send(
+          import.meta.env.VITE_EMAILJS_SERVICE_ID,
+          import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+          {
+            user_name: formData.name,
+            user_email: formData.email,
+            isp_name: formData.isp,
+            ref_number: ref,
+          },
+          import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        )
+      } else {
+        console.warn('EmailJS Public Key not found. Skipping email confirmation.')
+      }
+      
+      // Only proceed to success if the email request didn't throw an error
+      setSubmittedRef(ref)
+      setStep('success')
+    } catch (err) {
+      console.error('Failed to send email confirmation:', err)
+      const errorMsg = err?.text || err?.message || 'Failed to send confirmation email. Check your EmailJS configuration.'
+      setError(`Email Delivery Failed: ${errorMsg}`)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -336,16 +366,22 @@ export default function NewComplaintPage() {
             </div>
 
             <div style={{ marginBottom: 24 }}>
-              <label style={labelStyle}>Email Address</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+                <label style={{ ...labelStyle, marginBottom: 0 }}>Email Address</label>
+                <span style={{ fontSize: 11, color: '#0F6E56', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>REQUIRED FOR CONFIRMATION</span>
+              </div>
               <input
                 type="email"
-                placeholder="Optional"
+                placeholder="Please use an actual email (for demonstration)"
                 value={formData.email}
                 onChange={(event) => updateField('email', event.target.value)}
                 onFocus={() => setFocusedField('email')}
                 onBlur={() => setFocusedField('')}
                 style={getFieldStyle('email')}
               />
+              <p style={{ margin: '6px 0 0', fontSize: 12, color: '#6b7280', fontFamily: 'Inter, sans-serif' }}>
+                A confirmation receipt will be sent instantly to this address.
+              </p>
             </div>
 
             <div style={{ marginBottom: 24 }}>
@@ -585,8 +621,8 @@ export default function NewComplaintPage() {
               <button type="button" onClick={() => setStep(2)} className="complaint-ghost-button" style={ghostButtonStyle}>
                 {'<- Edit'}
               </button>
-              <button type="button" onClick={handleSubmit} className="complaint-primary-button" style={primaryButtonStyle}>
-                {'Submit Complaint ->'}
+              <button disabled={isSubmitting} type="button" onClick={handleSubmit} className="complaint-primary-button" style={{ ...primaryButtonStyle, opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}>
+                {isSubmitting ? 'Sending Confirmation...' : 'Submit Complaint ->'}
               </button>
             </div>
           </section>
@@ -603,6 +639,13 @@ export default function NewComplaintPage() {
             <p style={{ margin: '8px 0 0', color: '#6b7280', fontSize: 16, lineHeight: 1.7, fontFamily: 'Inter, sans-serif' }}>
               BOCRA will review your complaint and respond within 48 hours.
             </p>
+
+            <div style={{ marginTop: 24, background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 12, padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+              <div style={{ width: 8, height: 8, background: '#22c55e', borderRadius: '50%' }} />
+              <p style={{ margin: 0, color: '#166534', fontSize: 14, fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>
+                An email confirmation has been sent to {formData.email}
+              </p>
+            </div>
 
             <div style={{ background: '#0a1628', borderRadius: 16, padding: 28, textAlign: 'center', marginTop: 32 }}>
               <p style={{ margin: '0 0 12px', color: 'rgba(255,255,255,0.4)', fontSize: 11, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>

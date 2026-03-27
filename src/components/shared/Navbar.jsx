@@ -2,7 +2,7 @@
 // Inspired by Cubex.com - floating pill nav + chat bubble
 
 import { useEffect, useState } from "react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { Search, X, Menu, Globe, LogOut, ChevronDown, User, LayoutDashboard } from "lucide-react";
 import bocraSvg from "../../assets/bocra.svg";
 import ChatBubble from "../../chatbot/ChatBubble";
@@ -17,6 +17,7 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const language = useLanguage();
   const { isLoggedIn, user, logout, requireAuth } = useAuth();
   const lang = language?.lang || "en";
@@ -403,7 +404,11 @@ export default function Navbar({ showHint = false, onChatClose, hideChat = false
 
             <button
               type="button"
-              onClick={() => requireAuth("/portal/complaint/new")}
+              onClick={() => {
+                if (requireAuth("/portal/complaint/new")) {
+                  navigate("/portal/complaint/new");
+                }
+              }}
               style={{
                 padding: isMobile ? "8px 14px" : "10px 20px",
                 borderRadius: 999,

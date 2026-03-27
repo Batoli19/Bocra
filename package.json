@@ -13,11 +13,14 @@
     "@tailwindcss/postcss": "^4.2.1"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "@vitejs/plugin-react": "^6.0.1",
     "axios": "^1.13.6",
     "chart.js": "^4.5.1",
+    "dotenv": "^17.3.1",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.577.0",
+    "pdfjs-dist": "^5.4.54",
     "react": "^19.2.4",
     "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.2.4",
@@ -25,7 +28,6 @@
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.13.1",
     "vite": "^8.0.0",
-    "world-map-country-shapes": "^1.0.0",
-    "pdfjs-dist": "^5.4.54"
+    "world-map-country-shapes": "^1.0.0"
   }
 }
