@@ -67,7 +67,6 @@ export function AuthProvider({ children }) {
 
   const requireAuth = (targetUrl) => {
     if (user) {
-      window.location.href = targetUrl;
       return true;
     } else {
       setAuthModalTarget(targetUrl);

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { AlertCircle, ArrowRight, Building2, Check, CheckCircle, CheckCircle2, Globe, Landmark, Mail, Package, Radio, Search, Shield, Signal, Tv, User, Wifi } from 'lucide-react'
 import PageWrapper from '../components/shared/PageWrapper'
 import { useAuth } from '../hooks/useAuth'
+import { useApplications } from '../context/ApplicationContext'
 
 const tabs = [
   { id: 'finder', label: 'Find My Licence' },
@@ -737,13 +738,23 @@ function formatBwp(value) {
 export default function LicensingPage() {
   const navigate = useNavigate()
   const { requireAuth } = useAuth()
-  const [activeTab, setActiveTab] = useState('finder')
+  const { applications, addApplication } = useApplications()
+  
+  const [searchParams, setSearchParams] = useSearchParams()
+  const activeTab = searchParams.get('tab') || 'finder'
+
+  const setActiveTab = (tab) => {
+    setSearchParams({ tab })
+  }
 
   useEffect(() => {
     if (activeTab === 'apply') {
-      requireAuth('/licensing')
+      const isAuth = requireAuth('/licensing?tab=apply')
+      if (!isAuth) {
+        setSearchParams({ tab: 'finder' }, { replace: true })
+      }
     }
-  }, [activeTab, requireAuth])
+  }, [activeTab, requireAuth, setSearchParams])
 
   const [q1, setQ1] = useState('')
   const [q2, setQ2] = useState('')
@@ -752,7 +763,6 @@ export default function LicensingPage() {
   const [appStep, setAppStep] = useState(1)
   const [appConsent, setAppConsent] = useState(false)
   const [submittedReference, setSubmittedReference] = useState('')
-  const [submittedApplications, setSubmittedApplications] = useState([])
   const [licenceType, setLicenceType] = useState('')
   const [technicalData, setTechnicalData] = useState({})
   const [appData, setAppData] = useState({
@@ -796,7 +806,7 @@ export default function LicensingPage() {
     setResult(licenceMap[key] || defaultLicence)
   }, [q1, q2, q3])
 
-  const allApplications = [...submittedApplications, ...mockApplications]
+  const allApplications = applications
   const normalizedRegistryQuery = searchQuery.trim().toLowerCase()
   const registryRows = registry.filter((entry) => {
     const matchesSearch = normalizedRegistryQuery ? entry.operator.toLowerCase().includes(normalizedRegistryQuery) : true
@@ -821,7 +831,7 @@ export default function LicensingPage() {
   }
 
   const handleStartApplication = () => {
-    requireAuth('/portal/apply')
+    setActiveTab('apply')
   }
 
   const handleStep1Continue = () => {
@@ -871,29 +881,16 @@ export default function LicensingPage() {
     }
     setError('')
 
-    const reference = `APP-BOCRA-2026-${String(Math.floor(1000 + Math.random() * 9000)).padStart(4, '0')}`
     const applicationRecord = {
-      ref: reference,
-      company: appData.legalBusinessName || 'New Applicant',
+      applicant: appData.legalBusinessName || 'New Applicant',
       type: licenceType || 'Class 3 Service Licence',
-      date: new Date().toISOString().split('T')[0],
-      status: 'Pending',
       ...appData,
       licenceType,
       technicalData,
     }
-    const submittedApplication = {
-      ...applicationRecord,
-      status: 'Application Received',
-      officer: 'Officer assignment pending',
-    }
 
-    if (typeof window !== 'undefined') {
-      const existingApplications = JSON.parse(localStorage.getItem('bocra_applications') || '[]')
-      localStorage.setItem('bocra_applications', JSON.stringify([applicationRecord, ...existingApplications]))
-    }
+    const { ref: reference, application: submittedApplication } = addApplication(applicationRecord)
 
-    setSubmittedApplications((prev) => [submittedApplication, ...prev])
     setSubmittedReference(reference)
     setTrackedApplication(submittedApplication)
     setTrackQuery(reference)
@@ -998,11 +995,7 @@ export default function LicensingPage() {
                     key={tab.id}
                     type="button"
                     onClick={() => {
-                      if (tab.id === 'apply') {
-                        requireAuth('/portal/apply')
-                      } else {
-                        setActiveTab(tab.id)
-                      }
+                      setActiveTab(tab.id)
                     }}
                     className={`licensing-hero-tab${isActive ? ' is-active' : ''}`}
                     style={{

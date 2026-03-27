@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { BarChart2, Bell, FileText, LayoutDashboard, Plus, Search, Settings, Users } from 'lucide-react'
 import bocraSvg from '../../assets/bocra.svg'
 import { useComplaints } from '../../context/ComplaintContext'
+import { useApplications } from '../../context/ApplicationContext'
 
 const dark = '#0a1628'
 const border = '#e5e7eb'
@@ -220,6 +221,7 @@ const initialsOf = (name) => name.split(' ').filter(Boolean).slice(0, 2).map((pa
 
 export default function AdminDashboardPage() {
   const { complaints, stats, updateStatus } = useComplaints()
+  const { applications: pendingApps, updateStatus: updateAppStatus } = useApplications()
   const [adminLoggedIn, setAdminLoggedIn] = useState(false)
   const [staffId, setStaffId] = useState('')
   const [password, setPassword] = useState('')
@@ -229,12 +231,6 @@ export default function AdminDashboardPage() {
   const [adminName, setAdminName] = useState('Demo Officer')
   const [licenceTab, setLicenceTab] = useState('Active Licences')
   const [licensees, setLicensees] = useState(registry)
-  const [pendingApps, setPendingApps] = useState(() => {
-    if (typeof window === 'undefined') {
-      return []
-    }
-    return JSON.parse(localStorage.getItem('bocra_applications') || '[]')
-  })
   const [complaintSearch, setComplaintSearch] = useState('')
   const [licenceSearch, setLicenceSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
@@ -263,6 +259,7 @@ export default function AdminDashboardPage() {
     item.operator.toLowerCase().includes(licenceSearch.toLowerCase()) &&
     (typeFilter === 'all' || item.type === typeFilter)
   ))
+  const activePending = pendingApps.filter(a => a.status !== 'Licence Issued' && a.status !== 'Rejected')
   const needsAttention = complaints.filter((complaint) => complaintMatchesSearch(complaint) && complaint.status === 'Pending').slice(0, 5)
   const recentActivity = complaints.filter((complaint) => complaintMatchesSearch(complaint) && complaint.status === 'Resolved').slice(-3).reverse()
 
@@ -277,26 +274,10 @@ export default function AdminDashboardPage() {
     { key: 'active', label: 'Active', value: licensees.filter((item) => item.status === 'Active').length },
     { key: 'renewal', label: 'Pending Renewal', value: licensees.filter((item) => item.status === 'Renewal Pending').length },
     { key: 'expired', label: 'Expired', value: licensees.filter((item) => item.status === 'Expired').length },
-    { key: 'applications', label: 'Applications', value: pendingApps.length },
+    { key: 'applications', label: 'Applications', value: pendingApps.filter(a => a.status === 'Application Received' || a.status === 'Document Verification' || a.status === 'Technical Assessment').length },
   ]
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('bocra_applications', JSON.stringify(pendingApps))
-    }
-  }, [pendingApps])
 
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return undefined
-    }
-
-    const interval = setInterval(() => {
-      setPendingApps(JSON.parse(localStorage.getItem('bocra_applications') || '[]'))
-    }, 3000)
-
-    return () => clearInterval(interval)
-  }, [])
 
   useEffect(() => {
     setPaymentConfirmed(false)
@@ -354,38 +335,38 @@ export default function AdminDashboardPage() {
     if (!approved) return
 
     const company = approved.company || approved.legalBusinessName || approved.applicant || 'Pending Applicant'
-    const licenceType = approved.licenceType || approved.type || approved.category || 'Class 3 Service Licence'
+    const licType = approved.licenceType || approved.type || approved.category || 'Class 3 Service Licence'
     const coverage = approved.coverageType || approved.coverage || 'National'
     const submitted = approved.date || approved.submitted || approved.createdAt || new Date().toISOString().slice(0, 10)
     const nextExpiry = `${new Date().getFullYear() + 5}-12-31`
 
     setLicensees((prev) => [
       {
-        ref: `LIC-2026-${String(prev.length + 1).padStart(3, '0')}`,
+        ref: approved.ref,
         operator: company,
-        type: licenceType === 'Internet Service Provider Licence'
+        type: licType === 'Internet Service Provider Licence'
           ? 'Internet Service Provider'
-          : licenceType.includes('Broadcast')
+          : licType.includes('Broadcast')
             ? 'Broadcasting'
-            : licenceType.includes('Postal') || licenceType.includes('Courier')
+            : licType.includes('Postal') || licType.includes('Courier')
               ? 'Postal Services'
-              : licenceType.includes('Telecommunications') || licenceType.includes('Network')
+              : licType.includes('Telecommunications') || licType.includes('Network')
                 ? 'Telecommunications'
-                : licenceType,
-        class: approved.licenceClass || approved.class || (licenceType.includes('Class 1') ? 'Class 1' : licenceType.includes('Class 2') ? 'Class 2' : licenceType.includes('Radio') ? 'Radio' : licenceType.includes('TV') ? 'TV' : 'Service'),
+                : licType,
+        class: approved.licenceClass || approved.class || (licType.includes('Class 1') ? 'Class 1' : licType.includes('Class 2') ? 'Class 2' : licType.includes('Radio') ? 'Radio' : licType.includes('TV') ? 'TV' : 'Service'),
         coverage,
         issued: submitted,
         expires: approved.expires || nextExpiry,
         status: 'Active',
-        fee: approved.fee || feeForType(licenceType),
+        fee: approved.fee || feeForType(licType),
       },
       ...prev,
     ])
-    setPendingApps((prev) => prev.filter((item) => (item.ref || item.id) !== ref))
+    updateAppStatus(ref, 'Licence Issued')
   }
 
   const rejectPendingApplication = (ref) => {
-    setPendingApps((prev) => prev.filter((item) => (item.ref || item.id) !== ref))
+    updateAppStatus(ref, 'Rejected')
   }
 
   const sectionTitle = activeSection === 'licensees'
@@ -754,7 +735,7 @@ export default function AdminDashboardPage() {
                         </table>
                       </div>
                     </>
-                  ) : pendingApps.length === 0 ? (
+                  ) : activePending.length === 0 ? (
                     <div style={{ padding: '40px 32px 48px', textAlign: 'center' }}>
                       <div style={emptyStateIconStyle}><FileText size={26} /></div>
                       <div style={{ color: '#111111', fontSize: 24, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>No pending applications</div>
@@ -771,7 +752,7 @@ export default function AdminDashboardPage() {
                           </tr>
                         </thead>
                         <tbody>
-                          {pendingApps.map((item, index) => {
+                          {activePending.map((item, index) => {
                             const ref = item.ref || item.id
                             const company = item.company || item.legalBusinessName || item.applicant || 'Pending Applicant'
                             const licenceType = item.licenceType || item.type || item.category || 'Class 3 Service Licence'

@@ -1,30 +1,8 @@
 import PageWrapper from "../../components/shared/PageWrapper";
-
-const APPLICATIONS = [
-  {
-    id: "APP-2026-1142",
-    applicant: "Kopano Broadband",
-    category: "Internet Service Provider",
-    submitted: "24 Mar 2026",
-    status: "Pending",
-  },
-  {
-    id: "APP-2026-1138",
-    applicant: "Northern Signals",
-    category: "FM Radio Broadcasting",
-    submitted: "23 Mar 2026",
-    status: "Under Review",
-  },
-  {
-    id: "APP-2026-1129",
-    applicant: "Delta Courier",
-    category: "Class A Postal Operator",
-    submitted: "22 Mar 2026",
-    status: "Approved",
-  },
-];
+import { useApplications } from "../../context/ApplicationContext";
 
 export default function AdminApplicationsPage() {
+  const { applications, updateStatus } = useApplications();
   return (
     <PageWrapper>
       <div
@@ -96,9 +74,9 @@ export default function AdminApplicationsPage() {
               <div>Status</div>
               <div>Action</div>
             </div>
-            {APPLICATIONS.map((item) => (
+            {applications.map((item) => (
               <div
-                key={item.id}
+                key={item.ref}
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1.1fr 1.2fr 1.4fr 0.8fr 0.9fr 1fr",
@@ -107,10 +85,10 @@ export default function AdminApplicationsPage() {
                   fontSize: 13,
                 }}
               >
-                <div>{item.id}</div>
+                <div>{item.ref}</div>
                 <div>{item.applicant}</div>
-                <div>{item.category}</div>
-                <div>{item.submitted}</div>
+                <div>{item.type}</div>
+                <div>{item.date}</div>
                 <div>{item.status}</div>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   <button
@@ -129,6 +107,7 @@ export default function AdminApplicationsPage() {
                   </button>
                   <button
                     type="button"
+                    onClick={() => updateStatus(item.ref, 'Licence Issued')}
                     style={{
                       border: "1px solid rgba(16,185,129,0.5)",
                       borderRadius: 999,
@@ -143,6 +122,7 @@ export default function AdminApplicationsPage() {
                   </button>
                   <button
                     type="button"
+                    onClick={() => updateStatus(item.ref, 'Rejected')}
                     style={{
                       border: "1px solid rgba(248,113,113,0.5)",
                       borderRadius: 999,

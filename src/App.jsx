@@ -62,7 +62,7 @@ export default function App() {
           <Route path="/news"          element={<NewsPage />} />
           <Route path="/news/:slug"    element={<NewsArticlePage />} />
           <Route path="/licensing"     element={<LicensingPage />} />
-          <Route path="/licensing/apply" element={<Navigate to="/login?redirect=/portal/apply&force=1" replace />} />
+          <Route path="/licensing/apply" element={<Navigate to="/licensing?tab=apply" replace />} />
           <Route path="/consumer" element={<ConsumerPage />} />
           <Route path="/type-approval" element={<TypeApprovalPage />} />
           <Route path="/documents"     element={<DocumentsPage />} />
@@ -89,7 +89,7 @@ export default function App() {
             <Route path="complaint/new" element={<NewComplaintPage />} />
             <Route path="complaints"    element={<ComplaintTrackerPage />} />
             <Route path="complaint/:id" element={<ComplaintDetailPage />} />
-            <Route path="apply"         element={<ApplyPage />} />
+            <Route path="apply"         element={<Navigate to="/licensing?tab=apply" replace />} />
             <Route path="applications"  element={<ApplicationsPage />} />
           </Route>
 

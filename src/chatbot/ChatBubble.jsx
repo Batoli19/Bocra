@@ -6,7 +6,7 @@ import { matchIntent } from "./intentRouter";
 import { matchKb } from "./kbRouter";
 import { KB_ENTRIES } from "./kbData";
 import licenceTypes from "../data/licenceTypes.json";
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 
 export default function ChatBubble({ showHint = false, expanded = false, forceOpen = expanded, onClose }) {
   const [open, setOpen] = useState(false);
