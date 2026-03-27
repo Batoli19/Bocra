@@ -25,6 +25,23 @@ ChartJS.register(
   LineElement,
   BarElement,
   ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+)
+
+const shellStyle = {
+  maxWidth: 1400,
+  margin: '0 auto',
+  padding: '0 40px',
+  width: '100%',
+  boxSizing: 'border-box',
+}
+
+const palette = {
+  ink: '#111111',
+  muted: '#6b7280',
   border: '#e5e7eb',
   navy: '#1A3A6B',
   hero: '#0a1628',
@@ -415,7 +432,7 @@ export default function QoSPage() {
                 <p style={{ margin: 0, color: 'rgba(255,255,255,0.58)', fontSize: 11, fontWeight: 700, letterSpacing: '0.16em', textTransform: 'uppercase' }}>Quality of Service</p>
                 <h1 style={{ margin: '14px 0 0', color: '#ffffff', fontSize: 'clamp(32px, 5vw, 56px)', lineHeight: 1.08, fontWeight: 800, letterSpacing: '-0.03em', fontFamily: "'Space Grotesk', sans-serif" }}>
                   Network Performance<br />Dashboard
-                </h1>
+</h1>
                 <p style={{ margin: '16px 0 0', color: 'rgba(255,255,255,0.72)', fontSize: 14, fontFamily: "'DM Sans', sans-serif" }}>
                   Last updated: {lastUpdated}
                 </p>
@@ -747,7 +764,6 @@ export default function QoSPage() {
           );
         })()}
 
-
         <div style={{ background: '#f8f9fa', padding: '56px 0', textAlign: 'center' }}>
           <div style={shellStyle}>
             <p style={{ margin: 0, color: palette.muted, fontSize: 15, lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif" }}>
@@ -762,4 +778,3 @@ export default function QoSPage() {
     </PageWrapper>
   )
 }
-
