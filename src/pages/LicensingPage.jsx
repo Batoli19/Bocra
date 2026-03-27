@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { AlertCircle, ArrowRight, Building2, Check, CheckCircle, CheckCircle2, Globe, Landmark, Mail, Package, Radio, Search, Shield, Signal, Tv, User, Wifi } from 'lucide-react'
+import { AlertCircle, ArrowRight, Building2, Check, CheckCircle, CheckCircle2, Globe, Landmark, Mail, Package, Radio, RefreshCw, Search, Shield, Signal, Tv, User, Wifi } from 'lucide-react'
 import PageWrapper from '../components/shared/PageWrapper'
 import { useAuth } from '../hooks/useAuth'
 import { useApplications } from '../context/ApplicationContext'
@@ -738,10 +738,11 @@ function formatBwp(value) {
 export default function LicensingPage() {
   const navigate = useNavigate()
   const { requireAuth } = useAuth()
-  const { applications, addApplication } = useApplications()
+  const { applications, addApplication, refresh } = useApplications()
   
   const [searchParams, setSearchParams] = useSearchParams()
   const activeTab = searchParams.get('tab') || 'finder'
+  const [refreshing, setRefreshing] = useState(false)
 
   const setActiveTab = (tab) => {
     setSearchParams({ tab })
@@ -1653,6 +1654,33 @@ export default function LicensingPage() {
                 </div>
                 <button type="button" onClick={() => handleTrackSearch()} style={primaryButtonStyle}>
                   Track
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRefreshing(true)
+                    refresh()
+                    if (trackQuery) handleTrackSearch()
+                    setTimeout(() => setRefreshing(false), 600)
+                  }}
+                  title="Refresh tracking data"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 6,
+                    border: '1px solid #d1d5db',
+                    borderRadius: 999,
+                    padding: '12px 20px',
+                    background: '#ffffff',
+                    color: '#475569',
+                    fontSize: 14,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    fontFamily: 'Inter, sans-serif',
+                  }}
+                >
+                  <RefreshCw size={15} style={{ transition: 'transform 0.6s ease', transform: refreshing ? 'rotate(360deg)' : 'rotate(0deg)' }} />
+                  Refresh
                 </button>
               </div>
 

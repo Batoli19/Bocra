@@ -1,8 +1,17 @@
+import { useState } from "react";
+import { RefreshCw } from "lucide-react";
 import PageWrapper from "../../components/shared/PageWrapper";
 import { useApplications } from "../../context/ApplicationContext";
 
 export default function AdminApplicationsPage() {
-  const { applications, updateStatus } = useApplications();
+  const { applications, updateStatus, refresh } = useApplications();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    refresh();
+    setTimeout(() => setRefreshing(false), 600);
+  };
   return (
     <PageWrapper>
       <div
@@ -46,6 +55,30 @@ export default function AdminApplicationsPage() {
             <p style={{ color: "rgba(226,232,240,0.7)" }}>
               Inspect submitted documents and approve or reject applications.
             </p>
+            <button
+              type="button"
+              onClick={handleRefresh}
+              title="Refresh applications"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                marginTop: 16,
+                border: "1px solid rgba(148,163,184,0.25)",
+                borderRadius: 999,
+                padding: "10px 20px",
+                fontSize: 13,
+                fontWeight: 700,
+                background: "rgba(255,255,255,0.06)",
+                color: "#f8fafc",
+                cursor: "pointer",
+                fontFamily: "'Space Grotesk', sans-serif",
+                transition: "background 0.2s ease",
+              }}
+            >
+              <RefreshCw size={15} style={{ transition: "transform 0.6s ease", transform: refreshing ? "rotate(360deg)" : "rotate(0deg)" }} />
+              Refresh
+            </button>
           </div>
 
           <div

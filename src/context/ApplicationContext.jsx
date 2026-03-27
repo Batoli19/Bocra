@@ -63,6 +63,10 @@ export function ApplicationProvider({ children }) {
     setApplications((prev) => prev.map((a) => (a.ref === ref ? { ...a, status } : a)))
   }
 
+  const refresh = () => {
+    setApplications(loadApplications())
+  }
+
   const stats = {
     total: applications.length,
     pending: applications.filter((a) => a.status === 'Application Received').length,
@@ -71,7 +75,7 @@ export function ApplicationProvider({ children }) {
   }
 
   return (
-    <ApplicationContext.Provider value={{ applications, addApplication, getApplication, updateStatus, stats }}>
+    <ApplicationContext.Provider value={{ applications, addApplication, getApplication, updateStatus, refresh, stats }}>
       {children}
     </ApplicationContext.Provider>
   )

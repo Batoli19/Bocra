@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { BarChart2, Bell, FileText, LayoutDashboard, Plus, Search, Settings, Users } from 'lucide-react'
+import { BarChart2, Bell, FileText, LayoutDashboard, Plus, RefreshCw, Search, Settings, Users } from 'lucide-react'
 import bocraSvg from '../../assets/bocra.svg'
 import { useComplaints } from '../../context/ComplaintContext'
 import { useApplications } from '../../context/ApplicationContext'
@@ -221,8 +221,9 @@ const initialsOf = (name) => name.split(' ').filter(Boolean).slice(0, 2).map((pa
 
 export default function AdminDashboardPage() {
   const { complaints, stats, updateStatus } = useComplaints()
-  const { applications: pendingApps, updateStatus: updateAppStatus } = useApplications()
+  const { applications: pendingApps, updateStatus: updateAppStatus, refresh: refreshApps } = useApplications()
   const [adminLoggedIn, setAdminLoggedIn] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const [staffId, setStaffId] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -667,12 +668,38 @@ export default function AdminDashboardPage() {
                       <h2 style={sectionTitleStyle}>Licence Management</h2>
                       <p style={sectionNoteStyle}>Review active licensees and applications awaiting approval.</p>
                     </div>
-                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
                       {['Active Licences', 'Pending Applications'].map((tab) => (
                         <button key={tab} type="button" onClick={() => setLicenceTab(tab)} style={filterPillStyle(licenceTab === tab)}>
                           {tab}
                         </button>
                       ))}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setRefreshing(true)
+                          refreshApps()
+                          setTimeout(() => setRefreshing(false), 600)
+                        }}
+                        title="Refresh applications"
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: 6,
+                          border: `1px solid ${border}`,
+                          borderRadius: 999,
+                          padding: '9px 14px',
+                          background: '#ffffff',
+                          color: '#475569',
+                          fontSize: 13,
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                          fontFamily: 'Inter, sans-serif',
+                        }}
+                      >
+                        <RefreshCw size={14} style={{ transition: 'transform 0.6s ease', transform: refreshing ? 'rotate(360deg)' : 'rotate(0deg)' }} />
+                        Refresh
+                      </button>
                     </div>
                   </div>
 
