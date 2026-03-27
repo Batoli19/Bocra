@@ -738,10 +738,7 @@ export default function LicensingPage() {
   const [activeTab, setActiveTab] = useState('finder')
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('bocra_user') || 'null')
-    if (activeTab === 'apply' && !user) {
-      navigate('/login?redirect=/licensing')
-    }
+    // Authentication removed for application flow as requested
   }, [activeTab, navigate])
 
   const [q1, setQ1] = useState('')
@@ -764,12 +761,26 @@ export default function LicensingPage() {
     contactPhone: '',
     contactEmail: '',
   })
+  const [error, setError] = useState('')
   const [trackQuery, setTrackQuery] = useState('')
   const [trackedApplication, setTrackedApplication] = useState(null)
   const [trackNotFound, setTrackNotFound] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [filterType, setFilterType] = useState('All')
   const [registryChecked, setRegistryChecked] = useState(false)
+
+  const fieldStyle = (value) => ({
+    width: '100%',
+    padding: '13px 16px',
+    border: `1px solid ${value === '' || value === undefined ? '#fca5a5' : '#d1d5db'}`,
+    borderRadius: 14,
+    fontSize: 15,
+    color: '#111827',
+    outline: 'none',
+    boxSizing: 'border-box',
+    fontFamily: 'Inter, sans-serif',
+    background: '#ffffff'
+  })
 
   useEffect(() => {
     if (!q1 || !q2 || !q3) {
@@ -796,15 +807,38 @@ export default function LicensingPage() {
       ...prev,
       [field]: value,
     }))
+    setError('')
   }
 
   const handleLicenceTypeChange = (value) => {
     setLicenceType(value)
     setTechnicalData({})
+    setError('')
   }
 
   const handleStartApplication = () => {
-    navigate('/login?redirect=/portal/apply&force=1')
+    setActiveTab('apply')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleStep1Continue = () => {
+    if (!appData.legalBusinessName?.trim()) { setError('Please enter your business name'); return }
+    if (!appData.registrationNumber?.trim()) { setError('Please enter your CIPA registration number'); return }
+    if (!appData.contactPhone?.trim()) { setError('Please enter a contact phone number'); return }
+    if (!licenceType) { setError('Please select the licence type you are applying for'); return }
+    setError('')
+    setAppStep(2)
+  }
+
+  const handleStep2Continue = () => {
+    const isServiceAreaReq = selectedTechnicalConfig?.fields?.some((f) => f.id === 'serviceArea')
+    if (isServiceAreaReq && !technicalData.serviceArea?.trim()) { setError('Please describe your proposed service area'); return }
+    
+    const isCoverageReq = selectedTechnicalConfig?.fields?.some((f) => f.id === 'coverageType')
+    if (isCoverageReq && !technicalData.coverageType) { setError('Please select your coverage type'); return }
+
+    setError('')
+    setAppStep(3)
   }
 
   const handleTrackSearch = (nextRef) => {
@@ -829,8 +863,10 @@ export default function LicensingPage() {
 
   const handleSubmitApplication = () => {
     if (!appConsent) {
+      setError('You must confirm payment and agree to terms before submitting')
       return
     }
+    setError('')
 
     const reference = `APP-BOCRA-2026-${String(Math.floor(1000 + Math.random() * 9000)).padStart(4, '0')}`
     const applicationRecord = {
@@ -1185,6 +1221,12 @@ export default function LicensingPage() {
 
               {appStep === 1 && (
                 <div style={{ border: '1px solid #e5e7eb', borderRadius: 24, padding: '30px clamp(20px, 4vw, 34px)', background: '#ffffff' }}>
+                  {error && (
+                    <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span style={{ color: '#dc2626', fontSize: 18 }}>⚠</span>
+                      <p style={{ color: '#dc2626', fontSize: 14, fontWeight: 500, margin: 0 }}>{error}</p>
+                    </div>
+                  )}
                   <p style={{ margin: 0, color: '#9ca3af', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
                     Step 1 of 3
                   </p>
@@ -1212,10 +1254,10 @@ export default function LicensingPage() {
 
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 18 }}>
                     <FormField label="Legal Business Name">
-                      <input value={appData.legalBusinessName} onChange={(event) => updateAppField('legalBusinessName', event.target.value)} style={inputStyle} />
+                      <input value={appData.legalBusinessName} onChange={(event) => updateAppField('legalBusinessName', event.target.value)} style={fieldStyle(appData.legalBusinessName)} />
                     </FormField>
                     <FormField label="Registration Number (CIPA)">
-                      <input value={appData.registrationNumber} onChange={(event) => updateAppField('registrationNumber', event.target.value)} style={inputStyle} />
+                      <input value={appData.registrationNumber} onChange={(event) => updateAppField('registrationNumber', event.target.value)} style={fieldStyle(appData.registrationNumber)} />
                     </FormField>
                     <FormField label="PPRA Number">
                       <input value={appData.ppraNumber} onChange={(event) => updateAppField('ppraNumber', event.target.value)} style={inputStyle} />
@@ -1230,7 +1272,7 @@ export default function LicensingPage() {
                       <input value={appData.contactPersonName} onChange={(event) => updateAppField('contactPersonName', event.target.value)} style={inputStyle} />
                     </FormField>
                     <FormField label="Contact Phone">
-                      <input value={appData.contactPhone} onChange={(event) => updateAppField('contactPhone', event.target.value)} style={inputStyle} />
+                      <input value={appData.contactPhone} onChange={(event) => updateAppField('contactPhone', event.target.value)} style={fieldStyle(appData.contactPhone)} />
                     </FormField>
                     <FormField label="Contact Email">
                       <input type="email" value={appData.contactEmail} onChange={(event) => updateAppField('contactEmail', event.target.value)} style={inputStyle} />
@@ -1238,7 +1280,7 @@ export default function LicensingPage() {
                   </div>
 
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 28 }}>
-                    <button type="button" onClick={() => setAppStep(2)} style={primaryButtonStyle}>
+                    <button type="button" onClick={handleStep1Continue} style={primaryButtonStyle}>
                       {'Continue ->'}
                     </button>
                   </div>
@@ -1247,6 +1289,12 @@ export default function LicensingPage() {
 
               {appStep === 2 && (
                 <div style={{ border: '1px solid #e5e7eb', borderRadius: 24, padding: '30px clamp(20px, 4vw, 34px)', background: '#ffffff' }}>
+                  {error && (
+                    <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span style={{ color: '#dc2626', fontSize: 18 }}>⚠</span>
+                      <p style={{ color: '#dc2626', fontSize: 14, fontWeight: 500, margin: 0 }}>{error}</p>
+                    </div>
+                  )}
                   <p style={{ margin: 0, color: '#9ca3af', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
                     Step 2 of 3
                   </p>
@@ -1373,7 +1421,7 @@ export default function LicensingPage() {
                     <button type="button" onClick={() => setAppStep(1)} style={secondaryButtonStyle}>
                       &lt;- Back
                     </button>
-                    <button type="button" onClick={() => setAppStep(3)} style={primaryButtonStyle}>
+                    <button type="button" onClick={handleStep2Continue} style={primaryButtonStyle}>
                       {'Continue ->'}
                     </button>
                   </div>
@@ -1382,6 +1430,12 @@ export default function LicensingPage() {
 
               {appStep === 3 && (
                 <div style={{ border: '1px solid #e5e7eb', borderRadius: 24, padding: '30px clamp(20px, 4vw, 34px)', background: '#ffffff' }}>
+                  {error && (
+                    <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span style={{ color: '#dc2626', fontSize: 18 }}>⚠</span>
+                      <p style={{ color: '#dc2626', fontSize: 14, fontWeight: 500, margin: 0 }}>{error}</p>
+                    </div>
+                  )}
                   <p style={{ margin: 0, color: '#9ca3af', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
                     Step 3 of 3
                   </p>

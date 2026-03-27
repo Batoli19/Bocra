@@ -108,6 +108,7 @@ export default function NewComplaintPage() {
     description: '',
     contactedProvider: '',
   })
+  const [error, setError] = useState('')
 
   const contextCopy = step === 1
     ? {
@@ -138,29 +139,30 @@ export default function NewComplaintPage() {
 
   const updateField = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
+    setError('')
   }
 
   const handleStepOne = () => {
-    if (!formData.name.trim() || !formData.phone.trim()) {
-      return
-    }
-
+    if (!formData.name?.trim()) { setError('Please enter your full name'); return }
+    if (!formData.phone?.trim()) { setError('Please enter your phone number'); return }
+    if (formData.phone?.trim().length < 7) { setError('Please enter a valid phone number'); return }
+    if (!formData.location?.trim()) { setError('Please enter your location'); return }
+    setError('')
     setStep(2)
   }
 
   const handleStepTwo = () => {
-    if (!formData.isp || !formData.category || !formData.description.trim()) {
-      return
-    }
-
+    if (!formData.isp) { setError('Please select your service provider'); return }
+    if (!formData.category) { setError('Please select the issue category'); return }
+    if (!formData.description?.trim()) { setError('Please describe your issue'); return }
+    if (formData.description?.trim().length < 20) { setError('Please provide more detail — at least 20 characters'); return }
+    setError('')
     setStep(3)
   }
 
   const handleSubmit = () => {
-    if (!agreed) {
-      return
-    }
-
+    if (!agreed) { setError('You must confirm the accuracy of your complaint and consent to data processing before submitting'); return }
+    setError('')
     const ref = addComplaint(formData)
     setSubmittedRef(ref)
     setStep('success')
@@ -290,6 +292,12 @@ export default function NewComplaintPage() {
 
         {step === 1 && (
           <section>
+            {error && (
+              <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ color: '#dc2626', fontSize: 18 }}>⚠</span>
+                <p style={{ color: '#dc2626', fontSize: 14, fontWeight: 500, margin: 0 }}>{error}</p>
+              </div>
+            )}
             <p style={{ margin: '0 0 8px', color: '#9ca3af', fontSize: 11, fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
               Step 1 of 3
             </p>
@@ -355,6 +363,12 @@ export default function NewComplaintPage() {
 
         {step === 2 && (
           <section>
+            {error && (
+              <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ color: '#dc2626', fontSize: 18 }}>⚠</span>
+                <p style={{ color: '#dc2626', fontSize: 14, fontWeight: 500, margin: 0 }}>{error}</p>
+              </div>
+            )}
             <p style={{ margin: '0 0 8px', color: '#9ca3af', fontSize: 11, fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
               Step 2 of 3
             </p>
@@ -498,6 +512,12 @@ export default function NewComplaintPage() {
 
         {step === 3 && (
           <section>
+            {error && (
+              <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+                <span style={{ color: '#dc2626', fontSize: 18 }}>⚠</span>
+                <p style={{ color: '#dc2626', fontSize: 14, fontWeight: 500, margin: 0 }}>{error}</p>
+              </div>
+            )}
             <p style={{ margin: '0 0 8px', color: '#9ca3af', fontSize: 11, fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
               Step 3 of 3
             </p>

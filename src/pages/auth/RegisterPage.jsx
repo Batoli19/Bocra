@@ -39,6 +39,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [acceptedTerms, setAcceptedTerms] = useState(false)
+  const [error, setError] = useState('')
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const redirect = resolvePortalRedirect(searchParams.get('redirect') || '/portal')
@@ -56,20 +57,14 @@ export default function RegisterPage() {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    if (password.length < 8) {
-      toast?.error('Use a password with at least 8 characters.')
-      return
-    }
-
-    if (password !== confirmPassword) {
-      toast?.error('Passwords do not match yet.')
-      return
-    }
-
-    if (!acceptedTerms) {
-      toast?.error('Please accept the portal terms to continue.')
-      return
-    }
+    if (!fullName?.trim()) { setError('Please enter your full name'); return }
+    if (!email?.trim()) { setError('Please enter your email address'); return }
+    if (!phone?.trim()) { setError('Please enter your phone number'); return }
+    if (!password || password.length < 8) { setError('Password must be at least 8 characters'); return }
+    if (password !== confirmPassword) { setError('Passwords do not match'); return }
+    if (!acceptedTerms) { setError('Please agree to the terms and conditions to continue'); return }
+    
+    setError('')
 
     register({
       name: fullName,
@@ -126,6 +121,12 @@ export default function RegisterPage() {
 
           <div className="register-card">
             <div className="register-card-header">
+              {error && (
+                <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ color: '#dc2626', fontSize: 18 }}>⚠</span>
+                  <p style={{ color: '#dc2626', fontSize: 14, fontWeight: 500, margin: 0 }}>{error}</p>
+                </div>
+              )}
               <div className="register-card-kicker">New profile</div>
               <h2 className="register-card-title">Create your account</h2>
               <p className="register-card-description">
@@ -143,8 +144,9 @@ export default function RegisterPage() {
                   type="text"
                   required
                   value={fullName}
-                  onChange={(event) => setFullName(event.target.value)}
+                  onChange={(event) => { setFullName(event.target.value); setError('') }}
                   className="register-input"
+                  style={{ borderColor: error && !fullName?.trim() ? '#fca5a5' : undefined }}
                   placeholder="Your full name"
                   autoComplete="name"
                 />
@@ -159,8 +161,9 @@ export default function RegisterPage() {
                   type="email"
                   required
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={(event) => { setEmail(event.target.value); setError('') }}
                   className="register-input"
+                  style={{ borderColor: error && !email?.trim() ? '#fca5a5' : undefined }}
                   placeholder="you@example.com"
                   autoComplete="email"
                 />
@@ -175,8 +178,9 @@ export default function RegisterPage() {
                   type="tel"
                   required
                   value={phone}
-                  onChange={(event) => setPhone(event.target.value)}
+                  onChange={(event) => { setPhone(event.target.value); setError('') }}
                   className="register-input"
+                  style={{ borderColor: error && !phone?.trim() ? '#fca5a5' : undefined }}
                   placeholder="+267 71 234 567"
                   autoComplete="tel"
                 />
@@ -192,8 +196,9 @@ export default function RegisterPage() {
                     type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
-                    onChange={(event) => setPassword(event.target.value)}
+                    onChange={(event) => { setPassword(event.target.value); setError('') }}
                     className="register-input register-input-password"
+                    style={{ borderColor: error && (!password || password.length < 8) ? '#fca5a5' : undefined }}
                     placeholder="Create a password"
                     autoComplete="new-password"
                   />
@@ -218,8 +223,9 @@ export default function RegisterPage() {
                     type={showConfirmPassword ? 'text' : 'password'}
                     required
                     value={confirmPassword}
-                    onChange={(event) => setConfirmPassword(event.target.value)}
+                    onChange={(event) => { setConfirmPassword(event.target.value); setError('') }}
                     className="register-input register-input-password"
+                    style={{ borderColor: error && (password !== confirmPassword || !confirmPassword) ? '#fca5a5' : undefined }}
                     placeholder="Re-enter your password"
                     autoComplete="new-password"
                   />
@@ -238,7 +244,7 @@ export default function RegisterPage() {
                 <input
                   type="checkbox"
                   checked={acceptedTerms}
-                  onChange={(event) => setAcceptedTerms(event.target.checked)}
+                  onChange={(event) => { setAcceptedTerms(event.target.checked); setError('') }}
                 />
                 <span>I confirm these details are mine and I want to create a BOCRA citizen account.</span>
               </label>

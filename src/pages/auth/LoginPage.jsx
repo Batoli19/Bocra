@@ -32,6 +32,7 @@ function resolvePortalRedirect(target) {
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -57,6 +58,9 @@ export default function LoginPage() {
 
   const handleLogin = (event) => {
     event.preventDefault()
+    if (!email?.trim()) { setError('Please enter your email address'); return }
+    if (!password?.trim()) { setError('Please enter your password'); return }
+    setError('')
 
     const ok = login({
       email,
@@ -125,6 +129,12 @@ export default function LoginPage() {
 
           <div className="login-card">
             <div className="login-card-header">
+              {error && (
+                <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <span style={{ color: '#dc2626', fontSize: 18 }}>⚠</span>
+                  <p style={{ color: '#dc2626', fontSize: 14, fontWeight: 500, margin: 0 }}>{error}</p>
+                </div>
+              )}
               <div className="login-card-kicker">Welcome back</div>
               <h2 className="login-card-title">Log in to BOCRA</h2>
               <p className="login-card-description">
@@ -142,8 +152,9 @@ export default function LoginPage() {
                   type="email"
                   required
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={(event) => { setEmail(event.target.value); setError('') }}
                   className="login-input"
+                  style={{ borderColor: error && !email?.trim() ? '#fca5a5' : undefined }}
                   placeholder="you@example.com"
                   autoComplete="email"
                 />
@@ -165,8 +176,9 @@ export default function LoginPage() {
                     type={showPassword ? 'text' : 'password'}
                     required
                     value={password}
-                    onChange={(event) => setPassword(event.target.value)}
+                    onChange={(event) => { setPassword(event.target.value); setError('') }}
                     className="login-input login-input-password"
+                    style={{ borderColor: error && !password?.trim() ? '#fca5a5' : undefined }}
                     placeholder="Enter your password"
                     autoComplete="current-password"
                   />
