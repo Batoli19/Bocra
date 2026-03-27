@@ -4,18 +4,24 @@ const ApplicationContext = createContext()
 
 const STORAGE_KEY = 'bocra_applications'
 const VERSION_KEY = 'bocra_applications_v'
-const CURRENT_VERSION = '2'
+const CURRENT_VERSION = '3'
 
 const generateRef = () => {
   const num = Math.floor(1000 + Math.random() * 9000)
   return `APP-BOCRA-2026-${num}`
 }
 
+const mockDocs = {
+  legal: { name: 'cert_incorporation.pdf', size: '1.2 MB' },
+  technical: { name: 'network_diagram_v2.pdf', size: '4.5 MB' },
+  financial: { name: 'tax_clearance_2026.pdf', size: '800 KB' },
+}
+
 const MOCK_APPLICATIONS = [
-  { ref: 'APP-BOCRA-2026-1142', applicant: 'Kopano Broadband', type: 'Internet Service Provider', date: '2026-03-24', status: 'Application Received', officer: null },
-  { ref: 'APP-BOCRA-2026-1138', applicant: 'Northern Signals', type: 'Broadcasting - Radio', date: '2026-03-23', status: 'Document Verification', officer: 'Officer Thato M.' },
-  { ref: 'APP-BOCRA-2026-1129', applicant: 'Delta Courier', type: 'Postal / Courier - Class A', date: '2026-03-22', status: 'Licence Issued', officer: 'Officer Mpho K.' },
-  { ref: 'APP-BOCRA-2026-0042', applicant: 'Kgosi Tech Solutions', type: 'Internet Service Provider Licence', date: '2026-03-01', status: 'Technical Assessment', officer: 'Officer Mpho K.' },
+  { ref: 'APP-BOCRA-2026-1142', applicant: 'Kopano Broadband', type: 'Internet Service Provider', date: '2026-03-24', status: 'Application Received', officer: null, documents: mockDocs },
+  { ref: 'APP-BOCRA-2026-1138', applicant: 'Northern Signals', type: 'Broadcasting - Radio', date: '2026-03-23', status: 'Document Verification', officer: 'Officer Thato M.', documents: mockDocs },
+  { ref: 'APP-BOCRA-2026-1129', applicant: 'Delta Courier', type: 'Postal / Courier - Class A', date: '2026-03-22', status: 'Licence Issued', officer: 'Officer Mpho K.', documents: mockDocs },
+  { ref: 'APP-BOCRA-2026-0042', applicant: 'Kgosi Tech Solutions', type: 'Internet Service Provider Licence', date: '2026-03-01', status: 'Technical Assessment', officer: 'Officer Mpho K.', documents: mockDocs },
 ]
 
 function loadApplications() {

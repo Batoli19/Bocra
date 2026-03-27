@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { AlertCircle, ArrowRight, Building2, Check, CheckCircle, CheckCircle2, Globe, Landmark, Mail, Package, Radio, RefreshCw, Search, Shield, Signal, Tv, User, Wifi } from 'lucide-react'
+import { AlertCircle, ArrowRight, Building2, Check, CheckCircle, CheckCircle2, FileText, Globe, Landmark, Mail, Package, Radio, RefreshCw, Search, Shield, Signal, Tv, UploadCloud, User, Wifi } from 'lucide-react'
 import PageWrapper from '../components/shared/PageWrapper'
 import { useAuth } from '../hooks/useAuth'
 import { useApplications } from '../context/ApplicationContext'
@@ -363,8 +363,9 @@ const fieldsConfig = {
 
 const applicationSteps = [
   { number: 1, label: 'Business Details' },
-  { number: 2, label: 'Technical & Coverage' },
-  { number: 3, label: 'Review & Fee' },
+  { number: 2, label: 'Technical Details' },
+  { number: 3, label: 'Documents' },
+  { number: 4, label: 'Review & Fee' },
 ]
 
 const finderSteps = [
@@ -776,6 +777,11 @@ export default function LicensingPage() {
     contactPhone: '',
     contactEmail: '',
   })
+  const [appDocuments, setAppDocuments] = useState({
+    legal: null,
+    technical: null,
+    financial: null,
+  })
   const [error, setError] = useState('')
   const [trackQuery, setTrackQuery] = useState('')
   const [trackedApplication, setTrackedApplication] = useState(null)
@@ -855,6 +861,15 @@ export default function LicensingPage() {
     setAppStep(3)
   }
 
+  const handleStep3Continue = () => {
+    if (!appDocuments.legal || !appDocuments.technical || !appDocuments.financial) {
+      setError('Please upload all required supporting documents')
+      return
+    }
+    setError('')
+    setAppStep(4)
+  }
+
   const handleTrackSearch = (nextRef) => {
     const candidate = (nextRef ?? trackQuery).trim().toUpperCase()
 
@@ -888,6 +903,7 @@ export default function LicensingPage() {
       ...appData,
       licenceType,
       technicalData,
+      documents: appDocuments,
     }
 
     const { ref: reference, application: submittedApplication } = addApplication(applicationRecord)
@@ -1231,7 +1247,7 @@ export default function LicensingPage() {
                     </div>
                   )}
                   <p style={{ margin: 0, color: '#9ca3af', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
-                    Step 1 of 3
+                    Step 1 of 4
                   </p>
                   <h2 style={{ margin: '12px 0 28px', color: '#111111', fontSize: 30, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                     Business Details
@@ -1299,7 +1315,7 @@ export default function LicensingPage() {
                     </div>
                   )}
                   <p style={{ margin: 0, color: '#9ca3af', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
-                    Step 2 of 3
+                    Step 2 of 4
                   </p>
                   <h2 style={{ margin: '12px 0 28px', color: '#111111', fontSize: 30, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                     {selectedTechnicalConfig?.title || 'Technical & Coverage'}
@@ -1440,7 +1456,76 @@ export default function LicensingPage() {
                     </div>
                   )}
                   <p style={{ margin: 0, color: '#9ca3af', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
-                    Step 3 of 3
+                    Step 3 of 4
+                  </p>
+                  <h2 style={{ margin: '12px 0 10px', color: '#111111', fontSize: 30, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+                    Supporting Documents
+                  </h2>
+                  <p style={{ margin: '0 0 24px', color: '#6b7280', fontSize: 15, lineHeight: 1.7, fontFamily: 'Inter, sans-serif' }}>
+                    Upload the required documents to support your {licenceType} application. Max 10MB per file.
+                  </p>
+
+                  <div style={{ display: 'grid', gap: 20 }}>
+                    {[
+                      { id: 'legal', label: 'Certificate of Incorporation & Directors KYC', desc: 'Proof of business registration and identity documents.' },
+                      { id: 'technical', label: 'Technical Proposal & Network Architecture', desc: 'Detailed specs of how you will deliver the service.' },
+                      { id: 'financial', label: 'Business Plan & Tax Clearance', desc: '5-year financial projections and BURS clearance.' },
+                    ].map(doc => (
+                      <div key={doc.id} style={{ border: '1px dashed #d1d5db', borderRadius: 16, padding: '24px', background: '#f8fafc', display: 'flex', alignItems: 'center', gap: 20, flexWrap: 'wrap' }}>
+                        <div style={{ width: 48, height: 48, borderRadius: 12, background: appDocuments[doc.id] ? '#dcfce7' : '#e0e7ff', color: appDocuments[doc.id] ? '#16a34a' : '#4f46e5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          {appDocuments[doc.id] ? <CheckCircle2 size={24} /> : <FileText size={24} />}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 200 }}>
+                          <div style={{ color: '#111111', fontSize: 16, fontWeight: 700, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{doc.label}</div>
+                          <div style={{ marginTop: 4, color: '#6b7280', fontSize: 13, fontFamily: 'Inter, sans-serif' }}>{appDocuments[doc.id] ? appDocuments[doc.id].name : doc.desc}</div>
+                        </div>
+                        <div>
+                          <input 
+                            type="file" 
+                            id={`file-upload-${doc.id}`} 
+                            style={{ display: 'none' }} 
+                            onChange={(e) => {
+                              const file = e.target.files?.[0]
+                              if (file) {
+                                setAppDocuments(prev => ({ ...prev, [doc.id]: { name: file.name, size: Math.round(file.size / 1024) + ' KB' } }))
+                                setError('')
+                              }
+                            }}
+                          />
+                          <button 
+                            type="button" 
+                            onClick={() => document.getElementById(`file-upload-${doc.id}`).click()}
+                            style={{ padding: '10px 18px', borderRadius: 999, border: appDocuments[doc.id] ? '1px solid #16a34a' : '1px solid #4f46e5', background: appDocuments[doc.id] ? '#f0fdf4' : '#ffffff', color: appDocuments[doc.id] ? '#16a34a' : '#4f46e5', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Inter, sans-serif', display: 'flex', alignItems: 'center', gap: 8 }}
+                          >
+                            <UploadCloud size={16} />
+                            {appDocuments[doc.id] ? 'Replace File' : 'Upload File'}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div style={{ display: 'flex', gap: 12, justifyContent: 'space-between', flexWrap: 'wrap', marginTop: 28 }}>
+                    <button type="button" onClick={() => setAppStep(2)} style={secondaryButtonStyle}>
+                      &lt;- Back
+                    </button>
+                    <button type="button" onClick={handleStep3Continue} style={primaryButtonStyle}>
+                      {'Continue ->'}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {appStep === 4 && (
+                <div style={{ border: '1px solid #e5e7eb', borderRadius: 24, padding: '30px clamp(20px, 4vw, 34px)', background: '#ffffff' }}>
+                  {error && (
+                    <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 10, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <span style={{ color: '#dc2626', fontSize: 18 }}>⚠</span>
+                      <p style={{ color: '#dc2626', fontSize: 14, fontWeight: 500, margin: 0 }}>{error}</p>
+                    </div>
+                  )}
+                  <p style={{ margin: 0, color: '#9ca3af', fontSize: 11, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', fontFamily: 'Inter, sans-serif' }}>
+                    Step 4 of 4
                   </p>
                   <h2 style={{ margin: '12px 0 10px', color: '#111111', fontSize: 30, fontWeight: 800, fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
                     Review &amp; Fee
@@ -1576,7 +1661,7 @@ export default function LicensingPage() {
                   </label>
 
                   <div style={{ display: 'flex', gap: 12, justifyContent: 'space-between', flexWrap: 'wrap', marginTop: 24 }}>
-                    <button type="button" onClick={() => setAppStep(2)} style={secondaryButtonStyle}>
+                    <button type="button" onClick={() => setAppStep(3)} style={secondaryButtonStyle}>
                       &lt;- Edit
                     </button>
                     <button type="button" onClick={handleSubmitApplication} style={primaryButtonStyle}>

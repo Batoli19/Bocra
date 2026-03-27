@@ -917,6 +917,47 @@ export default function AdminDashboardPage() {
                 </div>
               ))}
 
+              <div style={{ marginTop: 24 }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: '#111', margin: '0 0 12px', fontFamily: "'Plus Jakarta Sans', sans-serif" }}>Submitted Documents</p>
+                {selectedItem.documents ? (
+                  <div style={{ display: 'grid', gap: 10 }}>
+                    {[
+                      { key: 'legal', label: 'Certificate of Incorporation & KYC' },
+                      { key: 'technical', label: 'Technical Proposal & Architecture' },
+                      { key: 'financial', label: 'Business Plan & Tax Clearance' },
+                    ].map(doc => {
+                      const fileInfo = selectedItem.documents[doc.key]
+                      return (
+                        <div key={doc.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 10 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                            <div style={{ background: '#e0e7ff', color: '#4f46e5', padding: 8, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <FileText size={18} />
+                            </div>
+                            <div>
+                              <div style={{ fontSize: 14, fontWeight: 600, color: '#1f2937', fontFamily: 'Inter, sans-serif' }}>{doc.label}</div>
+                              {fileInfo ? (
+                                <div style={{ fontSize: 12, color: '#6b7280', marginTop: 3, fontFamily: 'Inter, sans-serif' }}>{fileInfo.name} &bull; {fileInfo.size}</div>
+                              ) : (
+                                <div style={{ fontSize: 12, color: '#ef4444', marginTop: 3, fontFamily: 'Inter, sans-serif' }}>Missing document</div>
+                              )}
+                            </div>
+                          </div>
+                          {fileInfo && (
+                            <button type="button" style={{ background: 'none', border: 'none', color: '#1A3A6B', fontSize: 13, fontWeight: 700, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}>
+                              View
+                            </button>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <div style={{ padding: 16, background: '#fef2f2', border: '1px dashed #fecaca', borderRadius: 10, color: '#b91c1c', fontSize: 13, fontFamily: 'Inter, sans-serif' }}>
+                    No documents attached (Legacy Application)
+                  </div>
+                )}
+              </div>
+
               <div style={{ marginTop: 20, background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 12, padding: 16 }}>
                 <p style={{ fontSize: 13, fontWeight: 600, color: '#92400e', margin: '0 0 8px', fontFamily: 'Inter, sans-serif' }}>Payment Verification Required</p>
                 <p style={{ fontSize: 13, color: '#92400e', margin: 0, fontFamily: 'Inter, sans-serif' }}>Confirm that the applicant has paid the licence fee before approving.</p>

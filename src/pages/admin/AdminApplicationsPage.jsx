@@ -126,6 +126,7 @@ export default function AdminApplicationsPage() {
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   <button
                     type="button"
+                    onClick={() => alert(item.documents ? `Documents attached:\n- ${item.documents.legal?.name}\n- ${item.documents.technical?.name}\n- ${item.documents.financial?.name}` : 'No documents attached')}
                     style={{
                       border: "1px solid rgba(148,163,184,0.25)",
                       borderRadius: 999,
@@ -136,7 +137,7 @@ export default function AdminApplicationsPage() {
                       cursor: "pointer",
                     }}
                   >
-                    Review docs
+                    {item.documents ? 'Review 3 Docs' : 'Review Docs'}
                   </button>
                   <button
                     type="button"
