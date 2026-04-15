@@ -12,7 +12,7 @@
 3. [Getting Started](#3-getting-started)
 4. [Project Structure](#4-project-structure)
 5. [Design System](#5-design-system)
-6. [Developer Task Assignments](#6-developer-task-assignments)
+6. [Developer Task Assignments](#6-devloper-task-assignments)
 7. [Routing & Page Map](#7-routing--page-map)
 8. [Shared Components](#8-shared-components)
 9. [Context & State](#9-context--state)
@@ -54,7 +54,7 @@ This repository is the **frontend MVP** — it runs entirely with mock JSON data
 
 ---
 
-## 3. Getting Started
+## 3. Getting Started and inst
 
 ### Prerequisites
 
