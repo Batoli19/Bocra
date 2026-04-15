@@ -723,5 +723,6 @@ Format: `https://bocra-connect.vercel.app`
 ---
 
 *Built with purpose for every Motswana. BOCRA Connect — Secure. Fast. Accessible.*
-not to be s
+not to be shared nor distributed
+
 
